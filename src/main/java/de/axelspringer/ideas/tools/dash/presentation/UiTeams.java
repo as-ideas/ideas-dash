@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.presentation.controller;
+package de.axelspringer.ideas.tools.dash.presentation;
 
 import lombok.Data;
 

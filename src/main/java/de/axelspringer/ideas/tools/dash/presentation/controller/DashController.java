@@ -4,6 +4,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.business.customization.TeamProvider;
 import de.axelspringer.ideas.tools.dash.presentation.UiInfo;
 import de.axelspringer.ideas.tools.dash.presentation.UiInfoService;
+import de.axelspringer.ideas.tools.dash.presentation.UiTeams;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
