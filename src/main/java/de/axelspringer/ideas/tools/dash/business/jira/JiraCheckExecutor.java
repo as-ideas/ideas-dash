@@ -63,13 +63,30 @@ public class JiraCheckExecutor implements CheckExecutor {
 
         List<CheckResult> checkResults = new ArrayList<>();
         for (Issue issue : issues) {
-            final State state = Priority.BLOCKER_NAME.equals(issue.getFields().getPriority().getName()) ? State.RED : State.YELLOW;
+            final State state = getState(issue);
             final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, 1, jiraCheck.getStage())
                     .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
             checkResults.add(checkResult);
         }
 
         return checkResults;
+    }
+
+    private State getState(Issue issue) {
+        if (issue.isBug()) {
+            String priority = issue.getFields().getPriority().getName();
+            if (Priority.BLOCKER_NAME.equals(priority)) {
+                return State.RED;
+            }
+            return State.YELLOW;
+        }
+
+        // Story!!!
+        if (issue.getFields().getStatus().getName().equalsIgnoreCase("Done")) {
+            return State.GREEN;
+        }
+
+        return State.GREY;
     }
 
     @Override

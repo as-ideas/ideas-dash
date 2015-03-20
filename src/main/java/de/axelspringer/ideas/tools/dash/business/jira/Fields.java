@@ -11,4 +11,13 @@ public class Fields {
     private CustomField customfield_10144;
 
     private Priority priority;
+
+    private Issuetype issuetype;
+
+    private IssueStatus status;
+
+    public boolean isBug() {
+        return issuetype.getName().equalsIgnoreCase("Bug");
+    }
+
 }

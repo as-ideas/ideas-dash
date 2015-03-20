@@ -8,4 +8,8 @@ public class Issue {
     private String key;
 
     private Fields fields;
+
+    public boolean isBug() {
+        return fields.isBug();
+    }
 }
