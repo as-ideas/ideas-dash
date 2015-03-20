@@ -12,7 +12,7 @@ public class Fields {
 
     private Priority priority;
 
-    private Issuetype issuetype;
+    private IssueType issuetype;
 
     private IssueStatus status;
 
