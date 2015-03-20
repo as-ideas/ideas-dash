@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>angel dust</title>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="dash.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <!-- here for glow-animation (running jobs) -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-sanitize.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-resource.min.js"></script>
+    <!-- here for date formatting (last updated)-->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.2.10/angular-locale_de-de.min.js"></script>
+
+    <script src="dash.js"></script>
+</head>
+<body>
+
+<div ng-app="dash" ng-controller="dashcontroller" class="panel"
+     ng-class="{true: 'alert-danger', false: 'alert-info'}[lastUpdate.state == 'red']">
+    <div class="global-info">Last update: {{ groups.lastUpdateTime | date:'medium' }}</div>
+
+    <div class="panel-body">
+        <div ng-repeat="group in groups.groups | orderBy:groupOrder" class="check-group panel">
+            <div class="panel-body">
+                <div class="stage-info {{ groupClass(group) }}">
+                    <div class="check-name">{{ group.name }}</div>
+                    <div>{{group.info}}</div>
+                </div>
+                <div class="checks">
+                    <div ng-repeat="check in group.checks | filter:teamFilter | orderBy:[checkOrder, 'name']"
+                         class="panel check {{ classForState(check.state) }}"
+                         ng-class="{'running': check.running}" title="{{check.info}}">
+
+                        <!-- link if specified, div if not -->
+                        <a ng-show="check.link" href="{{ check.link }}" target="_blank">
+                            <div class="check-name">{{ check.name }}</div>
+                            <div ng-bind-html="check.info | limitTo : 25"></div>
+                        </a>
+
+                        <div ng-hide="check.link">
+                            <div class="check-name">{{ check.name }}</div>
+                            <div ng-bind-html="check.info | limitTo : 25"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <select ng-model="team">
+        <option>All Teams</option>
+        <option>FT</option>
+        <option>PT</option>
+        <option>SAP</option>
+        <option>C1</option>
+    </select>
+    <input type="checkbox" ng-model="aggregate" ng-click="loadGroups()"/> aggregate
+</div>
+</body>
+</html>

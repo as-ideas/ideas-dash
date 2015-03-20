@@ -1,0 +1,64 @@
+.check-group {
+    position: relative;
+    display: table;
+    width: 100%;
+}
+
+.check-group > .panel-body {
+    padding: 0;
+    margin: 0;
+    display: table-row;
+}
+
+.stage-info {
+    width: 6em;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.checks {
+    display: table-cell;
+    padding: 20px 10px 0 0;
+}
+
+.check {
+    display: inline-block;
+    margin-left: .5em;
+    padding: .5em;
+    text-align: center;
+}
+
+.check.running {
+    animation: glow 2s infinite;
+}
+
+.alert-disabled {
+    background-image: linear-gradient(to bottom, #E0E0E0 0, #B6B6B6 100%);
+    background-repeat: repeat-x;
+    border-color: #b2dba1;
+    color: #686868;
+}
+
+.check-name {
+    font-weight: bold;
+}
+
+.global-info {
+    position: absolute;
+    top: 1px;
+    right: 15px;
+    z-index: 1;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 9px;
+    }
+    50% {
+        box-shadow: 0 0 18px;
+    }
+    100% {
+        box-shadow: 0 0 9px;
+    }
+}
