@@ -25,17 +25,7 @@ public class JiraQueryBuilderTest {
     private Group createStage(String stage) {
         return new Group() {
             @Override
-            public String getStageId() {
-                return stage;
-            }
-
-            @Override
-            public String getLoadbalancerHost() {
-                return stage;
-            }
-
-            @Override
-            public String getLoadbalancerHostWs() {
+            public String getGroupId() {
                 return stage;
             }
 
