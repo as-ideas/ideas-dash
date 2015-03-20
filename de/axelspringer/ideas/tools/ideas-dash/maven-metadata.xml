@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>de.axelspringer.ideas.tools</groupId>
+  <artifactId>ideas-dash</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20150320173303</lastUpdated>
+  </versioning>
+</metadata>
