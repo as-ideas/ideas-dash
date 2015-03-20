@@ -19,9 +19,9 @@ public class JiraQueryBuilder {
 
     private final String projectName;
     private Group stage;
-    private String teamFieldName;
+    private String teamFieldName = "team";
     private boolean useOnlyCurrentSprint = false;
-
+    
     private JiraQueryBuilder(String projectName) {
         this.projectName = projectName;
     }
@@ -95,18 +95,12 @@ public class JiraQueryBuilder {
 
 
         if (teams.size() > 0) {
-            if (StringUtils.isBlank(teamFieldName)) {
-                throw new IllegalStateException("teamFieldName must be set for this operation. please set using withTeamFieldName()");
-            }
             queryBuilder
                     .append(" and '").append(teamFieldName).append("' in (")
                     .append(StringUtils.join(teams, ", "))
                     .append(")");
         }
         if (teamsExcluded.size() > 0) {
-            if (StringUtils.isBlank(teamFieldName)) {
-                throw new IllegalStateException("teamFieldName must be set for this operation. please set using withTeamFieldName()");
-            }
             queryBuilder
                     .append(" and '").append(teamFieldName).append("' not in (")
                     .append(StringUtils.join(teamsExcluded, ", "))
