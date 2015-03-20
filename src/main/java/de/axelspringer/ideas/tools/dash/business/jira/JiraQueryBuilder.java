@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
+import de.axelspringer.ideas.tools.dash.business.customization.Stage;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,7 +12,7 @@ public class JiraQueryBuilder {
     private final List<String> teams = new ArrayList<>();
     private final List<String> teamsExcluded = new ArrayList<>();
     private final String projectName;
-    private String stage;
+    private Stage stage;
     private String teamFieldName;
 
     private JiraQueryBuilder(String projectName) {
@@ -23,7 +24,7 @@ public class JiraQueryBuilder {
     }
 
     public JiraQueryBuilder withStage(Stage stage) {
-        this.stage = stage.name();
+        this.stage = stage;
         return this;
     }
 
@@ -45,10 +46,10 @@ public class JiraQueryBuilder {
     public String build() {
 
         StringBuilder queryBuilder = new StringBuilder("project = " + projectName + " and issuetype in (Bug)");
-        if (!StringUtils.isBlank(stage)) {
+        if (stage != null) {
             queryBuilder
                     .append(" and 'Stage ' = ")
-                    .append(stage);
+                    .append(stage.getJiraName());
         }
         queryBuilder.append(" and status in (Open, Reopened, 'In Progress')");
         if (teams.size() > 0) {
@@ -73,5 +74,4 @@ public class JiraQueryBuilder {
         return queryBuilder.toString();
     }
 
-    public static enum Stage {PROD, PT}
 }

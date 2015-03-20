@@ -6,4 +6,6 @@ public interface Stage {
     String getLoadbalancerHost();
 
     String getLoadbalancerHostWs();
+
+    String getJiraName();
 }
