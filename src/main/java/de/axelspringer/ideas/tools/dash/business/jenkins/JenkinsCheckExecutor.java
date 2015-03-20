@@ -103,7 +103,6 @@ public class JenkinsCheckExecutor implements CheckExecutor {
 
         String[] splitJobName = jobName.split("_");
         if (splitJobName.length < 2) {
-            log.error("invalid job name ({}).", jobName);
             return jobName;
         }
         return splitJobName[1];
