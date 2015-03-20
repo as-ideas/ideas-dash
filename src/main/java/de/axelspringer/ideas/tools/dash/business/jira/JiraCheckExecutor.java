@@ -49,7 +49,7 @@ public class JiraCheckExecutor implements CheckExecutor {
         }
         //gson may not parse the response correctly
         if (searchResult == null) {
-            log.error("deserialized to null");
+            log.error("deserialized to null. [Query=" + jiraCheck.getJql() + "]");
             return Arrays.asList(new CheckResult(State.RED, "error 2", jiraCheck.getJql(), 0, 0, jiraCheck.getStage()).withTeam(jiraCheck.getTeam()));
         }
 

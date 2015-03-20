@@ -29,7 +29,7 @@
     <div class="global-info">Last update: {{ groups.lastUpdateTime | date:'medium' }}</div>
 
     <div class="panel-body">
-        <div ng-repeat="group in groups.groups | orderBy:groupOrder" class="check-group panel">
+        <div ng-repeat="group in infos.groups | orderBy:groupOrder" class="check-group panel">
             <div class="panel-body">
                 <div class="stage-info {{ groupClass(group) }}">
                     <div class="check-name">{{ group.name }}</div>
