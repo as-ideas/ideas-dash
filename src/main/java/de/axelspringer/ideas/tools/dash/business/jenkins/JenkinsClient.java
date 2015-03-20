@@ -20,6 +20,7 @@ public class JenkinsClient {
     private Gson gson;
 
     public <T> T query(String url, String username, String password, Class<T> responseType) throws IOException, AuthenticationException {
+
         String apiUrl = url + "/api/json";
         log.debug("Querying jenkins URL {}", apiUrl);
 
