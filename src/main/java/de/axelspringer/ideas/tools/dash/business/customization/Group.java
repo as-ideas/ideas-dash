@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.customization;
 
-public interface Stage {
+public interface Group {
     String getStageId();
 
     String getLoadbalancerHost();

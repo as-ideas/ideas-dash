@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
-import de.axelspringer.ideas.tools.dash.business.customization.Stage;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,7 +12,7 @@ public class JiraQueryBuilder {
     private final List<String> teams = new ArrayList<>();
     private final List<String> teamsExcluded = new ArrayList<>();
     private final String projectName;
-    private Stage stage;
+    private Group stage;
     private String teamFieldName;
 
     private JiraQueryBuilder(String projectName) {
@@ -23,7 +23,7 @@ public class JiraQueryBuilder {
         return new JiraQueryBuilder(projectName);
     }
 
-    public JiraQueryBuilder withStage(Stage stage) {
+    public JiraQueryBuilder withStage(Group stage) {
         this.stage = stage;
         return this;
     }

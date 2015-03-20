@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
-import de.axelspringer.ideas.tools.dash.business.customization.Stage;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import lombok.Getter;
@@ -31,17 +31,17 @@ public class CheckResult {
 
     private boolean running = false;
 
-    private Stage stage;
+    private Group group;
 
     private Team team;
 
-    public CheckResult(State state, String name, String info, int testCount, int failCount, Stage stage) {
+    public CheckResult(State state, String name, String info, int testCount, int failCount, Group group) {
         this.state = state;
         this.name = name;
         this.info = info;
         this.testCount = testCount;
         this.failCount = failCount;
-        this.stage = stage;
+        this.group = group;
     }
 
     public CheckResult markRunning() {

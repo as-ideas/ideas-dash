@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
-import de.axelspringer.ideas.tools.dash.business.customization.Stage;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import org.junit.Test;
 
@@ -22,8 +22,8 @@ public class JiraQueryBuilderTest {
         assertEquals(expectedQuery, query);
     }
 
-    private Stage createStage(String stage) {
-        return new Stage() {
+    private Group createStage(String stage) {
+        return new Group() {
             @Override
             public String getStageId() {
                 return stage;

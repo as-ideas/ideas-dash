@@ -58,10 +58,7 @@
 
     <select ng-model="team">
         <option>All Teams</option>
-        <option>FT</option>
-        <option>PT</option>
-        <option>SAP</option>
-        <option>C1</option>
+        <option ng-repeat="team in teams">{{ team }}</option>
     </select>
     <input type="checkbox" ng-model="aggregate" ng-click="loadGroups()"/> aggregate
 </div>

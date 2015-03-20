@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
-import de.axelspringer.ideas.tools.dash.business.customization.Stage;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 /**
@@ -10,7 +10,7 @@ public interface Check {
 
     public String getName();
 
-    public Stage getStage();
+    public Group getStage();
 
     public Team getTeam();
 }

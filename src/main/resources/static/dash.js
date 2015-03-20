@@ -7,8 +7,13 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         // green aggregation
         $scope.aggregate = undefined;
 
-        // groups rest resource
-        var groupsResource = $resource('rest/groups');
+        // infos rest resource
+        var infosResource = $resource('rest/infos');
+
+        // teams rest resource
+        var teamsResource = $resource('rest/teams');
+
+        $scope.teams = teamsResource.get();
 
         // last update time. caused monitor to die if problems occur.
         $scope.lastUpdate = {};
@@ -60,18 +65,18 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             // Do not store the result of query() into the $scope directly.
             // The rest call may take some time and query() returns an empty resource immediately and updates it later.
             // This leads to flickering
-            var promise = groupsResource.get().$promise;
-            promise.then(function (groups) {
+            var promise = infosResource.get().$promise;
+            promise.then(function (infos) {
 
                 $scope.lastUpdate.date = new Date();
 
                 // aggregate
                 var aggregatedGroups = [];
-                for (var i = 0; i < groups.groups.length; i++) {
+                for (var i = 0; i < infos.groups.length; i++) {
                     aggregatedGroups[i] = aggregate(groups.groups[i]);
                 }
 
-                $scope.groups = groups;
+                $scope.groups = infos;
 
                 $scope.lastUpdate.state = 'green';
             });

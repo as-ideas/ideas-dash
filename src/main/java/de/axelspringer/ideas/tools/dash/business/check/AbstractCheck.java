@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
-import de.axelspringer.ideas.tools.dash.business.customization.Stage;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import lombok.EqualsAndHashCode;
 
@@ -9,12 +9,11 @@ public abstract class AbstractCheck implements Check {
 
     private final String name;
 
-    private final Stage group;
+    private final Group group;
 
     private final Team team;
 
-
-    protected AbstractCheck(String name, Stage group, Team team) {
+    protected AbstractCheck(String name, Group group, Team team) {
         this.name = name;
         this.group = group;
         this.team = team;
@@ -26,7 +25,7 @@ public abstract class AbstractCheck implements Check {
     }
 
     @Override
-    public Stage getStage() {
+    public Group getStage() {
         return group;
     }
 

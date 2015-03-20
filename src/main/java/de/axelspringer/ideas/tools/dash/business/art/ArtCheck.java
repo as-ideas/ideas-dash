@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.tools.dash.business.art;
 
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
-import de.axelspringer.ideas.tools.dash.business.customization.Stage;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import org.apache.http.HttpHost;
 
@@ -17,7 +17,7 @@ public class ArtCheck extends AbstractCheck {
 
     private List<String> ignoredTestSuites = new ArrayList<>();
 
-    public ArtCheck(String name, String url, HttpHost proxy, Stage group, Team team) {
+    public ArtCheck(String name, String url, HttpHost proxy, Group group, Team team) {
         super(name, group, team);
         this.url = url;
         this.proxy = proxy;
