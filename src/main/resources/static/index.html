@@ -26,7 +26,7 @@
 
 <div ng-app="dash" ng-controller="dashcontroller" class="panel"
      ng-class="{true: 'alert-danger', false: 'alert-info'}[lastUpdate.state == 'red']">
-    <div class="global-info">Last update: {{ groups.lastUpdateTime | date:'medium' }}</div>
+    <div class="global-info">Last update: {{ infos.lastUpdateTime | date:'medium' }}</div>
 
     <div class="panel-body">
         <div ng-repeat="group in infos.groups | orderBy:groupOrder" class="check-group panel">
@@ -60,7 +60,7 @@
         <option>All Teams</option>
         <option ng-repeat="team in teams">{{ team }}</option>
     </select>
-    <input type="checkbox" ng-model="aggregate" ng-click="loadGroups()"/> aggregate
+    <input type="checkbox" ng-model="aggregate" ng-click="loadInfos()"/> aggregate
 </div>
 </body>
 </html>

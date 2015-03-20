@@ -2,8 +2,8 @@ package de.axelspringer.ideas.tools.dash.presentation.controller;
 
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.business.customization.TeamProvider;
-import de.axelspringer.ideas.tools.dash.presentation.UIGroups;
-import de.axelspringer.ideas.tools.dash.presentation.UIGroupsService;
+import de.axelspringer.ideas.tools.dash.presentation.UiInfo;
+import de.axelspringer.ideas.tools.dash.presentation.UiInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,20 +24,19 @@ import java.util.stream.Collectors;
 public class DashController {
 
     @Autowired
-    private UIGroupsService UIGroupsService;
+    private UiInfoService UiInfoService;
 
     @Autowired
     private TeamProvider teamProvider;
 
     @RequestMapping(value = "infos")
-    public UIGroups infos() throws IOException, AuthenticationException, ExecutionException, InterruptedException, URISyntaxException {
-
-        return UIGroupsService.groups();
+    public UiInfo infos() throws IOException, AuthenticationException, ExecutionException, InterruptedException, URISyntaxException {
+        return UiInfoService.groups();
     }
 
     @RequestMapping(value = "teams")
-    public List<String> teams() {
-
-        return teamProvider.getTeams().stream().map(Team::getTeamName).collect(Collectors.toList());
+    public UiTeams teams() {
+        List<String> teams = teamProvider.getTeams().stream().map(Team::getTeamName).collect(Collectors.toList());
+        return new UiTeams(teams);
     }
 }

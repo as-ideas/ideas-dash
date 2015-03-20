@@ -18,10 +18,10 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public class UIGroupsService {
+public class UiInfoService {
 
     // begin with an empty object. checks shall only be executed by the scheduler
-    private UIGroups uiGroups = new UIGroups();
+    private UiInfo uiInfo = new UiInfo();
 
     @Autowired
     private List<CheckProvider> checkProviders;
@@ -29,8 +29,8 @@ public class UIGroupsService {
     @Autowired
     private CheckService checkService;
 
-    public UIGroups groups() {
-        return uiGroups;
+    public UiInfo groups() {
+        return uiInfo;
     }
 
     @Scheduled(fixedDelay = 120000)
@@ -43,14 +43,14 @@ public class UIGroupsService {
         Map<Group, List<CheckResult>> checkResultsMappedToGroup = mapResultsToGroups(checkResults);
 
         // build uigroup-object and set field
-        this.uiGroups = buildUiGroups(checkResultsMappedToGroup);
+        this.uiInfo = buildUiGroups(checkResultsMappedToGroup);
     }
 
-    private UIGroups buildUiGroups(Map<Group, List<CheckResult>> checkResultsMappedToGroup) {
+    private UiInfo buildUiGroups(Map<Group, List<CheckResult>> checkResultsMappedToGroup) {
 
-        UIGroups newUiGroups = new UIGroups();
+        UiInfo newUiInfo = new UiInfo();
 
-        newUiGroups.setLastUpdateTime(LocalDateTime.now().toString());
+        newUiInfo.setLastUpdateTime(LocalDateTime.now().toString());
 
         for (Group group : checkResultsMappedToGroup.keySet()) {
 
@@ -75,9 +75,9 @@ public class UIGroupsService {
             uiGroup.setInfo(info);
             uiGroup.setState(state);
 
-            newUiGroups.add(uiGroup);
+            newUiInfo.add(uiGroup);
         }
-        return newUiGroups;
+        return newUiInfo;
     }
 
     State aggregate(State state1, State state2) {

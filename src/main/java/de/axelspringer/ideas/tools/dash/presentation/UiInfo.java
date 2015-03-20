@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class UIGroups {
+public class UiInfo {
 
     private String lastUpdateTime = "N/A";
 

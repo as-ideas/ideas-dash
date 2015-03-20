@@ -13,7 +13,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         // teams rest resource
         var teamsResource = $resource('rest/teams');
 
-        $scope.teams = teamsResource.get();
+        $scope.teams = teamsResource.get().teams;
 
         // last update time. caused monitor to die if problems occur.
         $scope.lastUpdate = {};
@@ -61,7 +61,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             group.checks = aggregatedChecks;
         };
 
-        $scope.loadGroups = function () {
+        $scope.loadInfos = function () {
             // Do not store the result of query() into the $scope directly.
             // The rest call may take some time and query() returns an empty resource immediately and updates it later.
             // This leads to flickering
@@ -73,10 +73,10 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 // aggregate
                 var aggregatedGroups = [];
                 for (var i = 0; i < infos.groups.length; i++) {
-                    aggregatedGroups[i] = aggregate(groups.groups[i]);
+                    aggregatedGroups[i] = aggregate(infos.groups[i]);
                 }
 
-                $scope.groups = infos;
+                $scope.infos = infos;
 
                 $scope.lastUpdate.state = 'green';
             });
@@ -86,10 +86,10 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         };
 
         // execute loadGroups every 30 seconds
-        $interval($scope.loadGroups, 30 * 1000);
+        $interval($scope.loadInfos, 30 * 1000);
 
         // load groups initially
-        $scope.loadGroups();
+        $scope.loadInfos();
 
         var aggregateState = function (state1, state2) {
             if (scoreForState(state1) > scoreForState(state2)) {

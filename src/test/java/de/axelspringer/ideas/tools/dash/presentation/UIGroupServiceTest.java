@@ -7,15 +7,15 @@ import static org.junit.Assert.assertNull;
 
 public class UIGroupServiceTest {
 
-    private UIGroupsService uiGroupsService = new UIGroupsService();
+    private UiInfoService uiInfoService = new UiInfoService();
 
     @Test
     public void testAggregate() {
 
-        assertNull(uiGroupsService.aggregate(null, null));
-        assertEquals(State.GREY, uiGroupsService.aggregate(null, State.GREY));
-        assertEquals(State.GREY, uiGroupsService.aggregate(State.GREY, null));
-        assertEquals(State.RED, uiGroupsService.aggregate(State.RED, State.YELLOW));
-        assertEquals(State.YELLOW, uiGroupsService.aggregate(State.GREEN, State.YELLOW));
+        assertNull(uiInfoService.aggregate(null, null));
+        assertEquals(State.GREY, uiInfoService.aggregate(null, State.GREY));
+        assertEquals(State.GREY, uiInfoService.aggregate(State.GREY, null));
+        assertEquals(State.RED, uiInfoService.aggregate(State.RED, State.YELLOW));
+        assertEquals(State.YELLOW, uiInfoService.aggregate(State.GREEN, State.YELLOW));
     }
 }
