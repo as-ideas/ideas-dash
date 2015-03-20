@@ -13,7 +13,9 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         // teams rest resource
         var teamsResource = $resource('rest/teams');
 
-        $scope.teams = teamsResource.get().teams;
+        teamsResource.get().$promise.then(function (teams) {
+            $scope.teams = teams['teams'];
+        });
 
         // last update time. caused monitor to die if problems occur.
         $scope.lastUpdate = {};
