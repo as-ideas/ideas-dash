@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/as-ideas/ideas-dash.svg?branch=master)](https://travis-ci.org/as-ideas/ideas-dash)
 
+```xml
 <dependencies>
     <dependency>
         <groupId>de.axelspringer.ideas.tools</groupId>
@@ -18,3 +19,4 @@
         </snapshots>
     </repository>
 </repositories>
+```
