@@ -5,7 +5,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         $scope.team = "All Teams";
 
         // green aggregation
-        $scope.aggregate = undefined;
+        $scope.aggregate = true;
 
         // infos rest resource
         var infosResource = $resource('rest/infos');
