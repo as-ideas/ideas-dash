@@ -1,4 +1,9 @@
 language: java
 jdk:
 - oraclejdk8
-script: "mvn deploy"
+script: "mvn deploy --setings settings.xml"
+
+env:
+  global:
+    - secure: "GquQh9g2Z44QmwZbF6RSJSxjzPJeANXIHlludAmTUOpUwjSV+tRFF+EqOCcNlfNKygI39oRZH+dbbhh31a86OKZ9brvY7kG763zya6a6H5RLSm/MwAfy4q8VdJ8djgrdNXLM10GG1I4UM7o0Y/DId0N6h5jjyH8yl6ifIiHZuS8="
+    - secure: "TvQGQBANt0aFaw+pcG9keD87+oT0X6Z9m2Rs99KjqsBDt0KlciT/kqdrmiA3Is8dyFHWpPSr+MD7bgxsriCAGqwKsIXWg/Y/rsrzLaN2hJPcxZeOzsKwk1Iq7Stvjs3E9XWemwK7R/R4nfVCXqzT9TfwcqvfUFFmIoepIaatroY="
