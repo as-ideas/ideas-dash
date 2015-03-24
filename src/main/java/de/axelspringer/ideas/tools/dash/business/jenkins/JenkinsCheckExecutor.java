@@ -96,7 +96,12 @@ public class JenkinsCheckExecutor implements CheckExecutor {
     }
 
     private <T> T queryJenkins(JenkinsCheck jenkinsCheck, String url, Class<T> responseType) throws IOException, AuthenticationException {
-        return jenkinsClient.query(url, jenkinsCheck.getUserName(), jenkinsCheck.getApiToken(), responseType);
+        try {
+            return jenkinsClient.query(url, jenkinsCheck.getUserName(), jenkinsCheck.getApiToken(), responseType);
+        } catch (Exception e) {
+            log.error("Could not load job from jenkins. URL=" + url);
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     String shortName(String jobName) {
