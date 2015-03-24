@@ -20,6 +20,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
+        <deploy.to.local>false</deploy.to.local>
     </properties>
 
     <distributionManagement>
@@ -73,6 +74,9 @@
                 <executions>
                     <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
                     <execution>
+                        <configuration>
+                            <skip>${deploy.to.local}</skip>
+                        </configuration>
                         <goals>
                             <goal>site</goal>
                         </goals>
@@ -118,6 +122,9 @@
                     <execution>
                         <id>deploy</id>
                         <phase>deploy</phase>
+                        <configuration>
+                            <skip>${deploy.to.local}</skip>
+                        </configuration>
                         <goals>
                             <goal>deploy</goal>
                         </goals>
