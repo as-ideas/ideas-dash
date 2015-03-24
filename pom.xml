@@ -82,9 +82,13 @@
 
     <profiles>
         <profile>
+            <id>deploy-to-local</id>
+        </profile>
+
+        <profile>
             <id>deploy-to-git</id>
             <activation>
-                <activeByDefault>${deploy.to.git}</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
 
             <build>
