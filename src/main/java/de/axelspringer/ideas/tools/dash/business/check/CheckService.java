@@ -19,6 +19,7 @@ public class CheckService {
     @Autowired
     private List<CheckExecutor> checkExecutors;
 
+    @SuppressWarnings("unchecked")
     public List<CheckResult> check(List<Check> checks) {
 
         return checks.parallelStream()
@@ -26,7 +27,7 @@ public class CheckService {
                 .map(check -> {
                     CheckExecutor checkExecutor = executor(check);
                     try {
-                        return checkExecutor.executeCheck(check);
+                        return (List<CheckResult>) checkExecutor.executeCheck(check);
                     } catch (Exception e) {
                         log.error("There are unhandled errors when performing check '{}' on stage '{}' for team '{}'", check.getName(), check.getStage(), check.getTeam());
                         log.error(e.getMessage(), e);
@@ -39,6 +40,7 @@ public class CheckService {
                 .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     CheckExecutor executor(Check check) {
 
         final ArrayList<CheckExecutor> applicableExecutors = new ArrayList<>(checkExecutors);
