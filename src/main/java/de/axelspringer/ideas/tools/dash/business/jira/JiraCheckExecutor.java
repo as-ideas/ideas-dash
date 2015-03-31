@@ -63,7 +63,7 @@ public class JiraCheckExecutor implements CheckExecutor {
 
         List<CheckResult> checkResults = new ArrayList<>();
         for (Issue issue : issues) {
-            final State state = getState(issue);
+            final State state = state(issue);
             final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, 1, jiraCheck.getStage())
                     .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
             checkResults.add(checkResult);
@@ -72,7 +72,9 @@ public class JiraCheckExecutor implements CheckExecutor {
         return checkResults;
     }
 
-    private State getState(Issue issue) {
+    private State state(Issue issue) {
+
+        // Bugs
         if (issue.isBug()) {
             String priority = issue.getFields().getPriority().getName();
             if (Priority.BLOCKER_NAME.equals(priority)) {
@@ -81,12 +83,15 @@ public class JiraCheckExecutor implements CheckExecutor {
             return State.YELLOW;
         }
 
-        // Story!!!
-        if (issue.getFields().getStatus().getName().equalsIgnoreCase("Done")) {
-            return State.GREEN;
+        // Issues
+        switch (issue.getFields().getStatus().getName().toLowerCase()) {
+            case "done":
+                return State.GREEN;
+            case "open":
+                return State.YELLOW;
+            default:
+                return State.GREY;
         }
-
-        return State.GREY;
     }
 
     @Override
