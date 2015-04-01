@@ -17,7 +17,7 @@ public class JiraQueryBuilderTest {
                 .withTeamFieldName("PCP Team")
                 .build();
 
-        String expectedQuery = "project = PCP and issuetype in (Bug) and 'Stage ' = PT and status in (Open, Reopened, 'In Progress') and 'PCP Team' in ('SAP')";
+        String expectedQuery = "project = PCP and issuetype in (Bug) and 'Stage ' = PT and 'PCP Team' in ('SAP')";
 
         assertEquals(expectedQuery, query);
     }
@@ -57,7 +57,20 @@ public class JiraQueryBuilderTest {
                 .withStage(createStage("PROD"))
                 .withTeamFieldName("PCP Team").build();
 
-        String expectedQuery = "project = PCP and issuetype in (Bug) and 'Stage ' = PROD and status in (Open, Reopened, 'In Progress')";
+        String expectedQuery = "project = PCP and issuetype in (Bug) and 'Stage ' = PROD";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testWithStatus() {
+        String query = JiraQueryBuilder.builder("PCP")
+                .withStage(createStage("PROD"))
+                .withTeamFieldName("PCP Team")
+                .withIssueStatus("foo")
+                .build();
+
+        String expectedQuery = "project = PCP and issuetype in (Bug) and 'Stage ' = PROD and status in (foo)";
 
         assertEquals(expectedQuery, query);
     }

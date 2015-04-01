@@ -84,9 +84,11 @@ public class JiraQueryBuilder {
                     .append(" and 'Stage ' = ")
                     .append(stage.getJiraName());
         }
-        queryBuilder.append(" and status in (")
-                .append(StringUtils.join(issueStatus, ", "))
-                .append(")");
+        if (issueStatus.size() > 0) {
+            queryBuilder.append(" and status in (")
+                    .append(StringUtils.join(issueStatus, ", "))
+                    .append(")");
+        }
         if (notIssueStatus.size() > 0) {
             queryBuilder.append(" and status not in (")
                     .append(StringUtils.join(notIssueStatus, ", "))
