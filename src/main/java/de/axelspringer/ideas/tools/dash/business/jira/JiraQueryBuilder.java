@@ -13,7 +13,7 @@ public class JiraQueryBuilder {
     private final List<String> teams = new ArrayList<>();
     private final List<String> teamsExcluded = new ArrayList<>();
     private final List<String> issueTypes = new ArrayList<>(Arrays.asList("Bug"));
-    private final List<String> issueStatus = new ArrayList<>(Arrays.asList("Open", "Reopened", "'In Progress'"));
+    private final List<String> issueStatus = new ArrayList<>();
     private final List<String> notIssueStatus = new ArrayList<>();
 
 
@@ -21,7 +21,7 @@ public class JiraQueryBuilder {
     private Group stage;
     private String teamFieldName = "team";
     private boolean useOnlyCurrentSprint = false;
-    
+
     private JiraQueryBuilder(String projectName) {
         this.projectName = projectName;
     }
