@@ -80,6 +80,9 @@ public class JiraCheckExecutor implements CheckExecutor {
             if (Priority.BLOCKER_NAME.equals(priority)) {
                 return State.RED;
             }
+            if (issue.getFields().getStatus().getName().toLowerCase().equals("done")) {
+                return State.GREEN;
+            }
             return State.YELLOW;
         }
 
