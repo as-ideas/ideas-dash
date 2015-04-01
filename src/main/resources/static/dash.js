@@ -80,6 +80,10 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
 
                 $scope.infos = infos;
 
+                if (infos == undefined || infos.groups == undefined) {
+                    $scope.lastUpdate.state = 'red';
+                }
+
                 $scope.lastUpdate.state = 'green';
             });
             promise.catch(function () {
