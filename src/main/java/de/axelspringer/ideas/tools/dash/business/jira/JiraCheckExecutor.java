@@ -90,10 +90,10 @@ public class JiraCheckExecutor implements CheckExecutor {
         switch (issue.getFields().getStatus().getName().toLowerCase()) {
             case "done":
                 return State.GREEN;
-            case "open":
-                return State.YELLOW;
-            default:
+            case "in progress":
                 return State.GREY;
+            default:
+                return State.YELLOW;
         }
     }
 
