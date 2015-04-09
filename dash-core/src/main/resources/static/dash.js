@@ -1,4 +1,4 @@
-angular.module('dash', ['ngResource', 'ngSanitize'])
+angular.module('de.axelspringer.ideas.tools.dash', ['ngResource', 'ngSanitize'])
     .controller('dashcontroller', function ($scope, $resource, $interval) {
 
         // team filter
