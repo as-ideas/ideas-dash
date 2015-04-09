@@ -88,7 +88,7 @@
                             <includes>
                                 <include>**/*</include>
                             </includes>
-                            <repositoryName>ideas-de.axelspringer.ideas.tools.dash</repositoryName>
+                            <repositoryName>ideas-dash</repositoryName>
                             <!-- github repo name -->
                             <repositoryOwner>as-ideas</repositoryOwner>
                             <!-- github username  -->
@@ -119,6 +119,12 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
