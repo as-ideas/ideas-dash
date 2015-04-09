@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/as-ideas/ideas-de.axelspringer.ideas.tools.dash.svg?branch=master)](https://travis-ci.org/as-ideas/ideas-de.axelspringer.ideas.tools.dash)
+[![Build Status](https://travis-ci.org/as-ideas/ideas-dash.svg?branch=master)](https://travis-ci.org/as-ideas/ideas-dash)
+
 
 ```xml
 <dependencies>
