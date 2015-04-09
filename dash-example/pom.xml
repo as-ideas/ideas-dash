@@ -6,18 +6,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>de.axelspringer.ideas.tools.dash-parent</artifactId>
-        <groupId>de.axelspringer.ideas.tools.de.axelspringer.ideas.tools.dash</groupId>
+        <groupId>de.axelspringer.ideas.tools.dash</groupId>
+        <artifactId>dash-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>de.axelspringer.ideas.tools.dash-example</artifactId>
+    <artifactId>dash-example</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
-            <groupId>de.axelspringer.ideas.tools.de.axelspringer.ideas.tools.dash</groupId>
-            <artifactId>de.axelspringer.ideas.tools.dash-core</artifactId>
+            <groupId>de.axelspringer.ideas.tools.dash</groupId>
+            <artifactId>dash-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
