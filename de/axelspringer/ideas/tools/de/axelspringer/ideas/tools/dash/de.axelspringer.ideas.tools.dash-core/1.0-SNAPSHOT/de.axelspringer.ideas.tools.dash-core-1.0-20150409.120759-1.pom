@@ -5,20 +5,16 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.axelspringer.ideas.tools</groupId>
-    <artifactId>ideas-dash</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
-    <packaging>jar</packaging>
-
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.2.2.RELEASE</version>
+        <artifactId>de.axelspringer.ideas.tools.dash-parent</artifactId>
+        <groupId>de.axelspringer.ideas.tools.de.axelspringer.ideas.tools.dash</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <artifactId>de.axelspringer.ideas.tools.dash-core</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
         <deploy.to.git>true</deploy.to.git>
     </properties>
@@ -33,22 +29,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <!-- here to solve jenkins/git problem -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
-            </plugin>
-
             <!-- sources -->
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
@@ -75,8 +55,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
         </plugins>
     </build>
 
@@ -141,6 +119,12 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
