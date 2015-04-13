@@ -1,11 +1,26 @@
 angular.module('de.axelspringer.ideas.tools.dash', ['ngResource', 'ngSanitize'])
     .controller('dashcontroller', function ($scope, $resource, $interval) {
 
-        // team filter
-        $scope.team = "All Teams";
+        // local storage to save application state
+        var storage = window['localStorage'];
 
-        // green aggregation
-        $scope.aggregate = true;
+        // team filter
+        $scope.team = storage && storage['team'] ? storage['team'] : "All Teams";
+
+        // aggregation
+        $scope.aggregate = storage && storage['aggregate'] ? storage['aggregate'] == "true" : true;
+
+        // watch changes and write to storage
+        $scope.$watch("team", function (team) {
+            if (storage) {
+                storage['team'] = team;
+            }
+        });
+        $scope.$watch("aggregate", function (aggregate) {
+            if (storage) {
+                storage['aggregate'] = aggregate;
+            }
+        });
 
         // infos rest resource
         var infosResource = $resource('rest/infos');
