@@ -22,6 +22,8 @@ public class UIGroup {
 
     private List<CheckResult> checks = new ArrayList<>();
 
+    private int orderScore = -1;
+
     public void add(CheckResult checkResult) {
         checks.addAll(Arrays.asList(checkResult));
     }

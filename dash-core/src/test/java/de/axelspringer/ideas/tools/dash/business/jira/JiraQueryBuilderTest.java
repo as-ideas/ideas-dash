@@ -33,6 +33,11 @@ public class JiraQueryBuilderTest {
             public String getJiraName() {
                 return stage;
             }
+
+            @Override
+            public int getOrderScore() {
+                return 0;
+            }
         };
     }
 

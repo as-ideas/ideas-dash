@@ -29,9 +29,9 @@ public class CheckService {
                     try {
                         return (List<CheckResult>) checkExecutor.executeCheck(check);
                     } catch (Exception e) {
-                        log.error("There are unhandled errors when performing check '{}' on stage '{}' for team '{}'", check.getName(), check.getStage(), check.getTeam());
+                        log.error("There are unhandled errors when performing check '{}' on stage '{}' for team '{}'", check.getName(), check.getGroup(), check.getTeam());
                         log.error(e.getMessage(), e);
-                        return Collections.singletonList(new CheckResult(State.RED, "unhandled check error", check.getName(), 0, 0, check.getStage()));
+                        return Collections.singletonList(new CheckResult(State.RED, "unhandled check error", check.getName(), 0, 0, check.getGroup()));
                     }
                 })
                         // flatten (List<List<CheckResult>> -> List<CheckResult>

@@ -43,7 +43,7 @@ public class JenkinsCheckExecutor implements CheckExecutor {
 
         } catch (Exception e) {
             log.error("error fetching jenkins result: {}", jobName, e);
-            return Arrays.asList(new CheckResult(State.RED, shortName(jobName), "N/A", 0, 0, jenkinsCheck.getStage()).withLink(url).withTeam(jenkinsCheck.getTeam()));
+            return Arrays.asList(new CheckResult(State.RED, shortName(jobName), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(url).withTeam(jenkinsCheck.getTeam()));
         }
 
         int failedTestCount = 0;
@@ -59,7 +59,7 @@ public class JenkinsCheckExecutor implements CheckExecutor {
         final String checkInfo = failedTestCount > 0 ? failedTestCount + "/" + totalTestCount : "" + totalTestCount;
 
         State state = identifyStatus(lastCompletedBuildInfo, failedTestCount);
-        CheckResult checkResult = new CheckResult(state, shortName(jobName), checkInfo, totalTestCount, failedTestCount, jenkinsCheck.getStage()).withLink(url).withTeam(jenkinsCheck.getTeam());
+        CheckResult checkResult = new CheckResult(state, shortName(jobName), checkInfo, totalTestCount, failedTestCount, jenkinsCheck.getGroup()).withLink(url).withTeam(jenkinsCheck.getTeam());
         if (lastBuildInfo.isBuilding()) {
             checkResult = checkResult.markRunning();
         }

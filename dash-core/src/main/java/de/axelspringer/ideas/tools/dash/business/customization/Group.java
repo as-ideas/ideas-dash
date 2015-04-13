@@ -5,4 +5,6 @@ public interface Group {
     String getGroupId();
 
     String getJiraName();
+
+    int getOrderScore();
 }

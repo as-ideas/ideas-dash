@@ -59,6 +59,7 @@ public class UiInfoService {
 
             UIGroup uiGroup = new UIGroup();
             uiGroup.setName(group.toString());
+            uiGroup.setOrderScore(group.getOrderScore());
 
             List<CheckResult> checkResultsForGroup = checkResultsMappedToGroup.get(group);
 

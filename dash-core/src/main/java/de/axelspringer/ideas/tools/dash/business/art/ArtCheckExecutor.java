@@ -42,7 +42,7 @@ public class ArtCheckExecutor implements CheckExecutor {
             artTestSuitesResult = gson.fromJson(testSuiteResultString, ArtTestSuitesResult.class);
         } catch (Exception e) {
             log.error("error when calling art check '{}' for url '{}'", artCheck.getName(), artCheck.getUrl());
-            return Arrays.asList(new CheckResult(State.RED, artCheck.getName(), N_A, 0, 0, artCheck.getStage()));
+            return Arrays.asList(new CheckResult(State.RED, artCheck.getName(), N_A, 0, 0, artCheck.getGroup()));
         }
 
         List<CheckResult> checkResults = new ArrayList<>();
@@ -66,7 +66,7 @@ public class ArtCheckExecutor implements CheckExecutor {
             }
             String info = failCount > 0 ? artTestSuiteName + failCount + "/" + testCount : artTestSuiteName;
             State state = failCount > 0 ? State.YELLOW : State.GREEN;
-            checkResults.add(new CheckResult(state, "ART@WELT", info, testCount, failCount, artCheck.getStage()));
+            checkResults.add(new CheckResult(state, "ART@WELT", info, testCount, failCount, artCheck.getGroup()));
         }
 
         return checkResults;

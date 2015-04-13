@@ -10,18 +10,20 @@ import java.util.List;
 @Component
 public class ExampleTeamProvider implements TeamProvider {
 
+    public final static Team EXAMPLE_TEAM = new Team() {
+        @Override
+        public String getTeamName() {
+            return "example";
+        }
+
+        @Override
+        public String getJiraTeamName() {
+            return "n/a";
+        }
+    };
+
     @Override
     public List<Team> getTeams() {
-        return Collections.singletonList(new Team() {
-            @Override
-            public String getTeamName() {
-                return "example";
-            }
-
-            @Override
-            public String getJiraTeamName() {
-                return "n/a";
-            }
-        });
+        return Collections.singletonList(EXAMPLE_TEAM);
     }
 }

@@ -45,18 +45,18 @@ public class JiraCheckExecutor implements CheckExecutor {
             searchResult = gson.fromJson(resultAsString, SearchResult.class);
         } catch (Exception e) {
             log.error("error fetching jira results", e);
-            return Arrays.asList(new CheckResult(State.RED, "error", jiraCheck.getJql(), 0, 0, jiraCheck.getStage()).withTeam(jiraCheck.getTeam()));
+            return Arrays.asList(new CheckResult(State.RED, "error", jiraCheck.getJql(), 0, 0, jiraCheck.getGroup()).withTeam(jiraCheck.getTeam()));
         }
         //gson may not parse the response correctly
         if (searchResult == null) {
             log.error("deserialized to null. [Query=" + jiraCheck.getJql() + "]");
-            return Arrays.asList(new CheckResult(State.RED, "error 2", jiraCheck.getJql(), 0, 0, jiraCheck.getStage()).withTeam(jiraCheck.getTeam()));
+            return Arrays.asList(new CheckResult(State.RED, "error 2", jiraCheck.getJql(), 0, 0, jiraCheck.getGroup()).withTeam(jiraCheck.getTeam()));
         }
 
         final List<Issue> issues = searchResult.getIssues();
 
         if (issues == null || issues.size() < 1) {
-            final CheckResult checkResult = new CheckResult(State.GREEN, jiraCheck.getName(), "no issues", 1, 0, jiraCheck.getStage())
+            final CheckResult checkResult = new CheckResult(State.GREEN, jiraCheck.getName(), "no issues", 1, 0, jiraCheck.getGroup())
                     .withLink(jiraCheck.getUrl()).withTeam(jiraCheck.getTeam());
             return Collections.singletonList(checkResult);
         }
@@ -64,7 +64,7 @@ public class JiraCheckExecutor implements CheckExecutor {
         List<CheckResult> checkResults = new ArrayList<>();
         for (Issue issue : issues) {
             final State state = state(issue);
-            final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, 1, jiraCheck.getStage())
+            final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, 1, jiraCheck.getGroup())
                     .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
             checkResults.add(checkResult);
         }

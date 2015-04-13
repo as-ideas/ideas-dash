@@ -25,7 +25,7 @@ public abstract class AbstractCheck implements Check {
     }
 
     @Override
-    public Group getStage() {
+    public Group getGroup() {
         return group;
     }
 

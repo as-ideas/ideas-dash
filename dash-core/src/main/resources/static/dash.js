@@ -172,22 +172,6 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             return $scope.classForState(state);
         };
 
-        $scope.groupOrder = function (group) {
-
-            var name = group.name;
-
-            var score = 1;
-            var groupScores = {
-                'PROD': score++,
-                'UAT': score++,
-                'CONS': score++,
-                'DEV': score++
-            };
-
-            var groupScore = groupScores[name];
-            return groupScore || score;
-        };
-
         $scope.checkOrder = function (check) {
 
             var state = check.state;

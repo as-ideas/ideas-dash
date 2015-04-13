@@ -10,7 +10,7 @@ public interface Check {
 
     public String getName();
 
-    public Group getStage();
+    public Group getGroup();
 
     public Team getTeam();
 }
