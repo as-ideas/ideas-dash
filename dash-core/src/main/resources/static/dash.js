@@ -1,11 +1,17 @@
 angular.module('de.axelspringer.ideas.tools.dash', ['ngResource', 'ngSanitize'])
     .controller('dashcontroller', function ($scope, $resource, $interval) {
 
-        // team filter
-        $scope.team = "All Teams";
+        var storage = window['localStorage'];
 
-        // green aggregation
-        $scope.aggregate = true;
+        // config object from/in localStorage
+        $scope.config = storage && storage['config'] ? JSON.parse(storage['config']) : {team: "All Teams", aggregate: true};
+
+        // watch changes and write to storage
+        $scope.$watch("config", function (config) {
+            if (storage) {
+                storage['config'] = JSON.stringify(config);
+            }
+        }, true);
 
         // infos rest resource
         var infosResource = $resource('rest/infos');
@@ -29,7 +35,7 @@ angular.module('de.axelspringer.ideas.tools.dash', ['ngResource', 'ngSanitize'])
         var aggregate = function (group) {
 
             // if no aggregation is requested, do nothing
-            if (!$scope.aggregate) {
+            if (!$scope.config.aggregate) {
                 return group;
             }
 
@@ -142,7 +148,7 @@ angular.module('de.axelspringer.ideas.tools.dash', ['ngResource', 'ngSanitize'])
                 var check = group.checks[i];
 
                 // handle check that has no defined team, belongs to team (or all if All Teams is active)
-                if ($scope.team == "All Teams" || !check.team || check.team == "" || $scope.team == check.team) {
+                if ($scope.config.team == "All Teams" || !check.team || check.team == "" || $scope.config.team == check.team) {
                     // aggregate state (worst of two :))
                     state = aggregateState(state, check.state);
                 }
@@ -174,7 +180,7 @@ angular.module('de.axelspringer.ideas.tools.dash', ['ngResource', 'ngSanitize'])
 
         $scope.teamFilter = function (check) {
 
-            if ($scope.team == "All Teams") {
+            if ($scope.config.team == "All Teams") {
                 return true;
             }
 
@@ -182,7 +188,7 @@ angular.module('de.axelspringer.ideas.tools.dash', ['ngResource', 'ngSanitize'])
                 return true;
             }
 
-            if (check.team == $scope.team) {
+            if (check.team == $scope.config.team) {
                 return true;
             }
 
