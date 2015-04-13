@@ -15,13 +15,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class UiInfoService {
 
+    private final String applicationStartId = UUID.randomUUID().toString();
+
     // begin with an empty object. checks shall only be executed by the scheduler
-    private UiInfo uiInfo = new UiInfo();
+    private UiInfo uiInfo = new UiInfo(applicationStartId);
 
     @Autowired
     private List<CheckProvider> checkProviders;
@@ -29,7 +32,7 @@ public class UiInfoService {
     @Autowired
     private CheckService checkService;
 
-    public UiInfo groups() {
+    public UiInfo infos() {
         return uiInfo;
     }
 
@@ -39,7 +42,7 @@ public class UiInfoService {
         // execute them
         List<CheckResult> checkResults = checkService.check(allChecks());
 
-        // map checkresults to groups
+        // map checkresults to infos
         Map<Group, List<CheckResult>> checkResultsMappedToGroup = mapResultsToGroups(checkResults);
 
         // build uigroup-object and set field
@@ -48,7 +51,7 @@ public class UiInfoService {
 
     private UiInfo buildUiGroups(Map<Group, List<CheckResult>> checkResultsMappedToGroup) {
 
-        UiInfo newUiInfo = new UiInfo();
+        UiInfo newUiInfo = new UiInfo(applicationStartId);
 
         newUiInfo.setLastUpdateTime(LocalDateTime.now().toString());
 

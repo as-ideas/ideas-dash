@@ -32,7 +32,7 @@ public class DashController {
 
     @RequestMapping(value = "infos")
     public UiInfo infos() throws IOException, AuthenticationException, ExecutionException, InterruptedException, URISyntaxException {
-        return UiInfoService.groups();
+        return UiInfoService.infos();
     }
 
     @RequestMapping(value = "teams")

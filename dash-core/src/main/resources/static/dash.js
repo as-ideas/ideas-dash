@@ -78,6 +78,15 @@ angular.module('de.axelspringer.ideas.tools.dash', ['ngResource', 'ngSanitize'])
 
                 $scope.lastUpdate.date = new Date();
 
+                // be-app-start-id
+                var applicationStartId = infos.applicationStartId;
+                // if start id has changed reload the window
+                if ($scope.applicationStartId && $scope.applicationStartId != applicationStartId) {
+                    window.location.reload(true);
+                }
+                // save start id
+                $scope.applicationStartId = applicationStartId;
+
                 // aggregate
                 var aggregatedGroups = [];
                 for (var i = 0; i < infos.groups.length; i++) {
