@@ -2,12 +2,14 @@ package de.axelspringer.ideas.tools.dash.presentation.controller;
 
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.business.customization.TeamProvider;
+import de.axelspringer.ideas.tools.dash.presentation.UiConfig;
 import de.axelspringer.ideas.tools.dash.presentation.UiInfo;
 import de.axelspringer.ideas.tools.dash.presentation.UiInfoService;
 import de.axelspringer.ideas.tools.dash.presentation.UiTeams;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +31,14 @@ public class DashController {
 
     @Autowired
     private TeamProvider teamProvider;
+
+    @Value("${de.axelspringer.ideas.tools.dash.pagetitle:angel dust}")
+    private String title;
+
+    @RequestMapping(value = "config")
+    public UiConfig config() {
+        return new UiConfig(title);
+    }
 
     @RequestMapping(value = "infos")
     public UiInfo infos() throws IOException, AuthenticationException, ExecutionException, InterruptedException, URISyntaxException {

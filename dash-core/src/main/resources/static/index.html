@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="dash" ng-controller="dashcontroller">
 <head>
-    <title>angel dust</title>
+    <title>{{ title }}</title>
     <meta charset="utf-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,8 +24,7 @@
 </head>
 <body>
 
-<div ng-app="de.axelspringer.ideas.tools.dash" ng-controller="dashcontroller" class="panel"
-     ng-class="{true: 'alert-danger', false: 'alert-info'}[lastUpdate.state == 'red']">
+<div class="panel" ng-class="{true: 'alert-danger', false: 'alert-info'}[lastUpdate.state == 'red']">
     <div class="global-info">Last update: {{ infos.lastUpdateTime | date:'medium' }}</div>
 
     <div class="panel-body">

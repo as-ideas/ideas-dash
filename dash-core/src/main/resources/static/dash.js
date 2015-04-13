@@ -1,5 +1,12 @@
-angular.module('de.axelspringer.ideas.tools.dash', ['ngResource', 'ngSanitize'])
+angular.module('dash', ['ngResource', 'ngSanitize'])
     .controller('dashcontroller', function ($scope, $resource, $interval) {
+
+        // teams rest resource
+        var configResource = $resource('rest/config');
+
+        configResource.get().$promise.then(function (config) {
+            $scope.title = config['title'];
+        });
 
         var storage = window['localStorage'];
 
