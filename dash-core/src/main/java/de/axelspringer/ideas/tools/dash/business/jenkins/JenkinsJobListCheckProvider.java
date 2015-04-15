@@ -79,13 +79,12 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
 
     private Check check(JenkinsJob job) {
 
-        String jobName = StringUtils.isBlank(jobPrefix) || !job.getName().startsWith(jobPrefix) ? job.getName() : job.getName().substring(jobPrefix.length());
+        final String jobName = StringUtils.isBlank(jobPrefix) || !job.getName().startsWith(jobPrefix) ? job.getName() : job.getName().substring(jobPrefix.length());
 
         Team team = null;
         for (String jobNameTeamPrefix : jobNameTeamMapping.keySet()) {
             if (jobName.startsWith(jobNameTeamPrefix)) {
                 team = jobNameTeamMapping.get(jobNameTeamPrefix);
-                jobName = jobName.substring(jobNameTeamPrefix.length());
             }
         }
 
