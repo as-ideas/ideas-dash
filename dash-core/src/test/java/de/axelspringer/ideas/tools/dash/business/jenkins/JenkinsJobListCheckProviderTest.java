@@ -69,16 +69,6 @@ public class JenkinsJobListCheckProviderTest {
     }
 
     @Test
-    public void testWithJobNameTeamMapping() {
-
-        final List<Check> checks = jenkinsJobListCheckProvider.withJobNameTeamMapping("reco-", mock(Team.class)).provideChecks();
-        assertEquals(3, checks.size());
-
-        assertThat(checkNames(checks), containsInAnyOrder("docker-compose", "yana-contentmachine-build", "svc-recommendations-build"));
-        // test for setting team correctly can be found in testWithJobNameTeamMappingAndPrefix
-    }
-
-    @Test
     public void testWithJobNameTeamMappingAndPrefix() {
 
         final Team team = new Team() {
@@ -98,7 +88,7 @@ public class JenkinsJobListCheckProviderTest {
 
         final Check check = checks.get(0);
 
-        assertEquals("build", check.getName());
+        assertEquals("contentmachine-build", check.getName());
         assertEquals(team, check.getTeam());
     }
 
