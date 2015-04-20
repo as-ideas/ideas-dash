@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.business.jira;
+package de.axelspringer.ideas.tools.dash.business.jira.rest;
 
 import lombok.Data;
 

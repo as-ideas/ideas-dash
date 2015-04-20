@@ -58,4 +58,9 @@ public class CheckResult {
         this.team = team;
         return this;
     }
+
+    public CheckResult withName(String name) {
+        this.name = name;
+        return this;
+    }
 }
