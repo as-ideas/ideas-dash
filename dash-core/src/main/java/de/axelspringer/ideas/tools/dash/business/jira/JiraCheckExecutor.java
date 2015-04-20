@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
 import lombok.extern.slf4j.Slf4j;
@@ -66,11 +67,17 @@ public class JiraCheckExecutor implements CheckExecutor {
             final State state = state(issue);
             final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, 1, jiraCheck.getGroup())
                     .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
+            if (jiraCheck.getJiraProjectConfiguration().isIssueInProgress(issue)) {
+                checkResult.markRunning();
+                checkResult.withName(jiraCheck.getName() + " (" + issue.getFields().getAssignee().getName() + ")");
+            }
+
             checkResults.add(checkResult);
         }
 
         return checkResults;
     }
+
 
     private State state(Issue issue) {
 
