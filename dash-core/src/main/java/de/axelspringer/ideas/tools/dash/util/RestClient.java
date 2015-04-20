@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthenticationException;
@@ -21,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class RestClient {
 
@@ -54,7 +56,7 @@ public class RestClient {
             if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 return EntityUtils.toString(httpResponse.getEntity());
             }
-            System.out.println("error");
+            log.warn("Error [Status=" + httpResponse.getStatusLine().getStatusCode() + " ,Url=" + url + "]");
             return "";
         }
     }
