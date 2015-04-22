@@ -63,11 +63,16 @@ public class JiraCheckExecutor implements CheckExecutor {
         }
 
         List<CheckResult> checkResults = new ArrayList<>();
+        final JiraProjectConfiguration jiraProjectConfiguration = jiraCheck.getJiraProjectConfiguration();
+
         for (Issue issue : issues) {
-            final State state = state(issue);
+
+            final State staticState = jiraProjectConfiguration.stateForIssueState(issue.getFields().getStatus().getName());
+            final State state = staticState != null ? staticState : state(issue);
             final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, 1, jiraCheck.getGroup())
                     .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
-            if (jiraCheck.getJiraProjectConfiguration().isIssueInProgress(issue)) {
+
+            if (jiraProjectConfiguration.isIssueInProgress(issue)) {
                 checkResult.markRunning();
                 checkResult.withName(jiraCheck.getName() + " (" + issue.getFields().getAssignee().getName() + ")");
             }
