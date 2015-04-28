@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -46,12 +45,12 @@ public class JiraCheckExecutor implements CheckExecutor {
             searchResult = gson.fromJson(resultAsString, SearchResult.class);
         } catch (Exception e) {
             log.error("error fetching jira results", e);
-            return Arrays.asList(new CheckResult(State.RED, "error", jiraCheck.getJql(), 0, 0, jiraCheck.getGroup()).withTeam(jiraCheck.getTeam()));
+            return Collections.singletonList(new CheckResult(State.RED, "error", jiraCheck.getJql(), 0, 0, jiraCheck.getGroup()).withTeam(jiraCheck.getTeam()));
         }
         //gson may not parse the response correctly
         if (searchResult == null) {
             log.error("deserialized to null. [Query=" + jiraCheck.getJql() + "]");
-            return Arrays.asList(new CheckResult(State.RED, "error 2", jiraCheck.getJql(), 0, 0, jiraCheck.getGroup()).withTeam(jiraCheck.getTeam()));
+            return Collections.singletonList(new CheckResult(State.RED, "error 2", jiraCheck.getJql(), 0, 0, jiraCheck.getGroup()).withTeam(jiraCheck.getTeam()));
         }
 
         final List<Issue> issues = searchResult.getIssues();
@@ -74,8 +73,9 @@ public class JiraCheckExecutor implements CheckExecutor {
 
             if (jiraProjectConfiguration.isIssueInProgress(issue)) {
                 checkResult.markRunning();
-                checkResult.withName(jiraCheck.getName() + " (" + issue.getFields().getAssignee().getName() + ")");
             }
+
+            checkResult.withName(jiraCheck.getName() + " (" + issue.getFields().getAssignee().getName() + ")");
 
             checkResults.add(checkResult);
         }
