@@ -4,6 +4,7 @@ import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -44,10 +45,13 @@ public class FabricCheckExecutor implements CheckExecutor {
 
         // log-in
         final HttpHeaders sessionHeaders;
+        final Team team = fabricCheck.getTeam();
+        final Group group = fabricCheck.getGroup();
+
         try {
             sessionHeaders = logIn(fabricCheck.getEmail(), fabricCheck.getPassword());
         } catch (FabricExecutionException e) {
-            return Collections.singletonList(new CheckResult(State.RED, "FABRIC", e.getMessage(), 1, 1, check.getGroup()));
+            return Collections.singletonList(new CheckResult(State.RED, "FABRIC", e.getMessage(), 1, 1, group).withTeam(team));
         }
 
         // load apps
@@ -55,18 +59,20 @@ public class FabricCheckExecutor implements CheckExecutor {
         try {
             fabricApps = loadApps(sessionHeaders);
         } catch (FabricExecutionException e) {
-            return Collections.singletonList(new CheckResult(State.RED, "FABRIC", e.getMessage(), 1, 1, check.getGroup()));
+            return Collections.singletonList(new CheckResult(State.RED, "FABRIC", e.getMessage(), 1, 1, group).withTeam(team));
         }
 
-        return fabricApps.stream().map(fabricApp -> map(fabricApp, fabricCheck.getGroup())).collect(Collectors.toList());
+        return fabricApps.stream().map(fabricApp -> map(fabricApp, group, team)).collect(Collectors.toList());
     }
 
-    private CheckResult map(FabricApp fabricApp, Group group) {
+    private CheckResult map(FabricApp fabricApp, Group group, Team team) {
 
         final Integer unresolvedIssuesCount = fabricApp.getUnresolved_issues_count();
         // every crash/issue not found in development but out in the wild is considered real bad (red) to make dev team fix the issue immediately
         final State state = unresolvedIssuesCount > 0 ? State.RED : State.GREEN;
-        return new CheckResult(state, fabricApp.getName(), unresolvedIssuesCount + " unresolved", 1 + unresolvedIssuesCount, unresolvedIssuesCount, group).withLink(fabricApp.getDashboard_url());
+        return new CheckResult(state, fabricApp.getName(), unresolvedIssuesCount + " unresolved", 1 + unresolvedIssuesCount, unresolvedIssuesCount, group)
+                .withLink(fabricApp.getDashboard_url())
+                .withTeam(team);
     }
 
     private List<FabricApp> loadApps(HttpHeaders httpHeaders) throws FabricExecutionException {
