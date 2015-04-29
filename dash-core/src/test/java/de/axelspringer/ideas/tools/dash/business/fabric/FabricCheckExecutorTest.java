@@ -11,7 +11,7 @@ public class FabricCheckExecutorTest {
     private FabricCheckExecutor fabricCheckExecutor = new FabricCheckExecutor();
 
     @Test
-    public void testExtractToken() {
+    public void testExtractToken() throws FabricExecutionException {
 
         final String testToken = UUID.randomUUID().toString();
         final String testMarkup = "<some random shit askjd24i90jfwoijwijciw<<>>>fb5c679090103d95b918cfaccb8f21c\",\"modules/sdk/twitter\":\"https://cdn.crashlytics.io/assets/modules/sdk/twitter-be27b553c9a4a483278c1f66da47ece5\",\"modules/sdk/mopub\":\"https://cdn.crashlytics.io/assets/modules/sdk/mopub-e8ba403a7125330407fa812ffbb622af\",\"modules/sdk/twitter_conversion_tracking\":\"https://cdn.crashlytics.io/assets/modules/sdk/twitter_conversion_tracking-89391d3c5662ae206c9488cc197a251c\"}};</script>\n" +

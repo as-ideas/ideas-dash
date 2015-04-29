@@ -6,6 +6,9 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -114,13 +117,14 @@ public class FabricCheckExecutor implements CheckExecutor {
         return httpHeaders;
     }
 
-    String extractToken(String markup) {
+    String extractToken(String markup) throws FabricExecutionException {
 
-        String search = "<meta content=\"authenticity_token\" name=\"csrf-param\" />";
-        String token = markup.substring(markup.indexOf(search) + search.length());
-        search = "<meta content=\"";
-        token = token.substring(token.indexOf(search) + search.length());
-        return token.substring(0, token.indexOf("\""));
+        final Document document = Jsoup.parse(markup);
+        final Element tokenElement = document.select("[name=\"csrf-token\"]").first();
+        if (tokenElement == null) {
+            throw new FabricExecutionException("05 error parsing token from markup.");
+        }
+        return tokenElement.attr("content");
     }
 
     private String extractCookie(ResponseEntity response) throws FabricExecutionException {
