@@ -10,11 +10,14 @@ import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
+import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -57,6 +60,18 @@ public class ClientConfig {
         mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
 
         restTemplate.setMessageConverters(Arrays.asList(mappingJackson2HttpMessageConverter));
+        return restTemplate;
+    }
+
+    @Bean
+    public RestTemplate exceptionSwallowingRestTemplate() {
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+            @Override
+            public void handleError(ClientHttpResponse response) throws IOException {
+                // no-op (prevents throwing exceptions (eg on 4xx and 5xx))
+            }
+        });
         return restTemplate;
     }
 }
