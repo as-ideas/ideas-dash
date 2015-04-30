@@ -30,7 +30,7 @@
 }
 
 .check.running {
-    animation: glow 2s infinite;
+    box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, 0.75);
 }
 
 .alert-disabled {
@@ -49,16 +49,4 @@
     top: 1px;
     right: 15px;
     z-index: 1;
-}
-
-@keyframes glow {
-    0% {
-        box-shadow: 0 0 9px;
-    }
-    50% {
-        box-shadow: 0 0 18px;
-    }
-    100% {
-        box-shadow: 0 0 9px;
-    }
 }
