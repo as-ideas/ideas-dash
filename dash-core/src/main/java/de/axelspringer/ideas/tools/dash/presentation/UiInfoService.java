@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +52,7 @@ public class UiInfoService {
 
         UiInfo newUiInfo = new UiInfo(applicationStartId);
 
-        newUiInfo.setLastUpdateTime(LocalDateTime.now().toString());
+        newUiInfo.setLastUpdateTime(Long.toString(System.currentTimeMillis()));
 
         for (Group group : checkResultsMappedToGroup.keySet()) {
 
