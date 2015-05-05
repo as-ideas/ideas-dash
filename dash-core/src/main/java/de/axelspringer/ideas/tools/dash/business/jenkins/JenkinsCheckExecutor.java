@@ -16,15 +16,13 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class JenkinsCheckExecutor implements CheckExecutor {
+public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
 
     @Autowired
     private JenkinsClient jenkinsClient;
 
     @Override
-    public List<CheckResult> executeCheck(Check check) {
-
-        JenkinsCheck jenkinsCheck = (JenkinsCheck) check;
+    public List<CheckResult> executeCheck(JenkinsCheck jenkinsCheck) {
 
         final String jobName = jenkinsCheck.getName();
 

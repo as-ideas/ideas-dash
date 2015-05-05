@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public class JiraCheckExecutor implements CheckExecutor {
+public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
     @Autowired
     private RestClient restClient;
@@ -28,9 +28,7 @@ public class JiraCheckExecutor implements CheckExecutor {
     private Gson gson;
 
     @Override
-    public List<CheckResult> executeCheck(Check check) {
-
-        JiraCheck jiraCheck = (JiraCheck) check;
+    public List<CheckResult> executeCheck(JiraCheck jiraCheck) {
 
         // init request
         Map<String, String> requestParams = new HashMap<>();

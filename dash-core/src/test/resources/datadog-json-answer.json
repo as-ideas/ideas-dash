@@ -1,0 +1,85 @@
+[
+  {
+    "multi": false,
+    "name": "[PCP] Total_errors_above_600_in_last_10_min",
+    "query": "sum(last_10m):sum:pcp_errors_total{*} > 600",
+    "overall_state": "Alert",
+    "type": "metric alert",
+    "message": "@webhook-Slack-pcp_alerts @servicenow",
+    "creator": {
+      "id": 30921,
+      "handle": "foo.bar@axelspringer.de",
+      "email": "foo.bar@axelspringer.de",
+      "name": "Foo Bar"
+    },
+    "org_id": 7561,
+    "id": 123329,
+    "options": {
+      "notify_no_data": true,
+      "renotify_interval": 60,
+      "no_data_timeframe": 20,
+      "notify_audit": true,
+      "silenced": {}
+    }
+  },
+  {
+    "multi": true,
+    "name": "Test - ABLNTST900 Health Check",
+    "query": "\"datadog.agent.up\".over(\"host:ABLNTST900\").last(2).count_by_status()",
+    "overall_state": "OK",
+    "type": "service check",
+    "message": "ABLNTST900 seems to be down @servicenow",
+    "creator": {
+      "id": 25901,
+      "handle": "foo.bar@axelspringer.de",
+      "email": "foo.bar@axelspringer.de",
+      "name": "Foo Bar"
+    },
+    "org_id": 7561,
+    "id": 181442,
+    "options": {
+      "notify_audit": false,
+      "timeout_h": 0,
+      "silenced": {},
+      "thresholds": {
+        "warning": 1,
+        "critical": 1,
+        "ok": 1
+      },
+      "period": 15,
+      "notify_no_data": true,
+      "renotify_interval": 0,
+      "no_data_timeframe": 2
+    }
+  },
+  {
+    "multi": true,
+    "name": "FooB test",
+    "query": "\"datadog.agent.up\".over(\"sso\").last(2).count_by_status()",
+    "overall_state": "OK",
+    "type": "service check",
+    "message": "@sss",
+    "creator": {
+      "id": 59519,
+      "handle": "foo.bar@axelspringer.de",
+      "email": "foo.bar@axelspringer.de",
+      "name": "Foo Bar"
+    },
+    "org_id": 7561,
+    "id": 157028,
+    "options": {
+      "notify_audit": false,
+      "timeout_h": 0,
+      "silenced": {"*": null},
+      "thresholds": {
+        "warning": 1,
+        "ok": 1,
+        "critical": 1
+      },
+      "period": 15,
+      "notify_no_data": true,
+      "renotify_interval": 0,
+      "no_data_timeframe": 2
+    }
+  }
+]
