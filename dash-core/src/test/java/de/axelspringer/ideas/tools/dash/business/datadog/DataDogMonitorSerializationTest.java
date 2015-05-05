@@ -20,6 +20,6 @@ public class DataDogMonitorSerializationTest {
         final InputStream testData = getClass().getResourceAsStream("/datadog-json-answer.json");
         assertNotNull(testData);
         final DataDogMonitor[] monitors = gson.fromJson(new InputStreamReader(testData), DataDogMonitor[].class);
-        assertEquals(89, monitors.length);
+        assertEquals(3, monitors.length);
     }
 }
