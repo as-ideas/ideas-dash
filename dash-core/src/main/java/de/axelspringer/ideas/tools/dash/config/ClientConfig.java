@@ -2,7 +2,6 @@ package de.axelspringer.ideas.tools.dash.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -25,11 +24,6 @@ import java.util.Arrays;
 
 @Configuration
 public class ClientConfig {
-
-    @Bean
-    public Gson gson() {
-        return new Gson();
-    }
 
     @Bean
     public CloseableHttpClient httpClient() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
