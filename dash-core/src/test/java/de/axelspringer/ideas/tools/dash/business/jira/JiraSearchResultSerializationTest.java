@@ -3,14 +3,13 @@ package de.axelspringer.ideas.tools.dash.business.jira;
 import com.google.gson.Gson;
 import org.junit.Test;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class JiraSerializationTest {
+public class JiraSearchResultSerializationTest {
 
     private static final String PATH_TO_JSON_ANSWER = "/jira-json-answer.json";
 
@@ -19,8 +18,8 @@ public class JiraSerializationTest {
     @Test
     public void desirialisationOfJenkinsAnswer() throws Exception {
 
-        String text = new String(Files.readAllBytes(Paths.get(getClass().getResource(PATH_TO_JSON_ANSWER).toURI())), StandardCharsets.UTF_8);
-        SearchResult searchResult = gson.fromJson(text, SearchResult.class);
+        InputStream response = getClass().getResourceAsStream(PATH_TO_JSON_ANSWER);
+        SearchResult searchResult = gson.fromJson(new InputStreamReader(response), SearchResult.class);
         assertThat(searchResult.getIssues().size(), is(30));
     }
 }

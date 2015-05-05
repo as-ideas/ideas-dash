@@ -32,16 +32,14 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class FabricCheckExecutor implements CheckExecutor {
+public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
 
     @Autowired
     @Qualifier("exceptionSwallowingRestTemplate")
     private RestTemplate restTemplate;
 
     @Override
-    public List<CheckResult> executeCheck(Check check) {
-
-        FabricCheck fabricCheck = (FabricCheck) check;
+    public List<CheckResult> executeCheck(FabricCheck fabricCheck) {
 
         // log-in
         final HttpHeaders sessionHeaders;
