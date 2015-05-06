@@ -31,9 +31,10 @@ public class JenkinsJobListCheckProviderTest {
         jenkinsJobListCheckProvider = new JenkinsJobListCheckProvider("fooHost", "fooUser", "fooApiToken", mock(Group.class));
 
         final List<JenkinsJob> jobs = new ArrayList<>();
-        jobs.add(jenkinsJob("docker-compose"));
-        jobs.add(jenkinsJob("yana-contentmachine-build"));
-        jobs.add(jenkinsJob("reco-svc-recommendations-build"));
+        jobs.add(jenkinsJob("docker-compose", true));
+        jobs.add(jenkinsJob("yana-contentmachine-build", true));
+        jobs.add(jenkinsJob("yana-contentmachine-disabled", false));
+        jobs.add(jenkinsJob("reco-svc-recommendations-build", true));
         final JenkinsJobListWrapper jenkinsJobListWrapper = new JenkinsJobListWrapper();
         jenkinsJobListWrapper.setJobs(jobs);
 
@@ -43,10 +44,12 @@ public class JenkinsJobListCheckProviderTest {
         ReflectionTestUtils.setField(jenkinsJobListCheckProvider, "jenkinsClient", jenkinsClient);
     }
 
-    private JenkinsJob jenkinsJob(String name) {
+    private JenkinsJob jenkinsJob(String name, boolean enabled) {
         final JenkinsJob jenkinsJob = new JenkinsJob();
         jenkinsJob.setName(name);
         jenkinsJob.setUrl("http://somejenkins/jobs/" + name);
+        final String color = enabled ? "blue" : "disabled";
+        jenkinsJob.setColor(color);
         return jenkinsJob;
     }
 

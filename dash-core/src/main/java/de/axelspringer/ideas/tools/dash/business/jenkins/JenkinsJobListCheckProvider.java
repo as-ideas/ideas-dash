@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JenkinsJobListCheckProvider implements CheckProvider {
 
+    private static final String DISABLED_COLOR = "disabled";
+
     /**
      * jenkins host adress
      */
@@ -73,6 +75,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
 
         return jobs().stream()
                 .filter(this::matchesPrefix)
+                .filter(this::isEnabled)
                 .map(this::check)
                 .collect(Collectors.toList());
     }
@@ -106,6 +109,11 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     private boolean matchesPrefix(JenkinsJob job) {
 
         return StringUtils.isBlank(jobPrefix) || job.getName().startsWith(jobPrefix);
+    }
+
+    private boolean isEnabled(JenkinsJob job) {
+
+        return !DISABLED_COLOR.equals(job.getColor());
     }
 
     /**
