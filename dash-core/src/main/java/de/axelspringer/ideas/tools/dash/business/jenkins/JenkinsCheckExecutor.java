@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -36,21 +36,26 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
 
             final JenkinsJobInfo jobInfo = queryJenkins(jenkinsCheck, url, JenkinsJobInfo.class);
 
-            lastCompletedBuildInfo = queryJenkins(jenkinsCheck, jobInfo.getLastCompletedBuild().getUrl(), JenkinsBuildInfo.class);
-            lastBuildInfo = queryJenkins(jenkinsCheck, jobInfo.getLastBuild().getUrl(), JenkinsBuildInfo.class);
+            final JenkinsJobInfo.LastBuild lastCompletedBuild = jobInfo.getLastCompletedBuild();
+            lastCompletedBuildInfo = lastCompletedBuild != null ? queryJenkins(jenkinsCheck, lastCompletedBuild.getUrl(), JenkinsBuildInfo.class) : null;
+
+            final JenkinsJobInfo.LastBuild lastBuild = jobInfo.getLastBuild();
+            lastBuildInfo = lastBuild != null ? queryJenkins(jenkinsCheck, lastBuild.getUrl(), JenkinsBuildInfo.class) : null;
 
         } catch (Exception e) {
             log.error("error fetching jenkins result: {}", jobName, e);
-            return Arrays.asList(new CheckResult(State.RED, shortName(jobName), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(url).withTeam(jenkinsCheck.getTeam()));
+            return Collections.singletonList(new CheckResult(State.RED, shortName(jobName), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(url).withTeam(jenkinsCheck.getTeam()));
         }
 
         int failedTestCount = 0;
         int totalTestCount = 0;
 
-        for (JenkinsBuildInfo.Action action : lastCompletedBuildInfo.getActions()) {
-            if (action.getFailCount() != null && action.getTotalCount() != null) {
-                failedTestCount += action.getFailCount();
-                totalTestCount += action.getTotalCount();
+        if (lastCompletedBuildInfo != null) {
+            for (JenkinsBuildInfo.Action action : lastCompletedBuildInfo.getActions()) {
+                if (action.getFailCount() != null && action.getTotalCount() != null) {
+                    failedTestCount += action.getFailCount();
+                    totalTestCount += action.getTotalCount();
+                }
             }
         }
 
@@ -58,10 +63,10 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
 
         State state = identifyStatus(lastCompletedBuildInfo, failedTestCount);
         CheckResult checkResult = new CheckResult(state, shortName(jobName), checkInfo, totalTestCount, failedTestCount, jenkinsCheck.getGroup()).withLink(url).withTeam(jenkinsCheck.getTeam());
-        if (lastBuildInfo.isBuilding()) {
+        if (lastBuildInfo != null && lastBuildInfo.isBuilding()) {
             checkResult = checkResult.markRunning();
         }
-        return Arrays.asList(checkResult);
+        return Collections.singletonList(checkResult);
     }
 
     @Override
@@ -73,6 +78,10 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
 
         if (failedTestCount > 0) {
             return State.YELLOW;
+        }
+
+        if (lastSuccessfullBuildInfo == null) {
+            return State.GREY;
         }
 
         if (lastSuccessfullBuildInfo.getResult() == null) {
