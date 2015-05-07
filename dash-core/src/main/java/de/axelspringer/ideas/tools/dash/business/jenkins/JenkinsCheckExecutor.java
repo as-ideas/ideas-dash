@@ -27,8 +27,8 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
         final String jobName = jenkinsCheck.getName();
 
         // load results from jenkins
-        JenkinsBuildInfo lastCompletedBuildInfo;
-        JenkinsBuildInfo lastBuildInfo;
+        final JenkinsBuildInfo lastCompletedBuildInfo;
+        final JenkinsBuildInfo lastBuildInfo;
         final String url = jenkinsCheck.getUrl();
 
         try {
