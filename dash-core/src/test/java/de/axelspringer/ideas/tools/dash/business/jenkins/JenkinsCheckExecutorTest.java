@@ -1,12 +1,39 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
+import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.customization.Team;
+import de.axelspringer.ideas.tools.dash.presentation.State;
+import org.apache.http.auth.AuthenticationException;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class JenkinsCheckExecutorTest {
 
-    private final JenkinsCheckExecutor jenkinsCheckExecutor = new JenkinsCheckExecutor();
+    @Mock
+    private JenkinsClient jenkinsClient;
+
+    @InjectMocks
+    private JenkinsCheckExecutor jenkinsCheckExecutor;
+
+    @Before
+    public void initMocks() throws Exception {
+        when(jenkinsClient.query(anyString(), anyString(), anyString(), eq(JenkinsJobInfo.class))).thenReturn(jenkinsJobInfo());
+    }
 
     @Test
     public void testGetShortNameWithValidName() {
@@ -26,5 +53,22 @@ public class JenkinsCheckExecutorTest {
         final String shortName = jenkinsCheckExecutor.shortName(name);
 
         assertEquals(name, shortName);
+    }
+
+    @Test
+    public void testBuildWithoutLastBuildResultResultsInGreyState() throws IOException, AuthenticationException {
+
+        final List<CheckResult> checkResults = jenkinsCheckExecutor.executeCheck(jenkinsCheck());
+        assertEquals(1, checkResults.size());
+        final CheckResult checkResult = checkResults.get(0);
+        assertEquals(State.GREY, checkResult.getState());
+    }
+
+    private JenkinsJobInfo jenkinsJobInfo() {
+        return new JenkinsJobInfo();
+    }
+
+    private JenkinsCheck jenkinsCheck() {
+        return new JenkinsCheck("", "", "", "", mock(Group.class), mock(Team.class));
     }
 }
