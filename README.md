@@ -23,7 +23,8 @@ FabricCheck
 DataDog can be queried for monitors. Just provide DataDogChecks via a CheckProvider.
 -- Art-Tests
 Art is supported as well in theory. This was not used in a while and may prove unstable.
-
+-- Statushub
+Statushub is supported as well. Markup will be parsed for css-classes (incident)
 
 ```xml
 <dependencies>
