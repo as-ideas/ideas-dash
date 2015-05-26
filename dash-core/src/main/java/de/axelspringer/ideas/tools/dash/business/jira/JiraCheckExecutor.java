@@ -7,6 +7,7 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,43 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
     @Override
     public List<CheckResult> executeCheck(JiraCheck jiraCheck) {
+        final SearchResult searchResult = queryJira(jiraCheck);
+        final List<Issue> issues = searchResult.getIssues();
 
+        if (issues == null || issues.size() < 1) {
+            final CheckResult checkResult = new CheckResult(State.GREEN, jiraCheck.getName(), "no issues", 1, 0, jiraCheck.getGroup())
+                    .withLink(jiraCheck.getUrl()).withTeam(jiraCheck.getTeam());
+            return Collections.singletonList(checkResult);
+        }
+
+        List<CheckResult> checkResults = new ArrayList<>();
+
+        for (Issue issue : issues) {
+            CheckResult checkResult = getCheckResultForIssue(jiraCheck, issue);
+            checkResults.add(checkResult);
+        }
+
+        return checkResults;
+    }
+
+    CheckResult getCheckResultForIssue(JiraCheck jiraCheck, Issue issue) {
+        final JiraProjectConfiguration jiraProjectConfiguration = jiraCheck.getJiraProjectConfiguration();
+
+        final State staticState = jiraProjectConfiguration.stateForIssueState(issue.getFields().getStatus().getName());
+        final State state = staticState != null ? staticState : state(issue);
+        final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, 1, jiraCheck.getGroup())
+                .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
+
+        if (jiraProjectConfiguration.isIssueInProgress(issue)) {
+            checkResult.markRunning();
+        }
+
+        checkResult.withName(jiraCheck.getName() + " (" + issue.getFields().getAssignee().getName() + ")");
+        return checkResult;
+    }
+
+    @SneakyThrows
+    SearchResult queryJira(JiraCheck jiraCheck) {
         // init request
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put("maxResults", "30");
@@ -43,60 +80,26 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
             searchResult = gson.fromJson(resultAsString, SearchResult.class);
         } catch (Exception e) {
             log.error("error fetching jira results", e);
-            return Collections.singletonList(new CheckResult(State.RED, "error", jiraCheck.getJql(), 0, 0, jiraCheck.getGroup()).withTeam(jiraCheck.getTeam()));
+            throw e;
         }
-        //gson may not parse the response correctly
+
         if (searchResult == null) {
             log.error("deserialized to null. [Query=" + jiraCheck.getJql() + "]");
-            return Collections.singletonList(new CheckResult(State.RED, "error 2", jiraCheck.getJql(), 0, 0, jiraCheck.getGroup()).withTeam(jiraCheck.getTeam()));
+            throw new IllegalStateException("deserialized to null. [Query=" + jiraCheck.getJql() + "]");
         }
 
-        final List<Issue> issues = searchResult.getIssues();
-
-        if (issues == null || issues.size() < 1) {
-            final CheckResult checkResult = new CheckResult(State.GREEN, jiraCheck.getName(), "no issues", 1, 0, jiraCheck.getGroup())
-                    .withLink(jiraCheck.getUrl()).withTeam(jiraCheck.getTeam());
-            return Collections.singletonList(checkResult);
-        }
-
-        List<CheckResult> checkResults = new ArrayList<>();
-        final JiraProjectConfiguration jiraProjectConfiguration = jiraCheck.getJiraProjectConfiguration();
-
-        for (Issue issue : issues) {
-
-            final State staticState = jiraProjectConfiguration.stateForIssueState(issue.getFields().getStatus().getName());
-            final State state = staticState != null ? staticState : state(issue);
-            final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, 1, jiraCheck.getGroup())
-                    .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
-
-            if (jiraProjectConfiguration.isIssueInProgress(issue)) {
-                checkResult.markRunning();
-            }
-
-            checkResult.withName(jiraCheck.getName() + " (" + issue.getFields().getAssignee().getName() + ")");
-
-            checkResults.add(checkResult);
-        }
-
-        return checkResults;
+        return searchResult;
     }
 
 
     private State state(Issue issue) {
-
-        // Bugs
         if (issue.isBug()) {
-            String priority = issue.getFields().getPriority().getName();
-            if (Priority.BLOCKER_NAME.equals(priority)) {
-                return State.RED;
-            }
-            if (issue.getFields().getStatus().getName().toLowerCase().equals("done")) {
-                return State.GREEN;
-            }
-            return State.YELLOW;
+            return stateForBug(issue);
         }
+        return stateForIssue(issue);
+    }
 
-        // Issues
+    private State stateForIssue(Issue issue) {
         switch (issue.getFields().getStatus().getName().toLowerCase()) {
             case "done":
                 return State.GREEN;
@@ -105,6 +108,33 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
             default:
                 return State.YELLOW;
         }
+    }
+
+    private State stateForBug(Issue issue) {
+        if (isPriorityBlocker(issue)) {
+            return State.RED;
+        }
+
+        if (isStatusDone(issue)) {
+            return State.GREEN;
+        }
+        return State.YELLOW;
+    }
+
+    private boolean isStatusDone(Issue issue) {
+        return issue.getFields().getStatus().getName().toLowerCase().equals("done");
+    }
+
+    private boolean isPriorityBlocker(Issue issue) {
+        Priority jiraTicketPriority = issue.getFields().getPriority();
+        if (jiraTicketPriority == null) {
+            log.error("Priority is not set! Issue: " + issue.getKey());
+            return false;
+        }
+
+
+        String priority = jiraTicketPriority.getName();
+        return Priority.BLOCKER_NAME.equals(priority);
     }
 
     @Override
