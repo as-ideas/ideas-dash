@@ -15,7 +15,7 @@ public class FailingCheckExecutor implements CheckExecutor<FailingCheck> {
 
     @Override
     public List<CheckResult> executeCheck(FailingCheck check) {
-        return Collections.singletonList(new CheckResult(State.RED, check.getName(), check.getFailureMessage(), 1, 1, null));
+        return Collections.singletonList(new CheckResult(State.RED, check.getName(), check.getFailureMessage(), 1, 1, check.getGroup()));
     }
 
     @Override

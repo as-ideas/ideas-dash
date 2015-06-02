@@ -2,6 +2,7 @@ package de.axelspringer.ideas.tools.dash.example;
 
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckProvider;
+import de.axelspringer.ideas.tools.dash.business.failure.FailingCheck;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class ExampleCheckProvider implements CheckProvider {
         for (ExampleGroup group : ExampleGroup.values()) {
             checks.add(new ExampleCheck(group.getJiraName(), group, ExampleTeamProvider.EXAMPLE_TEAM));
         }
+
+        checks.add(new FailingCheck("test", "message"));
 
         return checks;
     }

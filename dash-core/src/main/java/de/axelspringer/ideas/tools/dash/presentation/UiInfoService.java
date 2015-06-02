@@ -133,7 +133,7 @@ public class UiInfoService {
                 allChecks.addAll(checkProvider.provideChecks());
             } catch (Exception e) {
                 log.error("exception during check provider execution", e);
-                allChecks.add(new FailingCheck(checkProvider.getClass().getSimpleName(), null, null, e.getMessage()));
+                allChecks.add(new FailingCheck(checkProvider.getClass().getSimpleName(), e.getMessage()));
             }
         });
         return allChecks;
