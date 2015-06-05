@@ -86,7 +86,8 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
         // Bugs
         if (issue.isBug()) {
-            String priority = issue.getFields().getPriority().getName();
+            // treat null-priority as blocker
+            String priority = issue.getFields().getPriority() != null ? issue.getFields().getPriority().getName() : Priority.BLOCKER_NAME;
             if (Priority.BLOCKER_NAME.equals(priority)) {
                 return State.RED;
             }
