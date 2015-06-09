@@ -36,7 +36,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
         final List<DataDogMonitor> dataDogMonitors = Arrays.asList(monitorResponse.getBody());
         return dataDogMonitors.stream()
-                .filter(candidate -> candidate.getName().contains(check.getNameFilter()))
+                .filter(candidate -> candidate.getName().toLowerCase().contains(check.getNameFilter().toLowerCase()))
                 .map(monitor -> map(monitor, check))
                 .collect(Collectors.toList());
     }
