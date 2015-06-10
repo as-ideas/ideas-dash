@@ -2,17 +2,17 @@ package de.axelspringer.ideas.tools.dash.business.jenkins;
 
 import com.google.gson.Gson;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.auth.AuthenticationException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Slf4j
 @Component
 public class JenkinsClient {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsClient.class);
     @Autowired
     private RestClient restClient;
 

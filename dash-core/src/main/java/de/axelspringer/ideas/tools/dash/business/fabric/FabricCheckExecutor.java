@@ -6,10 +6,10 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
-import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
  * Executor for {@link FabricCheck}
  */
 @Service
-@Slf4j
 public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(FabricCheckExecutor.class);
     @Autowired
     @Qualifier("exceptionSwallowingRestTemplate")
     private RestTemplate restTemplate;

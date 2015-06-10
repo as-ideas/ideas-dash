@@ -5,9 +5,9 @@ import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckProvider;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.auth.AuthenticationException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 /**
  * Helper that will load a jenkins job list and
  */
-@Slf4j
 public class JenkinsJobListCheckProvider implements CheckProvider {
 
     private static final String DISABLED_COLOR = "disabled";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsJobListCheckProvider.class);
 
     /**
      * jenkins host adress

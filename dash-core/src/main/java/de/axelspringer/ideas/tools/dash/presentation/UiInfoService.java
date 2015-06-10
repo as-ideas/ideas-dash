@@ -6,7 +6,7 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.check.CheckService;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.failure.FailingCheck;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-@Slf4j
 public class UiInfoService {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(UiInfoService.class);
     private final String applicationStartId = UUID.randomUUID().toString();
 
     // begin with an empty object. checks shall only be executed by the scheduler

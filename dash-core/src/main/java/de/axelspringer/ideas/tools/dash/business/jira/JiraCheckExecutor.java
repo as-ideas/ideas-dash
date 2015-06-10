@@ -7,8 +7,7 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Slf4j
 public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JiraCheckExecutor.class);
 
     @Autowired
     private RestClient restClient;
@@ -42,14 +42,14 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         List<CheckResult> checkResults = new ArrayList<>();
 
         for (Issue issue : issues) {
-            CheckResult checkResult = getCheckResultForIssue(jiraCheck, issue);
+            CheckResult checkResult = createCheckResultForIssue(jiraCheck, issue);
             checkResults.add(checkResult);
         }
 
         return checkResults;
     }
 
-    CheckResult getCheckResultForIssue(JiraCheck jiraCheck, Issue issue) {
+    CheckResult createCheckResultForIssue(JiraCheck jiraCheck, Issue issue) {
         final JiraProjectConfiguration jiraProjectConfiguration = jiraCheck.getJiraProjectConfiguration();
 
         final State staticState = jiraProjectConfiguration.stateForIssueState(issue.getFields().getStatus().getName());
@@ -65,7 +65,6 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         return checkResult;
     }
 
-    @SneakyThrows
     SearchResult queryJira(JiraCheck jiraCheck) {
         // init request
         Map<String, String> requestParams = new HashMap<>();
@@ -80,7 +79,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
             searchResult = gson.fromJson(resultAsString, SearchResult.class);
         } catch (Exception e) {
             log.error("error fetching jira results", e);
-            throw e;
+            throw new RuntimeException(e.getMessage(), e);
         }
 
         if (searchResult == null) {

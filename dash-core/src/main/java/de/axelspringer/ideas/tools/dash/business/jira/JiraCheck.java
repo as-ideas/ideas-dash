@@ -3,9 +3,7 @@ package de.axelspringer.ideas.tools.dash.business.jira;
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
-import lombok.Getter;
 
-@Getter
 public class JiraCheck extends AbstractCheck {
 
     private final String url;
@@ -29,5 +27,25 @@ public class JiraCheck extends AbstractCheck {
     public JiraCheck withJiraConfiguration(JiraProjectConfiguration jiraProjectConfiguration) {
         this.jiraProjectConfiguration = jiraProjectConfiguration;
         return this;
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public String getJql() {
+        return this.jql;
+    }
+
+    public JiraProjectConfiguration getJiraProjectConfiguration() {
+        return this.jiraProjectConfiguration;
     }
 }

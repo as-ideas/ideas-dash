@@ -70,7 +70,7 @@ public class JiraCheckExecutorTest {
     }
 
     private void givenDoNothingForFoundIssues() {
-        doReturn(null).when(jiraCheckExecutor).getCheckResultForIssue(any(JiraCheck.class), any(Issue.class));
+        doReturn(null).when(jiraCheckExecutor).createCheckResultForIssue(any(JiraCheck.class), any(Issue.class));
     }
 
     private Issue issue() {
