@@ -1,6 +1,9 @@
 package de.axelspringer.ideas.tools.dash.business.failure;
 
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class FailingCheck extends AbstractCheck {
 
@@ -15,38 +18,18 @@ public class FailingCheck extends AbstractCheck {
         return this.failureMessage;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof FailingCheck)) {
-            return false;
-        }
-        final FailingCheck other = (FailingCheck) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$failureMessage = this.failureMessage;
-        final Object other$failureMessage = other.failureMessage;
-        if (this$failureMessage == null ? other$failureMessage != null : !this$failureMessage.equals(other$failureMessage)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $failureMessage = this.failureMessage;
-        result = result * PRIME + ($failureMessage == null ? 0 : $failureMessage.hashCode());
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    protected boolean canEqual(Object other) {
-        return other instanceof FailingCheck;
-    }
-
+    @Override
     public String toString() {
-        return "de.axelspringer.ideas.tools.dash.business.failure.FailingCheck(failureMessage=" + this.failureMessage + ")";
+        return ToStringBuilder.reflectionToString(this);
     }
 }

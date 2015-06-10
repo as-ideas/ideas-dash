@@ -1,5 +1,9 @@
 package de.axelspringer.ideas.tools.dash.presentation;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,52 +41,18 @@ public class UiInfo {
         this.groups = groups;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof UiInfo)) {
-            return false;
-        }
-        final UiInfo other = (UiInfo) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$applicationStartId = this.applicationStartId;
-        final Object other$applicationStartId = other.applicationStartId;
-        if (this$applicationStartId == null ? other$applicationStartId != null : !this$applicationStartId.equals(other$applicationStartId)) {
-            return false;
-        }
-        final Object this$lastUpdateTime = this.lastUpdateTime;
-        final Object other$lastUpdateTime = other.lastUpdateTime;
-        if (this$lastUpdateTime == null ? other$lastUpdateTime != null : !this$lastUpdateTime.equals(other$lastUpdateTime)) {
-            return false;
-        }
-        final Object this$groups = this.groups;
-        final Object other$groups = other.groups;
-        if (this$groups == null ? other$groups != null : !this$groups.equals(other$groups)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $applicationStartId = this.applicationStartId;
-        result = result * PRIME + ($applicationStartId == null ? 0 : $applicationStartId.hashCode());
-        final Object $lastUpdateTime = this.lastUpdateTime;
-        result = result * PRIME + ($lastUpdateTime == null ? 0 : $lastUpdateTime.hashCode());
-        final Object $groups = this.groups;
-        result = result * PRIME + ($groups == null ? 0 : $groups.hashCode());
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    protected boolean canEqual(Object other) {
-        return other instanceof UiInfo;
-    }
-
+    @Override
     public String toString() {
-        return "de.axelspringer.ideas.tools.dash.presentation.UiInfo(applicationStartId=" + this.applicationStartId + ", lastUpdateTime=" + this.lastUpdateTime + ", groups=" + this.groups + ")";
+        return ToStringBuilder.reflectionToString(this);
     }
 }

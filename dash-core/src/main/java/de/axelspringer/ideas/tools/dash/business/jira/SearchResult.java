@@ -1,6 +1,9 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
 
@@ -19,38 +22,18 @@ public class SearchResult {
         this.issues = issues;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof SearchResult)) {
-            return false;
-        }
-        final SearchResult other = (SearchResult) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$issues = this.issues;
-        final Object other$issues = other.issues;
-        if (this$issues == null ? other$issues != null : !this$issues.equals(other$issues)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $issues = this.issues;
-        result = result * PRIME + ($issues == null ? 0 : $issues.hashCode());
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    protected boolean canEqual(Object other) {
-        return other instanceof SearchResult;
-    }
-
+    @Override
     public String toString() {
-        return "de.axelspringer.ideas.tools.dash.business.jira.SearchResult(issues=" + this.issues + ")";
+        return ToStringBuilder.reflectionToString(this);
     }
 }

@@ -1,5 +1,9 @@
 package de.axelspringer.ideas.tools.dash.business.jira.rest;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class CustomField {
 
     private String value;
@@ -15,38 +19,18 @@ public class CustomField {
         this.value = value;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof CustomField)) {
-            return false;
-        }
-        final CustomField other = (CustomField) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$value = this.value;
-        final Object other$value = other.value;
-        if (this$value == null ? other$value != null : !this$value.equals(other$value)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $value = this.value;
-        result = result * PRIME + ($value == null ? 0 : $value.hashCode());
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    protected boolean canEqual(Object other) {
-        return other instanceof CustomField;
-    }
-
+    @Override
     public String toString() {
-        return "de.axelspringer.ideas.tools.dash.business.jira.rest.CustomField(value=" + this.value + ")";
+        return ToStringBuilder.reflectionToString(this);
     }
 }

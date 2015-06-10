@@ -1,5 +1,9 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class JenkinsJobInfo {
 
     private LastBuild lastCompletedBuild;
@@ -25,46 +29,19 @@ public class JenkinsJobInfo {
         this.lastBuild = lastBuild;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof JenkinsJobInfo)) {
-            return false;
-        }
-        final JenkinsJobInfo other = (JenkinsJobInfo) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$lastCompletedBuild = this.lastCompletedBuild;
-        final Object other$lastCompletedBuild = other.lastCompletedBuild;
-        if (this$lastCompletedBuild == null ? other$lastCompletedBuild != null : !this$lastCompletedBuild.equals(other$lastCompletedBuild)) {
-            return false;
-        }
-        final Object this$lastBuild = this.lastBuild;
-        final Object other$lastBuild = other.lastBuild;
-        if (this$lastBuild == null ? other$lastBuild != null : !this$lastBuild.equals(other$lastBuild)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $lastCompletedBuild = this.lastCompletedBuild;
-        result = result * PRIME + ($lastCompletedBuild == null ? 0 : $lastCompletedBuild.hashCode());
-        final Object $lastBuild = this.lastBuild;
-        result = result * PRIME + ($lastBuild == null ? 0 : $lastBuild.hashCode());
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    protected boolean canEqual(Object other) {
-        return other instanceof JenkinsJobInfo;
-    }
-
+    @Override
     public String toString() {
-        return "de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsJobInfo(lastCompletedBuild=" + this.lastCompletedBuild + ", lastBuild=" + this.lastBuild + ")";
+        return ToStringBuilder.reflectionToString(this);
     }
 
     public class LastBuild {

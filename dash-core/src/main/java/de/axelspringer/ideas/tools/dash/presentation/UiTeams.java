@@ -1,5 +1,9 @@
 package de.axelspringer.ideas.tools.dash.presentation;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.List;
 
 public class UiTeams {
@@ -15,38 +19,18 @@ public class UiTeams {
         return this.teams;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof UiTeams)) {
-            return false;
-        }
-        final UiTeams other = (UiTeams) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$teams = this.teams;
-        final Object other$teams = other.teams;
-        if (this$teams == null ? other$teams != null : !this$teams.equals(other$teams)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $teams = this.teams;
-        result = result * PRIME + ($teams == null ? 0 : $teams.hashCode());
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    protected boolean canEqual(Object other) {
-        return other instanceof UiTeams;
-    }
-
+    @Override
     public String toString() {
-        return "de.axelspringer.ideas.tools.dash.presentation.UiTeams(teams=" + this.teams + ")";
+        return ToStringBuilder.reflectionToString(this);
     }
 }

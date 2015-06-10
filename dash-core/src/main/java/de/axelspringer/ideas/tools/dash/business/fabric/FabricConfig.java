@@ -1,5 +1,9 @@
 package de.axelspringer.ideas.tools.dash.business.fabric;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * DTO for fabric config endpoint
  */
@@ -18,38 +22,18 @@ public class FabricConfig {
         this.developer_token = developer_token;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof FabricConfig)) {
-            return false;
-        }
-        final FabricConfig other = (FabricConfig) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$developer_token = this.developer_token;
-        final Object other$developer_token = other.developer_token;
-        if (this$developer_token == null ? other$developer_token != null : !this$developer_token.equals(other$developer_token)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $developer_token = this.developer_token;
-        result = result * PRIME + ($developer_token == null ? 0 : $developer_token.hashCode());
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    protected boolean canEqual(Object other) {
-        return other instanceof FabricConfig;
-    }
-
+    @Override
     public String toString() {
-        return "de.axelspringer.ideas.tools.dash.business.fabric.FabricConfig(developer_token=" + this.developer_token + ")";
+        return ToStringBuilder.reflectionToString(this);
     }
 }
