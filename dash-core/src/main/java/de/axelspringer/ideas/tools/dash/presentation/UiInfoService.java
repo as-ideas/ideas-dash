@@ -5,6 +5,7 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckProvider;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.check.CheckService;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.failure.FailingCheck;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -127,9 +128,14 @@ public class UiInfoService {
     private List<Check> allChecks() {
 
         List<Check> allChecks = new ArrayList<>();
-        for (CheckProvider checkProvider : checkProviders) {
-            allChecks.addAll(checkProvider.provideChecks());
-        }
+        checkProviders.forEach(checkProvider -> {
+            try {
+                allChecks.addAll(checkProvider.provideChecks());
+            } catch (Exception e) {
+                log.error("exception during check provider execution", e);
+                allChecks.add(new FailingCheck(checkProvider.getClass().getSimpleName(), e.getMessage()));
+            }
+        });
         return allChecks;
     }
 }

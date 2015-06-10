@@ -91,7 +91,6 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         return searchResult;
     }
 
-
     private State state(Issue issue) {
         if (issue.isBug()) {
             return stateForBug(issue);
