@@ -30,7 +30,7 @@ Statushub is supported as well. Markup will be parsed for css-classes (incident)
 <dependencies>
     <dependency>
         <groupId>de.axelspringer.ideas.tools</groupId>
-        <artifactId>ideas-de.axelspringer.ideas.tools.dash</artifactId>
+        <artifactId>ideas-dash</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
 </dependencies>
@@ -38,7 +38,7 @@ Statushub is supported as well. Markup will be parsed for css-classes (incident)
 <repositories>
     <repository>
         <id>ideas-de.axelspringer.ideas.tools.dash</id>
-        <url>https://raw.github.com/as-ideas/ideas-de.axelspringer.ideas.tools.dash/mvn-repo/</url>
+        <url>https://raw.github.com/as-ideas/ideas-dash/mvn-repo/</url>
         <snapshots>
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>
