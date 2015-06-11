@@ -4,3 +4,7 @@ jdk:
 - oraclejdk8
 
 script: "mvn deploy --settings settings.xml"
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
