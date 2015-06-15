@@ -3,12 +3,10 @@ package de.axelspringer.ideas.tools.dash.business.fabric;
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
-import lombok.Getter;
 
 /**
  * Check for fabric/crashlytics
  */
-@Getter
 public class FabricCheck extends AbstractCheck {
 
     private final String email;
@@ -19,5 +17,13 @@ public class FabricCheck extends AbstractCheck {
         super(name, group, team);
         this.email = email;
         this.password = password;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public String getPassword() {
+        return this.password;
     }
 }

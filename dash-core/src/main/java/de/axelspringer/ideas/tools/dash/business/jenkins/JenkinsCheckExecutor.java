@@ -4,8 +4,8 @@ import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.presentation.State;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.auth.AuthenticationException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +15,9 @@ import java.util.List;
 
 
 @Service
-@Slf4j
 public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsCheckExecutor.class);
     @Autowired
     private JenkinsClient jenkinsClient;
 

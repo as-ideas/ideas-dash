@@ -6,8 +6,8 @@ import de.axelspringer.ideas.tools.dash.presentation.UiConfig;
 import de.axelspringer.ideas.tools.dash.presentation.UiInfo;
 import de.axelspringer.ideas.tools.dash.presentation.UiInfoService;
 import de.axelspringer.ideas.tools.dash.presentation.UiTeams;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.auth.AuthenticationException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/rest/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-@Slf4j
 public class DashController {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DashController.class);
     @Autowired
     private UiInfoService UiInfoService;
 

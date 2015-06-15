@@ -3,9 +3,7 @@ package de.axelspringer.ideas.tools.dash.business.check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
-import lombok.Getter;
 
-@Getter
 public class CheckResult {
 
     private State state;
@@ -62,5 +60,45 @@ public class CheckResult {
     public CheckResult withName(String name) {
         this.name = name;
         return this;
+    }
+
+    public State getState() {
+        return this.state;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getInfo() {
+        return this.info;
+    }
+
+    public String getLink() {
+        return this.link;
+    }
+
+    public boolean isError() {
+        return this.isError;
+    }
+
+    public int getTestCount() {
+        return this.testCount;
+    }
+
+    public int getFailCount() {
+        return this.failCount;
+    }
+
+    public boolean isRunning() {
+        return this.running;
+    }
+
+    public Group getGroup() {
+        return this.group;
+    }
+
+    public Team getTeam() {
+        return this.team;
     }
 }

@@ -2,19 +2,23 @@ package de.axelspringer.ideas.tools.dash.business.jira;
 
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
 import de.axelspringer.ideas.tools.dash.presentation.State;
-import lombok.Data;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Data
 public class JiraProjectConfiguration {
 
     private final List<String> issueStatesInProgress = new ArrayList<>();
 
     private final Map<String, State> issueStateToStateMapping = new HashMap<>();
+
+    public JiraProjectConfiguration() {
+    }
 
     public JiraProjectConfiguration addIssueStateInProgress(String state) {
 
@@ -53,5 +57,28 @@ public class JiraProjectConfiguration {
             }
         }
         return false;
+    }
+
+    public List<String> getIssueStatesInProgress() {
+        return this.issueStatesInProgress;
+    }
+
+    public Map<String, State> getIssueStateToStateMapping() {
+        return this.issueStateToStateMapping;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

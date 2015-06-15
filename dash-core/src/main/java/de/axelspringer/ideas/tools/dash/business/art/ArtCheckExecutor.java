@@ -6,7 +6,7 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-@Slf4j
 public class ArtCheckExecutor implements CheckExecutor {
 
     private static final String N_A = "N/A";
 
     private static final String CALLBACK_NAME = "a";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ArtCheckExecutor.class);
 
     @Autowired
     private RestClient restClient;

@@ -1,6 +1,5 @@
 package de.axelspringer.ideas.tools.dash.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthenticationException;
@@ -12,6 +11,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -22,12 +22,12 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Map;
 
-@Slf4j
 @Service
 public class RestClient {
 
     public static final int CONNECTION_REQUEST_TIMEOUT = 16 * 1000;
     public static final int SOCKET_TIMEOUT = 16 * 1000;
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(RestClient.class);
 
     @Autowired
     private CloseableHttpClient httpClient;
