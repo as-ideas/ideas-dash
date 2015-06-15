@@ -3,17 +3,21 @@ package de.axelspringer.ideas.tools.dash.business.datadog;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,17 +40,42 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
         final List<DataDogMonitor> dataDogMonitors = Arrays.asList(monitorResponse.getBody());
         return dataDogMonitors.stream()
-                .filter(candidate -> candidate.getName().toLowerCase().contains(check.getNameFilter().toLowerCase()))
-                .map(monitor -> map(monitor, check))
+                .filter(candidate -> StringUtils.isEmpty(check.getNameFilter()) || candidate.getName().toLowerCase().contains(check.getNameFilter().toLowerCase()))
+                .map(monitor -> map(monitor, check.getGroup(), check.getNameFilter(), check.getJobNameTeamMappings()))
                 .collect(Collectors.toList());
     }
 
-    private CheckResult map(DataDogMonitor monitor, DataDogCheck check) {
+    CheckResult map(DataDogMonitor monitor, Group group, String nameFilter, Map<String, Team> jobNameTeamMappings) {
 
-        final boolean ok = DataDogMonitor.STATE_OK.equals(monitor.getOverall_state());
-        return new CheckResult(ok ? State.GREEN : State.RED, monitor.getName() + "@DataDog", monitor.getOverall_state() + " (query: " + monitor.getQuery() + ")", 1, ok ? 0 : 1, check.getGroup())
-                .withTeam(check.getTeam())
-                .withLink("https://www.datadoghq.com/");
+        final State state = DataDogMonitor.STATE_OK.equals(monitor.getOverall_state()) ? State.GREEN : State.RED;
+        final int errorCount = State.GREEN == state ? 0 : 1;
+
+        final CheckResult checkResult = new CheckResult(state, monitor.getName() + "@DataDog", monitor.getOverall_state() + " (query: " + monitor.getQuery() + ")", 1, errorCount, group);
+        final Team team = team(monitor.getName(), nameFilter, jobNameTeamMappings);
+        if (team != null) {
+            checkResult.withTeam(team);
+        }
+
+        checkResult.withLink("https://www.datadoghq.com/");
+
+        return checkResult;
+    }
+
+    Team team(String monitorName, String nameFilter, Map<String, Team> jobNameTeamMappings) {
+
+        // operate on this string
+        String strippedName = monitorName.toLowerCase();
+
+        // remove name filter
+        strippedName = nameFilter != null && strippedName.startsWith(nameFilter.toLowerCase()) ? strippedName.substring(nameFilter.length()) : strippedName;
+
+        // search for team mapping
+        for (String teamName : jobNameTeamMappings.keySet()) {
+            if (strippedName.startsWith(teamName.toLowerCase())) {
+                return jobNameTeamMappings.get(teamName);
+            }
+        }
+        return null;
     }
 
     @Override

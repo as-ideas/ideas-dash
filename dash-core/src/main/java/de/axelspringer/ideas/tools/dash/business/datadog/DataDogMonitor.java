@@ -16,32 +16,37 @@ public class DataDogMonitor {
     public DataDogMonitor() {
     }
 
+    public DataDogMonitor(String name, String overall_state) {
+        this.name = name;
+        this.overall_state = overall_state;
+    }
+
     public String getName() {
         return this.name;
-    }
-
-    public String getQuery() {
-        return this.query;
-    }
-
-    public String getOverall_state() {
-        return this.overall_state;
-    }
-
-    public String getType() {
-        return this.type;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getQuery() {
+        return this.query;
+    }
+
     public void setQuery(String query) {
         this.query = query;
     }
 
+    public String getOverall_state() {
+        return this.overall_state;
+    }
+
     public void setOverall_state(String overall_state) {
         this.overall_state = overall_state;
+    }
+
+    public String getType() {
+        return this.type;
     }
 
     public void setType(String type) {
