@@ -7,9 +7,7 @@ import de.axelspringer.ideas.tools.dash.presentation.UiInfo;
 import de.axelspringer.ideas.tools.dash.presentation.UiInfoService;
 import de.axelspringer.ideas.tools.dash.presentation.UiTeams;
 import org.apache.http.auth.AuthenticationException;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,19 +23,18 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/rest/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 public class DashController {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DashController.class);
     @Autowired
     private UiInfoService UiInfoService;
 
     @Autowired
     private TeamProvider teamProvider;
 
-    @Value("${de.axelspringer.ideas.tools.dash.pagetitle:angel dust}")
-    private String title;
+    @Autowired
+    private UiConfigState uiConfigState;
 
     @RequestMapping(value = "config")
     public UiConfig config() {
-        return new UiConfig(title);
+        return uiConfigState.get();
     }
 
     @RequestMapping(value = "infos")
