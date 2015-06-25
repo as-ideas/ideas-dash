@@ -59,7 +59,8 @@
         <option>All Teams</option>
         <option ng-repeat="team in teams">{{ team }}</option>
     </select>
-    <input type="checkbox" ng-model="config.aggregate" ng-click="loadInfos()"/> aggregate
+    <input type="checkbox" ng-model="config.aggregate" ng-click="loadInfos()"/> aggregate green checks
+    <input type="checkbox" ng-model="config.aggregateDuplicated" ng-click="loadInfos()"/> aggregate duplicated checks
 </div>
 </body>
 </html>

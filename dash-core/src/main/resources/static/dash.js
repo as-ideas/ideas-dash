@@ -11,7 +11,12 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         var storage = window['localStorage'];
 
         // config object from/in localStorage
-        $scope.config = storage && storage['config'] ? JSON.parse(storage['config']) : {team: "All Teams", aggregate: true};
+        $scope.config = storage && storage['config'] ? JSON.parse(storage['config']) :
+        {
+            team: "All Teams",
+            aggregate: true,
+            aggregateDuplicated: true
+        };
 
         // watch changes and write to storage
         $scope.$watch("config", function (config) {
@@ -39,7 +44,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
          * @param group
          * @returns {*}
          */
-        var aggregate = function (group) {
+        var aggregateGreenChecks = function (group) {
 
             // if no aggregation is requested, do nothing
             if (!$scope.config.aggregate) {
@@ -76,6 +81,45 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             group.checks = aggregatedChecks;
         };
 
+        var containsCheck = function (checkOne, arrayWithChecks) {
+            for (var j = 0; j < arrayWithChecks.length; j++) {
+                var checkAnother = arrayWithChecks[j];
+                if (checkOne.name === checkAnother.name && checkOne.info === checkAnother.info && checkOne.state === checkAnother.state) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        /**
+         * used to gruop duplicated checks (better overview on monitor)
+         *
+         * @param group
+         * @returns {*}
+         */
+        var aggregateDuplicated = function (group) {
+
+            // if no aggregation is requested, do nothing
+            if (!$scope.config.aggregateDuplicated) {
+                console.info('Skip aggregate duplicated');
+                return group;
+            }
+
+            // new array for aggregated checks
+            var groupedChecks = [];
+
+            // iterate over checks, for each check look for already existing check in groupedChecks
+            for (var i = 0; i < group.checks.length; i++) {
+                var checkOne = group.checks[i];
+                if (!containsCheck(checkOne, groupedChecks)) {
+                    groupedChecks.push(checkOne);
+                }
+            }
+
+            // replace original checks with aggregated checks
+            group.checks = groupedChecks;
+        };
+
         $scope.loadInfos = function () {
             // Do not store the result of query() into the $scope directly.
             // The rest call may take some time and query() returns an empty resource immediately and updates it later.
@@ -95,10 +139,11 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 $scope.applicationStartId = applicationStartId;
 
                 // aggregate
-                var aggregatedGroups = [];
                 for (var i = 0; i < infos.groups.length; i++) {
-                    aggregatedGroups[i] = aggregate(infos.groups[i]);
+                    aggregateGreenChecks(infos.groups[i]);
+                    aggregateDuplicated(infos.groups[i]);
                 }
+
 
                 $scope.infos = infos;
 
