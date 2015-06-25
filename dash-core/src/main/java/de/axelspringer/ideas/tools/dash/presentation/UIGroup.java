@@ -7,6 +7,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class UIGroup {
@@ -21,7 +24,7 @@ public class UIGroup {
 
     private int failCount = 0;
 
-    private List<CheckResult> checks = new ArrayList<>();
+    private Collection<CheckResult> checks = new LinkedHashSet<>();
 
     private int orderScore = -1;
 
@@ -57,7 +60,7 @@ public class UIGroup {
     }
 
     public List<CheckResult> getChecks() {
-        return this.checks;
+        return Collections.unmodifiableList(new ArrayList<>(this.checks));
     }
 
     public int getOrderScore() {
