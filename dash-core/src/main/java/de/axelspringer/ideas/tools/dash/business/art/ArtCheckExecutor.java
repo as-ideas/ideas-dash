@@ -6,10 +6,14 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
+import org.apache.http.HttpHost;
+import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +42,7 @@ public class ArtCheckExecutor implements CheckExecutor {
         final String url = artCheck.getUrl();
         log.debug("Retrieving job result from art url {}", url);
         try {
-            String testSuiteResultString = restClient.getJsonp(url, CALLBACK_NAME, artCheck.getProxy());
+            String testSuiteResultString = getJsonp(url, CALLBACK_NAME, artCheck.getProxy());
             artTestSuitesResult = gson.fromJson(testSuiteResultString, ArtTestSuitesResult.class);
         } catch (Exception e) {
             log.error("error when calling art check '{}' for url '{}'", artCheck.getName(), artCheck.getUrl());
@@ -70,6 +74,17 @@ public class ArtCheckExecutor implements CheckExecutor {
         }
 
         return checkResults;
+    }
+
+    private String getJsonp(String url, String callbackName, HttpHost proxy) throws URISyntaxException, IOException {
+        URIBuilder uriBuilder = new URIBuilder(url);
+        uriBuilder.addParameter("callback", callbackName);
+
+        // result will be something like callbackName({"key": "value"});
+        String result = restClient.get(uriBuilder.build().toString());
+
+        // cut off the leading "callbackName(" and trailing ");"
+        return result.substring(callbackName.length() + 1, result.length() - 2);
     }
 
     @Override

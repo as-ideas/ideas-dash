@@ -18,6 +18,7 @@ import java.util.List;
 public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsCheckExecutor.class);
+
     @Autowired
     private JenkinsClient jenkinsClient;
 
