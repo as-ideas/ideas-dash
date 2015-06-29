@@ -11,11 +11,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
@@ -54,7 +50,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
         final State staticState = jiraProjectConfiguration.stateForIssueState(issue.getFields().getStatus().getName());
         final State state = staticState != null ? staticState : state(issue);
-        final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, 1, jiraCheck.getGroup())
+        final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, state == State.GREEN ? 0 : 1, jiraCheck.getGroup())
                 .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
 
         if (jiraProjectConfiguration.isIssueInProgress(issue)) {
