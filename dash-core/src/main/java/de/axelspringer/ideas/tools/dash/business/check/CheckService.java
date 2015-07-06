@@ -64,7 +64,18 @@ public class CheckService {
         return applicableExecutors.get(0);
     }
 
-    protected int getNumberOfParallelTask() {
+    /**
+     * @return the number of parallel checks to execute
+     */
+    public int getNumberOfParallelTask() {
         return numberOfParallelTask;
+    }
+
+
+    /**
+     * @param numberOfParallelTask the number of parallel checks to execute
+     */
+    public void setNumberOfParallelTask(int numberOfParallelTask) {
+        this.numberOfParallelTask = numberOfParallelTask;
     }
 }

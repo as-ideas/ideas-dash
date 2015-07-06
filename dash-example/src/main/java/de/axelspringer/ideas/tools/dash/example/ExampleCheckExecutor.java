@@ -23,6 +23,14 @@ public class ExampleCheckExecutor implements CheckExecutor<ExampleCheck> {
         if (new Random().nextInt() % 2 == 0) {
             result.markRunning();
         }
+
+        // This Task take some time to show parallel check exection!
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+
         return Arrays.asList(result);
     }
 
