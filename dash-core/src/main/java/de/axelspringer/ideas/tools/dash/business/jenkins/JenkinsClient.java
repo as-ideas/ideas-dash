@@ -31,7 +31,7 @@ public class JenkinsClient {
         String response = restClient.create()
                 .withTimeout(THIRTY_SECONDS_IN_MS)
                 .withCredentials(username, password)
-                .get(apiUrl, null);
+                .get(apiUrl);
         return gson.fromJson(response, responseType);
     }
 }

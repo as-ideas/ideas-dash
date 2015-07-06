@@ -18,8 +18,12 @@ public class RestClient {
         return new CloseableHttpClientRestClient(httpClient);
     }
 
+    /**
+     * @deprecated Use restClient.create().withHeader(requestParams).get(url) instead
+     */
+    @Deprecated
     public String get(String url, String userName, String password, Map<String, String> requestParams) throws IOException, AuthenticationException {
-        return create().withCredentials(userName, password).get(url, requestParams);
+        return create().withCredentials(userName, password).withHeaders(requestParams).get(url);
     }
 
     public String get(String url) throws IOException {

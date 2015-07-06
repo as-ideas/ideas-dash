@@ -1,7 +1,6 @@
 package de.axelspringer.ideas.tools.dash.util;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -12,7 +11,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -45,46 +43,47 @@ public class CloseableHttpClientRestClient {
         return this;
     }
 
+    public CloseableHttpClientRestClient withHeaders(Map<String, String> headerEntries) {
+        for (Map.Entry<String, String> entry : headerEntries.entrySet()) {
+            withHeader(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+
     public CloseableHttpClientRestClient withHeader(String key, String value) {
         headers.put(key, value);
         return this;
     }
 
-    public String get(String url, Map<String, String> requestParams) throws IOException, AuthenticationException {
-
-        final HttpGet httpGet = new HttpGet(buildUrl(url, requestParams));
-
-        // add pwl-header
-        for (Map.Entry<String, String> entry : requestParams.entrySet()) {
-            httpGet.addHeader(entry.getKey(), entry.getValue());
-        }
-
-        // basic auth
-        if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
-            httpGet.addHeader(new BasicScheme().authenticate(new UsernamePasswordCredentials(username, password), httpGet));
-        }
-
-        final RequestConfig.Builder configBuilder = RequestConfig.custom()
-                .setConnectTimeout(timeoutInMs)
-                .setSocketTimeout(timeoutInMs)
-                .setConnectionRequestTimeout(timeoutInMs);
-
-        httpGet.setConfig(configBuilder.build());
-
-        try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
-            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                return EntityUtils.toString(httpResponse.getEntity());
-            }
-            LOG.warn("Error [Status=" + httpResponse.getStatusLine().getStatusCode() + " ,Url=" + url + "]");
-            return "";
-        }
-    }
-
-    public String get(String url) throws IOException {
+    public String get(String url) {
         try {
-            return get(url, null);
-        } catch (AuthenticationException e) {
-            throw new RuntimeException(e);
+            final HttpGet httpGet = new HttpGet(buildUrl(url, headers));
+
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                httpGet.addHeader(entry.getKey(), entry.getValue());
+            }
+
+            // basic auth
+            if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
+                httpGet.addHeader(new BasicScheme().authenticate(new UsernamePasswordCredentials(username, password), httpGet));
+            }
+
+            final RequestConfig.Builder configBuilder = RequestConfig.custom()
+                    .setConnectTimeout(timeoutInMs)
+                    .setSocketTimeout(timeoutInMs)
+                    .setConnectionRequestTimeout(timeoutInMs);
+
+            httpGet.setConfig(configBuilder.build());
+
+            try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
+                if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                    return EntityUtils.toString(httpResponse.getEntity());
+                }
+                LOG.warn("Error [Status=" + httpResponse.getStatusLine().getStatusCode() + " ,Url=" + url + "]");
+                return "";
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
