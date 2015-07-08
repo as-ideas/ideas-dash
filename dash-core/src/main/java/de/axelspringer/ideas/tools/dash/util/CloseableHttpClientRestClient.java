@@ -27,6 +27,7 @@ public class CloseableHttpClientRestClient {
     private String username;
     private String password;
     private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> queryParameters = new HashMap<>();
 
     public CloseableHttpClientRestClient(CloseableHttpClient httpClient) {
         this.httpClient = httpClient;
@@ -55,9 +56,21 @@ public class CloseableHttpClientRestClient {
         return this;
     }
 
+    public CloseableHttpClientRestClient withQueryParameter(String key, String value) {
+        queryParameters.put(key, value);
+        return this;
+    }
+
+    public CloseableHttpClientRestClient withQueryParameters(Map<String, String> entries) {
+        for (Map.Entry<String, String> entry : entries.entrySet()) {
+            withQueryParameter(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+
     public String get(String url) {
         try {
-            final HttpGet httpGet = new HttpGet(buildUrl(url, headers));
+            final HttpGet httpGet = new HttpGet(buildUrl(url, queryParameters));
 
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 httpGet.addHeader(entry.getKey(), entry.getValue());
@@ -79,7 +92,7 @@ public class CloseableHttpClientRestClient {
                 if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     return EntityUtils.toString(httpResponse.getEntity());
                 }
-                LOG.warn("Error [Status=" + httpResponse.getStatusLine().getStatusCode() + " ,Url=" + url + "]");
+                LOG.warn("Error [Status=" + httpResponse.getStatusLine().getStatusCode() + " , Url=" + url + ", Body=" + EntityUtils.toString(httpResponse.getEntity()) + "]");
                 return "";
             }
         } catch (Exception e) {
@@ -89,7 +102,7 @@ public class CloseableHttpClientRestClient {
 
     private String buildUrl(String url, Map<String, String> params) {
 
-        if (params == null) {
+        if (params == null || params.isEmpty()) {
             return url;
         }
 
