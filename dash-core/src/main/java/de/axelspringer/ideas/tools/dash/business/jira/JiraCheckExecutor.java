@@ -71,7 +71,10 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         log.debug("Retrieving jira status with JQL {}", jiraCheck.getJql());
         final SearchResult searchResult;
         try {
-            final String resultAsString = restClient.get(jiraCheck.getUrl() + "/rest/api/2/search", jiraCheck.getUserName(), jiraCheck.getPassword(), requestParams);
+            final String resultAsString = restClient.create()
+                    .withCredentials(jiraCheck.getUserName(), jiraCheck.getPassword())
+                    .withQueryParameters(requestParams)
+                    .get(jiraCheck.getUrl() + "/rest/api/2/search");
             searchResult = gson.fromJson(resultAsString, SearchResult.class);
         } catch (Exception e) {
             log.error("error fetching jira results", e);
