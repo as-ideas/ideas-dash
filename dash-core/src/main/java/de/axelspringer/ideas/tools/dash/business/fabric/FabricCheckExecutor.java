@@ -85,11 +85,13 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
             throw new RuntimeException(new FabricExecutionException("05 Expected HTTP OK but got " + issuesResponse.getStatusCode()));
         }
 
-        final int crashesCount = Arrays.asList(issuesResponse.getBody()).stream()
-                .mapToInt(FabricIssue::getCrashes_count)
-                .sum();
+        if (!issuesResponse.hasBody()) {
+            throw new RuntimeException(new FabricExecutionException("Expected Body but got nothing."));
+        }
+        
+        final int issueCount = issuesResponse.getBody().length;
 
-        return new FabricAppWithCrashesCount(fabricApp, crashesCount);
+        return new FabricAppWithCrashesCount(fabricApp, issueCount);
     }
 
     private List<FabricApp> loadApps(HttpHeaders httpHeaders) throws FabricExecutionException {
