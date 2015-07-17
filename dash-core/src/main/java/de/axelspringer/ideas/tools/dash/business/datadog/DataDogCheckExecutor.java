@@ -40,12 +40,21 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
         final List<DataDogMonitor> dataDogMonitors = Arrays.asList(monitorResponse.getBody());
         return dataDogMonitors.stream()
-                .filter(candidate -> StringUtils.isEmpty(check.getNameFilter()) || candidate.getName().toLowerCase().contains(check.getNameFilter().toLowerCase()))
-                .map(monitor -> map(monitor, check.getGroup(), check.getNameFilter(), check.getJobNameTeamMappings()))
+                .filter(candidate -> isNameMatching(check, candidate))
+                .filter(candidate -> isActiveMonitor(check, candidate))
+                .map(monitor -> convertMonitorToCheckResult(monitor, check.getGroup(), check.getNameFilter(), check.getJobNameTeamMappings()))
                 .collect(Collectors.toList());
     }
 
-    CheckResult map(DataDogMonitor monitor, Group group, String nameFilter, Map<String, Team> jobNameTeamMappings) {
+    private boolean isActiveMonitor(DataDogCheck check, DataDogMonitor candidate) {
+        return candidate.getOptions() == null || !candidate.getOptions().isSilenced();
+    }
+
+    private boolean isNameMatching(DataDogCheck check, DataDogMonitor candidate) {
+        return StringUtils.isEmpty(check.getNameFilter()) || candidate.getName().toLowerCase().contains(check.getNameFilter().toLowerCase());
+    }
+
+    CheckResult convertMonitorToCheckResult(DataDogMonitor monitor, Group group, String nameFilter, Map<String, Team> jobNameTeamMappings) {
 
         final State state = DataDogMonitor.STATE_OK.equals(monitor.getOverall_state()) ? State.GREEN : State.RED;
         final int errorCount = State.GREEN == state ? 0 : 1;
@@ -57,7 +66,6 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         }
 
         checkResult.withLink("https://www.datadoghq.com/");
-
         return checkResult;
     }
 

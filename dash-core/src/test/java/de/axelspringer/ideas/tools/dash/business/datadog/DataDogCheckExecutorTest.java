@@ -92,7 +92,7 @@ public class DataDogCheckExecutorTest {
     @Test
     public void testMap() {
 
-        final CheckResult checkResult = dataDogCheckExecutor.map(new DataDogMonitor("name", DataDogMonitor.STATE_OK), null, null, new HashMap<>());
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(new DataDogMonitor("name", DataDogMonitor.STATE_OK), null, null, new HashMap<>());
         assertEquals(State.GREEN, checkResult.getState());
         assertEquals(1, checkResult.getTestCount());
         assertEquals(0, checkResult.getFailCount());
@@ -106,7 +106,7 @@ public class DataDogCheckExecutorTest {
     @Test
     public void testMapAlert() {
 
-        final CheckResult checkResult = dataDogCheckExecutor.map(new DataDogMonitor("name", "alert"), null, null, new HashMap<>());
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(new DataDogMonitor("name", "alert"), null, null, new HashMap<>());
         assertEquals(State.RED, checkResult.getState());
         assertEquals(1, checkResult.getTestCount());
         assertEquals(1, checkResult.getFailCount());

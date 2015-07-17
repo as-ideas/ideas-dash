@@ -12,6 +12,7 @@ public class DataDogMonitor {
     private String query;
     private String overall_state;
     private String type;
+    private DataDogMonitorOptions options;
 
     public DataDogMonitor() {
     }
@@ -51,6 +52,14 @@ public class DataDogMonitor {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public DataDogMonitorOptions getOptions() {
+        return options;
+    }
+
+    public void setOptions(DataDogMonitorOptions options) {
+        this.options = options;
     }
 
     @Override
