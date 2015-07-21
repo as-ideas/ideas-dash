@@ -100,8 +100,6 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         switch (issue.getFields().getStatus().getName().toLowerCase()) {
             case "done":
                 return State.GREEN;
-            case "in progress":
-                return State.GREY;
             default:
                 return State.YELLOW;
         }

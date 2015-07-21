@@ -10,13 +10,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -33,7 +30,8 @@ import java.util.stream.Collectors;
 @Service
 public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(FabricCheckExecutor.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     @Autowired
     @Qualifier("exceptionSwallowingRestTemplate")
     private RestTemplate restTemplate;
@@ -60,17 +58,40 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
             return Collections.singletonList(new CheckResult(State.RED, "FABRIC", e.getMessage(), 1, 1, group).withTeam(team));
         }
 
-        return fabricApps.stream().map(fabricApp -> map(fabricApp, group, team)).collect(Collectors.toList());
+        return fabricApps.stream()
+                .map(fabricApp -> loadIssues(fabricApp, sessionHeaders))
+                .map(fabricAppWithCrashesCount -> map(fabricAppWithCrashesCount, group, team))
+                .collect(Collectors.toList());
     }
 
-    private CheckResult map(FabricApp fabricApp, Group group, Team team) {
+    private CheckResult map(FabricAppWithCrashesCount fabricAppWithCrashesCount, Group group, Team team) {
 
-        final Integer unresolvedIssuesCount = fabricApp.getUnresolved_issues_count();
+        final FabricApp fabricApp = fabricAppWithCrashesCount.getFabricApp();
+        final Integer crashesCount = fabricAppWithCrashesCount.getCrashesCount();
+
         // every crash/issue not found in development but out in the wild is considered real bad (red) to make dev team fix the issue immediately
-        final State state = unresolvedIssuesCount > 0 ? State.RED : State.GREEN;
-        return new CheckResult(state, fabricApp.getName(), unresolvedIssuesCount + " unresolved", 1 + unresolvedIssuesCount, unresolvedIssuesCount, group)
+        final State state = crashesCount > 0 ? State.RED : State.GREEN;
+        return new CheckResult(state, fabricApp.getName(), crashesCount + " unresolved", 1 + crashesCount, crashesCount, group)
                 .withLink(fabricApp.getDashboard_url())
                 .withTeam(team);
+    }
+
+    private FabricAppWithCrashesCount loadIssues(FabricApp fabricApp, HttpHeaders httpHeaders) {
+
+        final String appId = fabricApp.getId();
+
+        ResponseEntity<FabricIssue[]> issuesResponse = restTemplate.exchange("https://fabric.io/api/v3/projects/" + appId + "/issues?state=open&event_type=all", HttpMethod.GET, new HttpEntity<>(httpHeaders), FabricIssue[].class);
+        if (issuesResponse.getStatusCode() != HttpStatus.OK) {
+            throw new RuntimeException(new FabricExecutionException("05 Expected HTTP OK but got " + issuesResponse.getStatusCode()));
+        }
+
+        if (!issuesResponse.hasBody()) {
+            throw new RuntimeException(new FabricExecutionException("Expected Body but got nothing."));
+        }
+        
+        final int issueCount = issuesResponse.getBody().length;
+
+        return new FabricAppWithCrashesCount(fabricApp, issueCount);
     }
 
     private List<FabricApp> loadApps(HttpHeaders httpHeaders) throws FabricExecutionException {
