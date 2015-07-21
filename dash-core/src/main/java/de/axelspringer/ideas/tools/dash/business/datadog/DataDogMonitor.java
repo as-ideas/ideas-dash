@@ -1,79 +1,74 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DataDogMonitor {
 
     public final static String STATE_OK = "OK";
 
+    // This is the inner data from the JSON
     private String name;
     private String query;
     private String overall_state;
     private String type;
     private DataDogMonitorOptions options;
 
-    public DataDogMonitor() {
-    }
-
-    public DataDogMonitor(String name, String overall_state) {
-        this.name = name;
-        this.overall_state = overall_state;
-    }
+    // These are additional Infos
+    private List<String> tags;
+    private MonitorState state;
 
     public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return name;
     }
 
     public String getQuery() {
-        return this.query;
+        return query;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    public String getOverallState() {
+        return overall_state;
     }
 
-    public String getOverall_state() {
-        return this.overall_state;
+    public boolean isSilencedMonitor() {
+        return !isActiveMonitor();
     }
 
-    public void setOverall_state(String overall_state) {
-        this.overall_state = overall_state;
+    public boolean isActiveMonitor() {
+        return options == null || !options.isSilenced();
     }
 
-    public String getType() {
-        return this.type;
+    public boolean isOverallStateOk() {
+        return STATE_OK.equals(overall_state);
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public List<String> getTags() {
+        if (tags == null) {
+            tags = findAllTagsInQuery();
+        }
+        return tags;
     }
 
-    public DataDogMonitorOptions getOptions() {
-        return options;
+    private List<String> findAllTagsInQuery() {
+        List<String> tags = new ArrayList<>();
+        Pattern p = Pattern.compile("\\{(.*?)\\}");
+        Matcher m = p.matcher(query);
+
+        while (m.find()) {
+            final String group = m.group(1);
+            final String[] split = group.split(",");
+            for (String singleTag : split) {
+                if (StringUtils.isNotBlank(singleTag)) {
+                    tags.add(singleTag);
+                }
+            }
+        }
+        return tags;
     }
 
-    public void setOptions(DataDogMonitorOptions options) {
-        this.options = options;
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
 }
