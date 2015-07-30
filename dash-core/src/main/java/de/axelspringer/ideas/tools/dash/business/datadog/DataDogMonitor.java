@@ -20,7 +20,6 @@ public class DataDogMonitor {
 
     // These are additional Infos
     private List<String> tags;
-    private MonitorState state;
 
     public String getName() {
         return name;
