@@ -57,7 +57,8 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
             checkResult.markRunning();
         }
 
-        checkResult.withName(jiraCheck.getName() + " (" + issue.getFields().getAssignee().getName() + ")");
+        final String assignee = issue.getFields().getAssignee() == null ? "nobody" : issue.getFields().getAssignee().getName();
+        checkResult.withName(jiraCheck.getName() + " (" + assignee + ")");
         return checkResult;
     }
 
