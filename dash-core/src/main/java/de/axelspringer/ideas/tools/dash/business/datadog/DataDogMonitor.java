@@ -16,6 +16,7 @@ public class DataDogMonitor {
     private String query;
     private String overall_state;
     private String type;
+    private Long id;
     private DataDogMonitorOptions options;
 
     // These are additional Infos
@@ -31,6 +32,10 @@ public class DataDogMonitor {
 
     public String getOverallState() {
         return overall_state;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public boolean isSilencedMonitor() {

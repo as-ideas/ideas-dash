@@ -77,7 +77,8 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
             checkResult.withTeam(team);
         }
 
-        checkResult.withLink("https://www.datadoghq.com/");
+        // HINT https://app.datadoghq.com/monitors#status?id=182437&group=all
+        checkResult.withLink("https://app.datadoghq.com/monitors#status?id=" + monitor.getId() + "&group=all");
         return checkResult;
     }
 
