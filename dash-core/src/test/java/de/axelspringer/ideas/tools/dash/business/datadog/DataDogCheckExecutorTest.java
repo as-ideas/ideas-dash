@@ -109,7 +109,7 @@ public class DataDogCheckExecutorTest {
         assertEquals(0, checkResult.getFailCount());
         assertEquals("name@DataDog", checkResult.getName());
         assertEquals("OK (query: null)", checkResult.getInfo());
-        assertEquals("https://www.datadoghq.com/", checkResult.getLink());
+        assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
         assertNull(checkResult.getTeam());
     }
@@ -123,7 +123,7 @@ public class DataDogCheckExecutorTest {
         assertEquals(1, checkResult.getFailCount());
         assertEquals("name@DataDog", checkResult.getName());
         assertEquals("alert (query: null)", checkResult.getInfo());
-        assertEquals("https://www.datadoghq.com/", checkResult.getLink());
+        assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
         assertNull(checkResult.getTeam());
     }
@@ -137,7 +137,7 @@ public class DataDogCheckExecutorTest {
         assertEquals(1, checkResult.getFailCount());
         assertEquals("name@DataDog", checkResult.getName());
         assertEquals("alert (query: null)", checkResult.getInfo());
-        assertEquals("https://www.datadoghq.com/", checkResult.getLink());
+        assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
         assertNull(checkResult.getTeam());
     }
@@ -153,7 +153,7 @@ public class DataDogCheckExecutorTest {
         assertEquals(1, checkResult.getFailCount());
         assertEquals("name@DataDog", checkResult.getName());
         assertEquals("MAINTENANCE!", checkResult.getInfo());
-        assertEquals("https://www.datadoghq.com/", checkResult.getLink());
+        assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
         assertNull(checkResult.getTeam());
     }
