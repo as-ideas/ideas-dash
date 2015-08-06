@@ -6,6 +6,7 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
 import de.axelspringer.ideas.tools.dash.presentation.State;
+import de.axelspringer.ideas.tools.dash.util.CloseableHttpClientRestClient;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,8 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
             checkResult.markRunning();
         }
 
-        checkResult.withName(jiraCheck.getName() + " (" + issue.getFields().getAssignee().getName() + ")");
+        final String assignee = issue.getFields().getAssignee() == null ? "nobody" : issue.getFields().getAssignee().getName();
+        checkResult.withName(jiraCheck.getName() + " (" + assignee + ")");
         return checkResult;
     }
 
@@ -74,6 +76,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
             final String resultAsString = restClient.create()
                     .withCredentials(jiraCheck.getUserName(), jiraCheck.getPassword())
                     .withQueryParameters(requestParams)
+                    .withTimeout(CloseableHttpClientRestClient.THIRTY_SECONS_IN_MS)
                     .get(jiraCheck.getUrl() + "/rest/api/2/search");
             searchResult = gson.fromJson(resultAsString, SearchResult.class);
         } catch (Exception e) {

@@ -21,6 +21,7 @@ public class CloseableHttpClientRestClient {
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(CloseableHttpClientRestClient.class);
 
     public static final int TEN_SECONS_IN_MS = 10 * 1000;
+    public static final int THIRTY_SECONS_IN_MS = 30 * 1000;
 
     private CloseableHttpClient httpClient;
     private int timeoutInMs = TEN_SECONS_IN_MS;
