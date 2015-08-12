@@ -1,7 +1,10 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DataDogMonitorOptions {
 
     private Boolean notify_no_data;

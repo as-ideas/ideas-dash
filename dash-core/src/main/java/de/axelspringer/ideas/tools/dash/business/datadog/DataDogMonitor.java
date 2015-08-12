@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DataDogMonitor {
 
     public final static String STATE_OK = "OK";
@@ -38,6 +40,10 @@ public class DataDogMonitor {
 
     public Long getId() {
         return id;
+    }
+
+    public DataDogMonitorOptions getOptions() {
+        return options;
     }
 
     public boolean isSilencedMonitor() {
