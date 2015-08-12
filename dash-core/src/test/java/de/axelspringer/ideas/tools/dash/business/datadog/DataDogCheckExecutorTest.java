@@ -178,7 +178,7 @@ public class DataDogCheckExecutorTest {
     private DataDogMonitor dataDogMonitor(String name, String stateOk) {
         DataDogMonitor monitor = new DataDogMonitor();
         Whitebox.setInternalState(monitor, "name", name);
-        Whitebox.setInternalState(monitor, "overall_state", stateOk);
+        Whitebox.setInternalState(monitor, "overallState", stateOk);
         return monitor;
     }
 

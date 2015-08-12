@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -14,7 +15,8 @@ public class DataDogMonitor {
     // This is the inner data from the JSON
     private String name;
     private String query;
-    private String overall_state;
+    @JsonProperty("overall_state")
+    private String overallState;
     private String type;
     private Long id;
     private DataDogMonitorOptions options;
@@ -31,7 +33,7 @@ public class DataDogMonitor {
     }
 
     public String getOverallState() {
-        return overall_state;
+        return overallState;
     }
 
     public Long getId() {
@@ -47,7 +49,7 @@ public class DataDogMonitor {
     }
 
     public boolean isOverallStateOk() {
-        return STATE_OK.equals(overall_state);
+        return STATE_OK.equals(overallState);
     }
 
     public List<String> getTags() {
