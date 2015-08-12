@@ -4,10 +4,13 @@ import de.axelspringer.ideas.tools.dash.TestTeam;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +23,11 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,11 +40,16 @@ public class DataDogCheckExecutorTest {
     @InjectMocks
     private DataDogCheckExecutor dataDogCheckExecutor;
 
+    @Before
+    public void beforeMethod() throws Exception {
+        doReturn(new ResponseEntity<>(HttpStatus.CONFLICT)).when(restTemplate).getForEntity(anyString(), anyObject());
+    }
+
     @Test
-    public void testExecuteCheck() throws Exception {
+    public void executeCheck_AllResultsOk() throws Exception {
 
         // simulate successful backend call
-        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(new DataDogMonitor[]{new DataDogMonitor("Monitor OK", DataDogMonitor.STATE_OK), new DataDogMonitor("Monitor in Error", "some_error_state")}, HttpStatus.OK));
+        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(new DataDogMonitor[]{dataDogMonitor("Monitor OK", DataDogMonitor.STATE_OK), dataDogMonitor("Monitor in Error", "some_error_state")}, HttpStatus.OK));
 
         // execute check
         final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(new DataDogCheck("myCheck", null, null, null, null));
@@ -57,10 +68,10 @@ public class DataDogCheckExecutorTest {
     }
 
     @Test
-    public void testExecuteCheckWithNameFiler() throws Exception {
+    public void executeCheck_WithNameFiler() throws Exception {
 
         // simulate successful backend call
-        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(new DataDogMonitor[]{new DataDogMonitor("[YANA]Monitor OK", DataDogMonitor.STATE_OK), new DataDogMonitor("Monitor in Error", "some_error_state")}, HttpStatus.OK));
+        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(new DataDogMonitor[]{dataDogMonitor("[YANA]Monitor OK", DataDogMonitor.STATE_OK), dataDogMonitor("Monitor in Error", "some_error_state")}, HttpStatus.OK));
 
         // execute check with name filter (should work case-insensitive)
         final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(new DataDogCheck("myCheck", null, null, null, "[yana]"));
@@ -72,7 +83,7 @@ public class DataDogCheckExecutorTest {
     }
 
     @Test
-    public void testExecuteCheckWithHttpError() throws Exception {
+    public void executeCheck_WithHttpError() throws Exception {
 
         // simulate some code other than 200
         when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(HttpStatus.BAD_GATEWAY));
@@ -90,40 +101,85 @@ public class DataDogCheckExecutorTest {
     }
 
     @Test
-    public void testMap() {
+    public void convertMonitorToCheckResult() {
 
-        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(new DataDogMonitor("name", DataDogMonitor.STATE_OK), null, null, new HashMap<>());
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", DataDogMonitor.STATE_OK), dataDogCheck(), downtimes());
         assertEquals(State.GREEN, checkResult.getState());
         assertEquals(1, checkResult.getTestCount());
         assertEquals(0, checkResult.getFailCount());
         assertEquals("name@DataDog", checkResult.getName());
         assertEquals("OK (query: null)", checkResult.getInfo());
-        assertEquals("https://www.datadoghq.com/", checkResult.getLink());
+        assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
         assertNull(checkResult.getTeam());
     }
 
     @Test
-    public void testMapAlert() {
+    public void convertMonitorToCheckResult_Alert() {
 
-        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(new DataDogMonitor("name", "alert"), null, null, new HashMap<>());
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", "alert"), dataDogCheck(), downtimes());
         assertEquals(State.RED, checkResult.getState());
         assertEquals(1, checkResult.getTestCount());
         assertEquals(1, checkResult.getFailCount());
         assertEquals("name@DataDog", checkResult.getName());
         assertEquals("alert (query: null)", checkResult.getInfo());
-        assertEquals("https://www.datadoghq.com/", checkResult.getLink());
+        assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
         assertNull(checkResult.getTeam());
     }
 
     @Test
-    public void testTeam() {
+    public void convertMonitorToCheckResult_Silenced() {
 
-        assertNull(dataDogCheckExecutor.team("[yana][cm]some_monitor", null, teamMappings()));
-        assertNull(dataDogCheckExecutor.team("[yana][foo]some_monitor", "[yana]", teamMappings()));
-        assertNull(dataDogCheckExecutor.team("some_monitor", null, teamMappings()));
-        assertEquals(TestTeam.INSTANCE, dataDogCheckExecutor.team("[yana][cm]some_monitor", "[yana]", teamMappings()));
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", "alert"), dataDogCheck(), downtimes());
+        assertEquals(State.RED, checkResult.getState());
+        assertEquals(1, checkResult.getTestCount());
+        assertEquals(1, checkResult.getFailCount());
+        assertEquals("name@DataDog", checkResult.getName());
+        assertEquals("alert (query: null)", checkResult.getInfo());
+        assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
+        assertNull(checkResult.getGroup());
+        assertNull(checkResult.getTeam());
+    }
+
+    @Test
+    public void convertMonitorToCheckResult_Downtime() {
+        final DataDogDowntimes downtimes = downtimes();
+        doReturn(true).when(downtimes).hasDowntime(any(DataDogMonitor.class));
+
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", "alert"), dataDogCheck(), downtimes);
+        assertEquals(State.GREEN, checkResult.getState());
+        assertEquals(1, checkResult.getTestCount());
+        assertEquals(1, checkResult.getFailCount());
+        assertEquals("name@DataDog", checkResult.getName());
+        assertEquals("MAINTENANCE!", checkResult.getInfo());
+        assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
+        assertNull(checkResult.getGroup());
+        assertNull(checkResult.getTeam());
+    }
+
+    @Test
+    public void decideTeam() {
+
+        assertNull(dataDogCheckExecutor.decideTeam("[yana][cm]some_monitor", null, teamMappings()));
+        assertNull(dataDogCheckExecutor.decideTeam("[yana][foo]some_monitor", "[yana]", teamMappings()));
+        assertNull(dataDogCheckExecutor.decideTeam("some_monitor", null, teamMappings()));
+        assertEquals(TestTeam.INSTANCE, dataDogCheckExecutor.decideTeam("[yana][cm]some_monitor", "[yana]", teamMappings()));
+    }
+
+    private DataDogDowntimes downtimes() {
+        return Mockito.mock(DataDogDowntimes.class);
+    }
+
+    private DataDogCheck dataDogCheck() {
+        return new DataDogCheck("name", null, "apiKey", "appKey", "nameFilter");
+    }
+
+    private DataDogMonitor dataDogMonitor(String name, String stateOk) {
+        DataDogMonitor monitor = new DataDogMonitor();
+        Whitebox.setInternalState(monitor, "name", name);
+        Whitebox.setInternalState(monitor, "overall_state", stateOk);
+        return monitor;
     }
 
     private Map<String, Team> teamMappings() {

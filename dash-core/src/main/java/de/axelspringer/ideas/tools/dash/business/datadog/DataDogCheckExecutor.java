@@ -30,46 +30,59 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
     @Override
     public List<CheckResult> executeCheck(DataDogCheck check) {
 
-        final String url = "https://app.datadoghq.com/api/v1/monitor?api_key=" + check.getApiKey() + "&application_key=" + check.getAppKey();
 
-        final ResponseEntity<DataDogMonitor[]> monitorResponse = restTemplate.getForEntity(url, DataDogMonitor[].class);
+        final ResponseEntity<DataDogMonitor[]> monitorResponse = loadFromDataDog(check.getApiKey(), check.getAppKey());
+        final DataDogDowntimes downtimes = new DataDogDowntimes(restTemplate, check.getApiKey(), check.getAppKey());
 
         if (monitorResponse.getStatusCode() != HttpStatus.OK) {
             return Collections.singletonList(new CheckResult(State.RED, "DataDog", "got http " + monitorResponse.getStatusCode(), 1, 1, check.getGroup()).withTeam(check.getTeam()));
         }
 
-        final List<DataDogMonitor> dataDogMonitors = Arrays.asList(monitorResponse.getBody());
-        return dataDogMonitors.stream()
+        return Arrays.asList(monitorResponse.getBody()).stream()
                 .filter(candidate -> isNameMatching(check, candidate))
-                .filter(candidate -> isActiveMonitor(check, candidate))
-                .map(monitor -> convertMonitorToCheckResult(monitor, check.getGroup(), check.getNameFilter(), check.getJobNameTeamMappings()))
+                .map(monitor -> convertMonitorToCheckResult(monitor, check, downtimes))
                 .collect(Collectors.toList());
     }
 
-    private boolean isActiveMonitor(DataDogCheck check, DataDogMonitor candidate) {
-        return candidate.getOptions() == null || !candidate.getOptions().isSilenced();
+    private ResponseEntity<DataDogMonitor[]> loadFromDataDog(String apiKey, String appKey) {
+        final String url = "https://app.datadoghq.com/api/v1/monitor?api_key=" + apiKey + "&application_key=" + appKey;
+        return restTemplate.getForEntity(url, DataDogMonitor[].class);
     }
+
 
     private boolean isNameMatching(DataDogCheck check, DataDogMonitor candidate) {
         return StringUtils.isEmpty(check.getNameFilter()) || candidate.getName().toLowerCase().contains(check.getNameFilter().toLowerCase());
     }
 
-    CheckResult convertMonitorToCheckResult(DataDogMonitor monitor, Group group, String nameFilter, Map<String, Team> jobNameTeamMappings) {
+    CheckResult convertMonitorToCheckResult(DataDogMonitor monitor, DataDogCheck check, DataDogDowntimes downtimes) {
+        Group group = check.getGroup();
+        String nameFilter = check.getNameFilter();
+        Map<String, Team> jobNameTeamMappings = check.getJobNameTeamMappings();
 
-        final State state = DataDogMonitor.STATE_OK.equals(monitor.getOverall_state()) ? State.GREEN : State.RED;
+        State state = monitor.isOverallStateOk() ? State.GREEN : State.RED;
+        String infoMessage = monitor.getOverallState() + " (query: " + monitor.getQuery() + ")";
         final int errorCount = State.GREEN == state ? 0 : 1;
 
-        final CheckResult checkResult = new CheckResult(state, monitor.getName() + "@DataDog", monitor.getOverall_state() + " (query: " + monitor.getQuery() + ")", 1, errorCount, group);
-        final Team team = team(monitor.getName(), nameFilter, jobNameTeamMappings);
+        if (monitor.isSilencedMonitor()) {
+            state = State.GREEN;
+            infoMessage = "NOT ACTIVE!";
+        } else if (downtimes.hasDowntime(monitor)) {
+            state = State.GREEN;
+            infoMessage = "MAINTENANCE!";
+        }
+
+        final CheckResult checkResult = new CheckResult(state, monitor.getName() + "@DataDog", infoMessage, 1, errorCount, group);
+        final Team team = decideTeam(monitor.getName(), nameFilter, jobNameTeamMappings);
         if (team != null) {
             checkResult.withTeam(team);
         }
 
-        checkResult.withLink("https://www.datadoghq.com/");
+        // HINT https://app.datadoghq.com/monitors#status?id=182437&group=all
+        checkResult.withLink("https://app.datadoghq.com/monitors#status?id=" + monitor.getId() + "&group=all");
         return checkResult;
     }
 
-    Team team(String monitorName, String nameFilter, Map<String, Team> jobNameTeamMappings) {
+    Team decideTeam(String monitorName, String nameFilter, Map<String, Team> jobNameTeamMappings) {
 
         // operate on this string
         String strippedName = monitorName.toLowerCase();
