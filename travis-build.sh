@@ -4,7 +4,7 @@
 
 echo "building branch $TRAVIS_BRANCH (pullRequest: $TRAVIS_PULL_REQUEST)"
 
-if [ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]; then
+if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     goal=deploy
 else
     goal=install
