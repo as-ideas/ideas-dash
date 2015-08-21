@@ -18,6 +18,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
 public class DataDogMonitorTest {
@@ -67,6 +68,8 @@ public class DataDogMonitorTest {
 
         assertNotNull(dataDogMonitor.getOptions());
         assertNotNull(dataDogMonitor.getOverallState());
+        assertTrue(dataDogMonitor.isSilencedMonitor());
+        assertTrue(dataDogMonitor.isNotifyNoData());
     }
 
 
