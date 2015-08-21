@@ -56,7 +56,6 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
     CheckResult convertMonitorToCheckResult(DataDogMonitor monitor, DataDogCheck check, DataDogDowntimes downtimes) {
         Group group = check.getGroup();
-        String nameFilter = check.getNameFilter();
         Map<String, Team> jobNameTeamMappings = check.getJobNameTeamMappings();
 
         State state = monitor.isOverallStateOk() ? State.GREEN : State.RED;
@@ -72,7 +71,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         }
 
         final CheckResult checkResult = new CheckResult(state, monitor.getName() + "@DataDog", infoMessage, 1, errorCount, group);
-        final Team team = decideTeam(monitor.getName(), nameFilter, jobNameTeamMappings);
+        final Team team = decideTeam(monitor.getName(), jobNameTeamMappings);
         if (team != null) {
             checkResult.withTeam(team);
         }
@@ -82,17 +81,14 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         return checkResult;
     }
 
-    Team decideTeam(String monitorName, String nameFilter, Map<String, Team> jobNameTeamMappings) {
+    Team decideTeam(String monitorName, Map<String, Team> jobNameTeamMappings) {
 
         // operate on this string
-        String strippedName = monitorName.toLowerCase();
-
-        // remove name filter
-        strippedName = nameFilter != null && strippedName.startsWith(nameFilter.toLowerCase()) ? strippedName.substring(nameFilter.length()) : strippedName;
+        monitorName = monitorName.toLowerCase();
 
         // search for team mapping
         for (String teamName : jobNameTeamMappings.keySet()) {
-            if (strippedName.startsWith(teamName.toLowerCase())) {
+            if (monitorName.contains(teamName.toLowerCase())) {
                 return jobNameTeamMappings.get(teamName);
             }
         }

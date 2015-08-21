@@ -161,10 +161,11 @@ public class DataDogCheckExecutorTest {
     @Test
     public void decideTeam() {
 
-        assertNull(dataDogCheckExecutor.decideTeam("[yana][cm]some_monitor", null, teamMappings()));
-        assertNull(dataDogCheckExecutor.decideTeam("[yana][foo]some_monitor", "[yana]", teamMappings()));
-        assertNull(dataDogCheckExecutor.decideTeam("some_monitor", null, teamMappings()));
-        assertEquals(TestTeam.INSTANCE, dataDogCheckExecutor.decideTeam("[yana][cm]some_monitor", "[yana]", teamMappings()));
+        assertNull(dataDogCheckExecutor.decideTeam("[foo]some_monitor", teamMappings()));
+        assertNull(dataDogCheckExecutor.decideTeam("some_monitor", teamMappings()));
+        assertEquals(TestTeam.INSTANCE, dataDogCheckExecutor.decideTeam("[yana][cm]some_monitor", teamMappings()));
+        assertEquals(TestTeam.INSTANCE, dataDogCheckExecutor.decideTeam("[yana][foo][cm]some_monitor", teamMappings()));
+        assertEquals(TestTeam.INSTANCE, dataDogCheckExecutor.decideTeam("[cm]some_monitor", teamMappings()));
     }
 
     private DataDogDowntimes downtimes() {
