@@ -40,12 +40,10 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         teamsResource.get().$promise.then(function (teams) {
             $scope.teams = teams['teams'];
 
-            // if config.teams is an empty object, initialize it to show all teams
+            // select all available teams if the user did not make a choice yet
             // (this is only the case when the team checkboxes have never been touched)
-            if (Object.getOwnPropertyNames($scope.config.teams).length == 0) {
-                for (var i = 0; i < $scope.teams.length; i++) {
-                    $scope.config.teams[$scope.teams[i]] = true;
-                }
+            if (isEmptyObject($scope.config.teams)) {
+                selectAllTeams();
             }
         });
 
@@ -249,6 +247,16 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             }
 
             return $scope.config.teams[team];
+        }
+
+        function selectAllTeams() {
+            angular.forEach($scope.teams, function (teamName) {
+                $scope.config.teams[teamName] = true;
+            });
+        }
+
+        function isEmptyObject(obj) {
+            return Object.getOwnPropertyNames(obj).length == 0;
         }
     }
 );
