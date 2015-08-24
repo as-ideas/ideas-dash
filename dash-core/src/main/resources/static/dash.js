@@ -223,7 +223,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 var check = group.checks[i];
 
                 // include the check only if it belongs to the displayed team(s)
-                if (shouldShowCheckForChosenTeams(check)) {
+                if (isTeamSelected(check.team)) {
                     // aggregate state (worst of two :))
                     state = aggregateState(state, check.state);
                 }
@@ -237,14 +237,18 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             return 4 - scoreForState(state);
         };
 
-        $scope.teamFilter = shouldShowCheckForChosenTeams;
+        $scope.teamFilter = function (check) {
+            return isTeamSelected(check.team);
+        };
 
-        function shouldShowCheckForChosenTeams(check) {
-            if (!check.team) {
+        function isTeamSelected(team) {
+            // team can be null, because a check might not contain a team.
+            // in this case, the check should be displayed
+            if (!team) {
                 return true;
             }
 
-            return $scope.config.teams[check.team];
+            return $scope.config.teams[team];
         }
     }
 );
