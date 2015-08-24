@@ -3,7 +3,7 @@ language: java
 jdk:
 - oraclejdk8
 
-script: "mvn deploy --settings settings.xml"
+script: "./travis-build.sh"
 
 cache:
   directories:
