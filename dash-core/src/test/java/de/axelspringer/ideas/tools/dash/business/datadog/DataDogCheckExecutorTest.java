@@ -49,7 +49,7 @@ public class DataDogCheckExecutorTest {
     public void executeCheck_AllResultsOk() throws Exception {
 
         // simulate successful backend call
-        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(new DataDogMonitor[]{dataDogMonitor("Monitor OK", DataDogMonitor.STATE_OK), dataDogMonitor("Monitor in Error", "some_error_state")}, HttpStatus.OK));
+        mockDatadogApiCallAndReturn(dataDogMonitor("Monitor OK", DataDogMonitor.STATE_OK), dataDogMonitor("Monitor in Error", "some_error_state"));
 
         // execute check
         final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(new DataDogCheck("myCheck", null, null, null, null));
@@ -68,10 +68,40 @@ public class DataDogCheckExecutorTest {
     }
 
     @Test
+    public void executeCheck_noDataMonitor() throws Exception {
+
+        // simulate successful backend call
+        mockDatadogApiCallAndReturn(dataDogMonitor("Monitor OK", DataDogMonitor.STATE_NO_DATA));
+
+        // execute check
+        final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(new DataDogCheck("myCheck", null, null, null, null));
+
+        assertEquals(1, checkResults.size());
+        assertEquals(State.GREEN, checkResults.get(0).getState());
+        assertEquals("Monitor OK@DataDog", checkResults.get(0).getName());
+        assertEquals("No Data (query: null)", checkResults.get(0).getInfo());
+    }
+
+    @Test
+    public void executeCheck_noDataMonitor_withNotifyNoData() throws Exception {
+
+        // simulate successful backend call
+        mockDatadogApiCallAndReturn(enableNotifyNoData(dataDogMonitor("Monitor not OK", DataDogMonitor.STATE_NO_DATA)));
+
+        // execute check
+        final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(new DataDogCheck("myCheck", null, null, null, null));
+
+        assertEquals(1, checkResults.size());
+        assertEquals(State.RED, checkResults.get(0).getState());
+        assertEquals("Monitor not OK@DataDog", checkResults.get(0).getName());
+        assertEquals("No Data (query: null)", checkResults.get(0).getInfo());
+    }
+
+    @Test
     public void executeCheck_WithNameFiler() throws Exception {
 
         // simulate successful backend call
-        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(new DataDogMonitor[]{dataDogMonitor("[YANA]Monitor OK", DataDogMonitor.STATE_OK), dataDogMonitor("Monitor in Error", "some_error_state")}, HttpStatus.OK));
+        mockDatadogApiCallAndReturn(dataDogMonitor("[YANA]Monitor OK", DataDogMonitor.STATE_OK), dataDogMonitor("Monitor in Error", "some_error_state"));
 
         // execute check with name filter (should work case-insensitive)
         final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(new DataDogCheck("myCheck", null, null, null, "[yana]"));
@@ -86,7 +116,7 @@ public class DataDogCheckExecutorTest {
     public void executeCheck_WithHttpError() throws Exception {
 
         // simulate some code other than 200
-        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(HttpStatus.BAD_GATEWAY));
+        mockDatadogApiCallAndReturn(HttpStatus.BAD_GATEWAY);
 
         // execute check
         final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(mock(DataDogCheck.class));
@@ -183,10 +213,25 @@ public class DataDogCheckExecutorTest {
         return monitor;
     }
 
+    private DataDogMonitor enableNotifyNoData(DataDogMonitor monitor) {
+        DataDogMonitorOptions options = new DataDogMonitorOptions();
+        Whitebox.setInternalState(options, "notifyNoData", true);
+        Whitebox.setInternalState(monitor, "options", options);
+        return monitor;
+    }
+
     private Map<String, Team> teamMappings() {
 
         Map<String, Team> teamMappings = new HashMap<>();
         teamMappings.put("[cm]", TestTeam.INSTANCE);
         return teamMappings;
+    }
+
+    private void mockDatadogApiCallAndReturn(DataDogMonitor... monitors) {
+        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(monitors, HttpStatus.OK));
+    }
+
+    private void mockDatadogApiCallAndReturn(HttpStatus httpStatus) {
+        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(httpStatus));
     }
 }

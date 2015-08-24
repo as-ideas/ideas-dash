@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 public class DataDogMonitor {
 
     public final static String STATE_OK = "OK";
+    public final static String STATE_NO_DATA = "No Data";
 
     // This is the inner data from the JSON
     private String name;
@@ -54,7 +55,15 @@ public class DataDogMonitor {
         return options == null || !options.isSilenced();
     }
 
+    public boolean isNotifyNoData() {
+        return options != null && options.isNotifyNoData();
+    }
+
     public boolean isOverallStateOk() {
+        if (!isNotifyNoData() && STATE_NO_DATA.equals(overallState)) {
+            // the overall state is ok if the state is "No Data" and the monitor is *not* set up to notify on no data
+            return true;
+        }
         return STATE_OK.equals(overallState);
     }
 
