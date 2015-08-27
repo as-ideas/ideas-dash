@@ -58,19 +58,20 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         Group group = check.getGroup();
         Map<String, Team> jobNameTeamMappings = check.getJobNameTeamMappings();
 
-        State state = monitor.isOverallStateOk() ? State.GREEN : State.RED;
         String infoMessage = monitor.getOverallState() + " (query: " + monitor.getQuery() + ")";
-        final int errorCount = State.GREEN == state ? 0 : 1;
+        State state = State.RED;
 
-        if (monitor.isSilencedMonitor()) {
+        if (monitor.isOverallStateOk()) {
             state = State.GREEN;
-            infoMessage = "NOT ACTIVE!";
+        } else if (monitor.isSilencedMonitor()) {
+            state = State.GREEN;
+            infoMessage = "NOT ACTIVE (silenced)!";
         } else if (downtimes.hasDowntime(monitor)) {
             state = State.GREEN;
             infoMessage = "MAINTENANCE!";
         }
 
-        final CheckResult checkResult = new CheckResult(state, monitor.getName() + "@DataDog", infoMessage, 1, errorCount, group);
+        final CheckResult checkResult = new CheckResult(state, monitor.getName() + "@DataDog", infoMessage, 1, State.GREEN == state ? 0 : 1, group);
         final Team team = decideTeam(monitor.getName(), jobNameTeamMappings);
         if (team != null) {
             checkResult.withTeam(team);
