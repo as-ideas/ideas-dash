@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpMessageConverterExtractor;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -84,6 +85,17 @@ public class DataDogMonitorTest {
     }
 
     @Test
+    public void findingTagsInQuery2() throws Exception {
+        final DataDogMonitor dataDogMonitor = monitorWithQuery("max(last_10m):min:app_logs.count{host:pcp-prod-vm7.ocb-as.boreus.de,app_logs.app_name:tvconnect,pcp-vm,pcp-prod} < 1");
+
+        assertThat(dataDogMonitor.getTags().size(), is(4));
+        assertThat(dataDogMonitor.getTags().contains("host:pcp-prod-vm7.ocb-as.boreus.de"), is(true));
+        assertThat(dataDogMonitor.getTags().contains("app_logs.app_name:tvconnect"), is(true));
+        assertThat(dataDogMonitor.getTags().contains("pcp-vm"), is(true));
+        assertThat(dataDogMonitor.getTags().contains("pcp-prod"), is(true));
+    }
+
+    @Test
     public void findingTagsInQuery_NoTagsFound() throws Exception {
         final DataDogMonitor dataDogMonitor = monitorWithQuery("avg(last_1h):max:system.disk.in_use");
 
@@ -98,6 +110,15 @@ public class DataDogMonitorTest {
         assertThat(dataDogMonitor.getTags().size(), is(2));
         assertThat(dataDogMonitor.getTags().contains("host:iideas-ipool01.asv.local"), is(true));
         assertThat(dataDogMonitor.getTags().contains("ipool_frontend_api"), is(true));
+    }
+
+    @Test
+    public void hasAllTags() throws Exception {
+        final DataDogMonitor dataDogMonitor = monitorWithQuery("avg(last_5m):avg:ipool.frontend_api.status_code{host:iideas-ipool01.asv.local,ipool_frontend_api} > 200");
+
+        assertThat(dataDogMonitor.hasAllTags(Arrays.asList("host:iideas-ipool01.asv.local")), is(true));
+        assertThat(dataDogMonitor.hasAllTags(Arrays.asList("host:iideas-ipool01.asv.local", "ipool_frontend_api")), is(true));
+        assertThat(dataDogMonitor.hasAllTags(Arrays.asList("host:iideas-ipool01.asv.local", "ipool_frontend_api", "c")), is(false));
     }
 
     private DataDogMonitor monitorWithQuery(String query) {

@@ -180,7 +180,7 @@ public class DataDogCheckExecutorTest {
         final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", "alert"), dataDogCheck(), downtimes);
         assertEquals(State.GREEN, checkResult.getState());
         assertEquals(1, checkResult.getTestCount());
-        assertEquals(1, checkResult.getFailCount());
+        assertEquals(0, checkResult.getFailCount());
         assertEquals("name@DataDog", checkResult.getName());
         assertEquals("MAINTENANCE!", checkResult.getInfo());
         assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());

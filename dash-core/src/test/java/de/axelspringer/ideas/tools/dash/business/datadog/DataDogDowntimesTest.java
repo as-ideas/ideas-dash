@@ -45,8 +45,26 @@ public class DataDogDowntimesTest {
         assertThat(dataDogDowntimes.hasDowntime(monitor("pcp-jenkins")), is(true));
     }
 
+    @Test
+    public void hasDowntime() throws Exception {
+        givenDowntimes(downtime("a", "b"), downtime("a", "c"));
+
+        dataDogDowntimes = new DataDogDowntimes(restTemplate, "", "");
+
+        assertThat(dataDogDowntimes.hasDowntime(monitor("a")), is(false));
+        assertThat(dataDogDowntimes.hasDowntime(monitor("a", "b")), is(true));
+        assertThat(dataDogDowntimes.hasDowntime(monitor("a", "b", "c")), is(true));
+        assertThat(dataDogDowntimes.hasDowntime(monitor("a", "c")), is(true));
+    }
+
+    private DataDogDowntime downtime(String... downtimes) {
+        final DataDogDowntime dataDogDowntime = new DataDogDowntime();
+        dataDogDowntime.scope = Arrays.asList(downtimes);
+        return dataDogDowntime;
+    }
+
     private DataDogMonitor monitor(String... tags) {
-        final DataDogMonitor dataDogMonitor = Mockito.mock(DataDogMonitor.class);
+        final DataDogMonitor dataDogMonitor = Mockito.mock(DataDogMonitor.class, Mockito.CALLS_REAL_METHODS);
         doReturn(Arrays.asList(tags)).when(dataDogMonitor).getTags();
         return dataDogMonitor;
     }
@@ -65,5 +83,10 @@ public class DataDogDowntimesTest {
 
         DataDogDowntime[] downtimes = new DataDogDowntime[]{dataDogDowntime};
         return new ResponseEntity<>(downtimes, HttpStatus.OK);
+    }
+
+    private void givenDowntimes(DataDogDowntime... dataDogDowntimes) {
+        doReturn(new ResponseEntity<>(dataDogDowntimes, HttpStatus.OK)).when(restTemplate).getForEntity(anyString(), anyObject());
+
     }
 }

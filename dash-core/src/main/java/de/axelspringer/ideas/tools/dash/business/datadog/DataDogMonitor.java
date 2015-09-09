@@ -74,6 +74,14 @@ public class DataDogMonitor {
         return tags;
     }
 
+    public boolean hasTag(String tag) {
+        return getTags().contains(tag);
+    }
+
+    public boolean hasAllTags(List<String> neededTags) {
+        return getTags().containsAll(neededTags);
+    }
+
     private List<String> findAllTagsInQuery() {
         List<String> tags = new ArrayList<>();
         Pattern p = Pattern.compile("\\{(.*?)\\}");

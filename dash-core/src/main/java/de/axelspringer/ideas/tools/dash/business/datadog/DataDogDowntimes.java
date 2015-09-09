@@ -23,24 +23,17 @@ public class DataDogDowntimes {
         }
     }
 
+    // HINT Downtimes means the Monitor needs to have ALL THE TAGS OF THE DOWNTIME --> "scope" of downtimes are linked with AND
     public boolean hasDowntime(DataDogMonitor monitor) {
         for (DataDogDowntime downtime : downtimes) {
-            for (String tag : downtime.scope) {
-                if (hasTag(monitor, tag)) {
-                    return true;
-                }
+            if (monitor.hasAllTags(downtime.scope)) {
+                return true;
             }
         }
         return false;
     }
 
-    List<DataDogDowntime> getDowntimes() {
+    public List<DataDogDowntime> getDowntimes() {
         return downtimes;
     }
-
-    private boolean hasTag(DataDogMonitor monitor, String tag) {
-        return monitor.getTags().contains(tag);
-    }
-
-
 }
