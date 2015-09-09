@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpMessageConverterExtractor;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -109,6 +110,15 @@ public class DataDogMonitorTest {
         assertThat(dataDogMonitor.getTags().size(), is(2));
         assertThat(dataDogMonitor.getTags().contains("host:iideas-ipool01.asv.local"), is(true));
         assertThat(dataDogMonitor.getTags().contains("ipool_frontend_api"), is(true));
+    }
+
+    @Test
+    public void hasAllTags() throws Exception {
+        final DataDogMonitor dataDogMonitor = monitorWithQuery("avg(last_5m):avg:ipool.frontend_api.status_code{host:iideas-ipool01.asv.local,ipool_frontend_api} > 200");
+
+        assertThat(dataDogMonitor.hasAllTags(Arrays.asList("host:iideas-ipool01.asv.local")), is(true));
+        assertThat(dataDogMonitor.hasAllTags(Arrays.asList("host:iideas-ipool01.asv.local", "ipool_frontend_api")), is(true));
+        assertThat(dataDogMonitor.hasAllTags(Arrays.asList("host:iideas-ipool01.asv.local", "ipool_frontend_api", "c")), is(false));
     }
 
     private DataDogMonitor monitorWithQuery(String query) {
