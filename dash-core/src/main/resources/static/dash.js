@@ -11,12 +11,18 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         var storage = window['localStorage'];
 
         // config object from/in localStorage
-        $scope.config = storage && storage['config'] ? JSON.parse(storage['config']) :
-        {
-            team: "All Teams",
+        $scope.config = storage && storage['config'] ? JSON.parse(storage['config']) : {};
+        $scope.config = angular.extend({}, {
+            teams: {},
             aggregate: true,
             aggregateDuplicated: true
-        };
+        }, $scope.config);
+
+        // migration from old team config to teams object, can be removed once all monitors ran this version
+        if ($scope.config.team) {
+            $scope.config.teams[$scope.config.team] = true;
+            delete $scope.config.team;
+        }
 
         // watch changes and write to storage
         $scope.$watch("config", function (config) {
@@ -33,6 +39,12 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
 
         teamsResource.get().$promise.then(function (teams) {
             $scope.teams = teams['teams'];
+
+            // select all available teams if the user did not make a choice yet
+            // (this is only the case when the team checkboxes have never been touched)
+            if (isEmptyObject($scope.config.teams)) {
+                selectAllTeams();
+            }
         });
 
         // last update time. caused monitor to die if problems occur.
@@ -208,8 +220,8 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
 
                 var check = group.checks[i];
 
-                // handle check that has no defined team, belongs to team (or all if All Teams is active)
-                if ($scope.config.team == "All Teams" || !check.team || check.team == "" || $scope.config.team == check.team) {
+                // include the check only if it belongs to the displayed team(s)
+                if (isTeamSelected(check.team)) {
                     // aggregate state (worst of two :))
                     state = aggregateState(state, check.state);
                 }
@@ -224,20 +236,27 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         };
 
         $scope.teamFilter = function (check) {
-
-            if ($scope.config.team == "All Teams") {
-                return true;
-            }
-
-            if (check.team == undefined || check.team.length < 1) {
-                return true;
-            }
-
-            if (check.team == $scope.config.team) {
-                return true;
-            }
-
-            return false;
+            return isTeamSelected(check.team);
         };
+
+        function isTeamSelected(team) {
+            // team can be null, because a check might not contain a team.
+            // in this case, the check should be displayed
+            if (!team) {
+                return true;
+            }
+
+            return $scope.config.teams[team];
+        }
+
+        function selectAllTeams() {
+            angular.forEach($scope.teams, function (teamName) {
+                $scope.config.teams[teamName] = true;
+            });
+        }
+
+        function isEmptyObject(obj) {
+            return Object.getOwnPropertyNames(obj).length == 0;
+        }
     }
 );
