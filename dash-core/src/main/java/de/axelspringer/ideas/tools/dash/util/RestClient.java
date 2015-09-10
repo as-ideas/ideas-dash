@@ -11,11 +11,19 @@ import java.util.Map;
 @Service
 public class RestClient {
 
-    @Autowired
+      @Autowired
     private CloseableHttpClient httpClient;
+
+    @Autowired
+    private CloseableHttpClient httpClientWithExtraPoodle;
+
 
     public CloseableHttpClientRestClient create() {
         return new CloseableHttpClientRestClient(httpClient);
+    }
+
+    public CloseableHttpClientRestClient createPoodleClient() {
+        return new CloseableHttpClientRestClient(httpClientWithExtraPoodle);
     }
 
     /**

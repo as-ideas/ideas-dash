@@ -3,6 +3,7 @@ package de.axelspringer.ideas.tools.dash.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
@@ -34,6 +35,27 @@ public class ClientConfig {
 
         return HttpClients.custom()
                 .setSslcontext(sslContext)
+                .setRetryHandler(new DefaultHttpRequestRetryHandler(1, false))
+                .build();
+    }
+
+    @Bean
+    // cf. http://stackoverflow.com/questions/26429751/java-http-clients-and-poodle
+    public CloseableHttpClient httpClientWithExtraPoodle() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+
+        final SSLContext sslContext = SSLContexts.custom()
+                .useTLS() // Only this turned out to be not enough
+                .loadTrustMaterial(null, (chain, authType) -> true)
+                .build();
+
+        SSLConnectionSocketFactory sf = new SSLConnectionSocketFactory(
+                sslContext,
+                new String[]{"TLSv1", "TLSv1.1", "TLSv1.2"},
+                null,
+                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+
+        return HttpClients.custom()
+                .setSSLSocketFactory(sf)
                 .setRetryHandler(new DefaultHttpRequestRetryHandler(1, false))
                 .build();
     }
