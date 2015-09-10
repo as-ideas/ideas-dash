@@ -11,19 +11,11 @@ import java.util.Map;
 @Service
 public class RestClient {
 
-      @Autowired
-    private CloseableHttpClient httpClient;
-
     @Autowired
-    private CloseableHttpClient httpClientWithExtraPoodle;
-
+    private CloseableHttpClient httpClient;
 
     public CloseableHttpClientRestClient create() {
         return new CloseableHttpClientRestClient(httpClient);
-    }
-
-    public CloseableHttpClientRestClient createPoodleClient() {
-        return new CloseableHttpClientRestClient(httpClientWithExtraPoodle);
     }
 
     /**
@@ -35,6 +27,6 @@ public class RestClient {
     }
 
     public String get(String url) throws IOException {
-       return create().get(url);
+        return create().get(url);
     }
 }
