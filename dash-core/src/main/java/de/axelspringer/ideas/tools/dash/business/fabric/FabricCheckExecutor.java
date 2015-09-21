@@ -88,10 +88,27 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
         if (!issuesResponse.hasBody()) {
             throw new RuntimeException(new FabricExecutionException("Expected Body but got nothing."));
         }
-        
-        final int issueCount = issuesResponse.getBody().length;
 
-        return new FabricAppWithCrashesCount(fabricApp, issueCount);
+        int nonIgnoredIssuesCount = 0;
+
+        for (FabricIssue fabricIssue : issuesResponse.getBody()) {
+            if (!ignoreIssue(fabricIssue)) {
+                nonIgnoredIssuesCount++;
+            }
+        }
+
+        return new FabricAppWithCrashesCount(fabricApp, nonIgnoredIssuesCount);
+    }
+
+    private boolean ignoreIssue(FabricIssue fabricIssue) {
+
+        return fabricIssue.getNotes_count() > 1 && loadNotes(fabricIssue).stream().anyMatch(issue -> issue.getBody().contains("#ignoreIssue"));
+    }
+
+    private List<FabricIssueNote> loadNotes(FabricIssue fabricIssue) {
+
+        final ResponseEntity<FabricIssueNote[]> notesResponse = restTemplate.exchange()
+        ...TODO
     }
 
     private List<FabricApp> loadApps(HttpHeaders httpHeaders) throws FabricExecutionException {
