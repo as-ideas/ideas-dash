@@ -6,7 +6,7 @@
     {
       "id": 65,
       "version": 4,
-      "title": "no ticket: first step of a refactoring of sso acceptance test (general login/password recovery/registraiton tests are not implemented as LOKIN tests anymore)",
+      "title": "no ticket: first step of a refactoring of sso acceptance test (general login/password recovery/registraiton tests are not implemented as service spefic tests anymore)",
       "state": "OPEN",
       "open": true,
       "closed": false,
@@ -19,21 +19,21 @@
       "reviewers": [
         {
           "user": {
-            "name": "sbieler1",
-            "emailAddress": "stefan.bieler@asideas.de",
+            "name": "sX",
+            "emailAddress": "sX@xxx",
             "id": 34313,
-            "displayName": "Stefan Bieler",
+            "displayName": "XXX XXX",
             "active": true,
-            "slug": "sbieler1",
+            "slug": "sX",
             "type": "NORMAL",
             "link": {
-              "url": "/users/sbieler1",
+              "url": "/users/sX",
               "rel": "self"
             },
             "links": {
               "self": [
                 {
-                  "href": "https://as-stash.axelspringer.de/users/sbieler1"
+                  "href": "https://as-stash.xxx/users/sX"
                 }
               ]
             }
@@ -46,9 +46,9 @@
         {
           "user": {
             "name": "8107t03",
-            "emailAddress": "8107t03@axelspringer.de",
+            "emailAddress": "8107t03@xxx",
             "id": 34467,
-            "displayName": "Technical  User PCP",
+            "displayName": "Technical User XXX",
             "active": true,
             "slug": "8107t03",
             "type": "NORMAL",
@@ -59,7 +59,7 @@
             "links": {
               "self": [
                 {
-                  "href": "https://as-stash.axelspringer.de/users/8107t03"
+                  "href": "https://as-stash.xxx/users/8107t03"
                 }
               ]
             }
@@ -80,13 +80,13 @@
         ]
       },
       "link": {
-        "url": "/projects/PCP/repos/pcp-sso/pull-requests/65",
+        "url": "/projects/XXX/repos/xxx-sso/pull-requests/65",
         "rel": "self"
       },
       "links": {
         "self": [
           {
-            "href": "https://as-stash.axelspringer.de/projects/PCP/repos/pcp-sso/pull-requests/65"
+            "href": "https://as-stash.xxx/projects/XXX/repos/xxx-sso/pull-requests/65"
           }
         ]
       }

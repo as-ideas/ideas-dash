@@ -36,7 +36,7 @@ public class StashApiClientTest {
 
         final List<StashRepo> stashRepos = stashApiClient.readStashRepos(GIVEN_STASH_CONFIG);
 
-        assertEquals(stashRepos.size(), 25);
+        assertEquals(stashRepos.size(), 1);
         assertEquals(stashRepos.get(0).name(), "c1-ocb-integrator");
     }
 
@@ -50,8 +50,8 @@ public class StashApiClientTest {
         assertEquals(stashPullRequests.size(), 1);
         assertEquals(stashPullRequests.get(0).repo().name(), GIVEN_REPO_NAME);
         assertEquals(stashPullRequests.get(0).reviewers().size(), 1);
-        assertEquals(stashPullRequests.get(0).reviewers().get(0).name(), "sbieler1");
-        assertEquals(stashPullRequests.get(0).reviewers().get(0).nameDisplayed(), "Stefan Bieler");
+        assertEquals(stashPullRequests.get(0).reviewers().get(0).name(), "sX");
+        assertEquals(stashPullRequests.get(0).reviewers().get(0).nameDisplayed(), "XXX XXX");
         assertEquals(stashPullRequests.get(0).id(), "65");
 
     }
