@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class DataDogCheck extends AbstractCheck {
 
+    private static final String ICON_SRC = "http://en.community.dell.com/cfs-file.ashx/__key/communityserver-blogs-components-weblogfiles/00-00-00-37-45/1817.DATADOG.png";
     private final String apiKey;
 
     private final String appKey;
@@ -35,6 +36,11 @@ public class DataDogCheck extends AbstractCheck {
 
     public String getNameFilter() {
         return this.nameFilter;
+    }
+
+    @Override
+    public String getIconSrc() {
+        return ICON_SRC;
     }
 
     public Map<String, Team> getJobNameTeamMappings() {

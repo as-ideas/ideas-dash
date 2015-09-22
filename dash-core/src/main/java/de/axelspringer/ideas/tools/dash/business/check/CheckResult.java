@@ -19,7 +19,8 @@ public class CheckResult {
 
     /**
      * Indicates errors of the check execution.
-     * It does not mean, that the validation/check against a metric failed or was not successful. In the case of errors, it is not possible to define success/failure!
+     * It does not mean, that the validation/check against a metric failed or was not successful.
+     * In the case of errors, it is not possible to define success/failure!
      */
     private boolean isError = false;
 
@@ -28,6 +29,8 @@ public class CheckResult {
     private int failCount = 0;
 
     private boolean running = false;
+
+    private String iconSrc;
 
     private Group group;
 
@@ -62,6 +65,11 @@ public class CheckResult {
         return this;
     }
 
+    public CheckResult withIconSrc(String link){
+        this.iconSrc = link;
+        return this;
+    }
+
     public State getState() {
         return this.state;
     }
@@ -92,6 +100,10 @@ public class CheckResult {
 
     public boolean isRunning() {
         return this.running;
+    }
+
+    public String getIconSrc() {
+        return iconSrc;
     }
 
     public Group getGroup() {

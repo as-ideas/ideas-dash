@@ -6,6 +6,8 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 public class JiraCheck extends AbstractCheck {
 
+    private static final String ICON_SRC = "https://upload.wikimedia.org/wikipedia/en/b/bf/JIRA_logo.svg"
+            ;
     private final String url;
 
     private final String userName;
@@ -43,6 +45,11 @@ public class JiraCheck extends AbstractCheck {
 
     public String getJql() {
         return this.jql;
+    }
+
+    @Override
+    public String getIconSrc() {
+        return ICON_SRC;
     }
 
     public JiraProjectConfiguration getJiraProjectConfiguration() {
