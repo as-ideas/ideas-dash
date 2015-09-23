@@ -39,15 +39,21 @@
                          class="panel check {{ classForState(check.state) }}"
                          ng-class="{'running': check.running}" title="{{check.info}}">
 
-                        <!-- link if specified, div if not -->
-                        <a ng-show="check.link" href="{{ check.link }}" target="_blank">
-                            <div class="check-name">{{ check.name }}</div>
-                            <div ng-bind-html="check.info | limitTo : 25"></div>
-                        </a>
+                        <div class="panel-content-left">
+                            <!-- link if specified, div if not -->
+                            <a ng-show="check.link" href="{{ check.link }}" target="_blank">
+                                <div class="check-name">{{ check.name }}</div>
+                                <div ng-bind-html="check.info | limitTo : 25"></div>
+                            </a>
 
-                        <div ng-hide="check.link">
-                            <div class="check-name">{{ check.name }}</div>
-                            <div ng-bind-html="check.info | limitTo : 25"></div>
+                            <div ng-hide="check.link">
+                                <div class="check-name">{{ check.name }}</div>
+                                <div ng-bind-html="check.info | limitTo : 25"></div>
+                            </div>
+                        </div>
+
+                        <div class="panel-content-right" ng-if="check.iconSrc">
+                            <img src="{{check.iconSrc}}" width="30" height="30" />
                         </div>
                     </div>
                 </div>

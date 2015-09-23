@@ -6,6 +6,8 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 public class JenkinsCheck extends AbstractCheck {
 
+    private static final String ICON_SRC = "https://wiki.jenkins-ci.org/download/attachments/327683/JENKINS";
+
     private final String url;
 
     private final String userName;
@@ -29,5 +31,10 @@ public class JenkinsCheck extends AbstractCheck {
 
     public String getApiToken() {
         return apiToken;
+    }
+
+    @Override
+    public String getIconSrc() {
+        return ICON_SRC;
     }
 }
