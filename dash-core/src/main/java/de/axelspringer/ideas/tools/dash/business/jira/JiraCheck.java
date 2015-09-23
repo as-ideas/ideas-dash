@@ -6,7 +6,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 public class JiraCheck extends AbstractCheck {
 
-    private static final String ICON_SRC = "https://upload.wikimedia.org/wikipedia/en/b/bf/JIRA_logo.svg"
+    private static final String ICON_SRC = "assets/jira-logo.png"
             ;
     private final String url;
 
