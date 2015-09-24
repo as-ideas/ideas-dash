@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class DataDogCheck extends AbstractCheck {
 
-    private static final String ICON_SRC = "http://en.community.dell.com/cfs-file.ashx/__key/communityserver-blogs-components-weblogfiles/00-00-00-37-45/1817.DATADOG.png";
+    private static final String ICON_SRC = "assets/datadog-logo.png";
     private final String apiKey;
 
     private final String appKey;

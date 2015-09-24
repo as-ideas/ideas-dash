@@ -6,7 +6,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 public class JenkinsCheck extends AbstractCheck {
 
-    private static final String ICON_SRC = "https://wiki.jenkins-ci.org/download/attachments/327683/JENKINS";
+    private static final String ICON_SRC = "assets/jenkins-logo.png";
 
     private final String url;
 

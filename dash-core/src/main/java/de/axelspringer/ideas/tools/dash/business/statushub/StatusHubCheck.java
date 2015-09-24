@@ -6,6 +6,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 public class StatusHubCheck extends AbstractCheck {
 
+    private static final String ICON_SRC = "assets/status-hub-logo.png";
     private final String id;
 
     public StatusHubCheck(String name, Group group, Team team, String id) {
@@ -15,5 +16,10 @@ public class StatusHubCheck extends AbstractCheck {
 
     public String getId() {
         return this.id;
+    }
+
+    @Override
+    public String getIconSrc() {
+        return ICON_SRC;
     }
 }

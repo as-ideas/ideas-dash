@@ -9,7 +9,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
  */
 public class FabricCheck extends AbstractCheck {
 
-    private static final String ICON_SRC = "http://core0.staticworld.net/images/article/2014/10/twitter-fabric-logo-100527200-primary.idge.jpg";
+    private static final String ICON_SRC = "assets/fabric-logo.png";
     private final String email;
 
     private final String password;
