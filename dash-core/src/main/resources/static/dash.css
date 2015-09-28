@@ -29,6 +29,15 @@
     text-align: center;
 }
 
+.panel-content-left {
+    float: left;
+}
+
+.panel-content-right {
+    float: left;
+    margin: 5px 0 5px 5px;
+}
+
 .check.running {
     box-shadow: 0 0 22px;
 }

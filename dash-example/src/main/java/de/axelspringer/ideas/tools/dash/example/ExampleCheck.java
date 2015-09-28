@@ -7,6 +7,8 @@ import de.axelspringer.ideas.tools.dash.presentation.State;
 
 public class ExampleCheck extends AbstractCheck {
 
+    private static final String ICON_SRC = "https://upload.wikimedia.org/wikipedia/commons/5/51/Army-officer-icon.png";
+
     private String link;
 
     private State state = State.YELLOW;
@@ -27,6 +29,11 @@ public class ExampleCheck extends AbstractCheck {
     public ExampleCheck withState(State state) {
         this.state = state;
         return this;
+    }
+
+    @Override
+    public String getIconSrc() {
+        return ICON_SRC;
     }
 
     public State state() {

@@ -9,6 +9,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
  */
 public class FabricCheck extends AbstractCheck {
 
+    private static final String ICON_SRC = "assets/fabric-logo.png";
     private final String email;
 
     private final String password;
@@ -21,6 +22,11 @@ public class FabricCheck extends AbstractCheck {
 
     public String getEmail() {
         return this.email;
+    }
+
+    @Override
+    public String getIconSrc() {
+        return ICON_SRC;
     }
 
     public String getPassword() {
