@@ -4,6 +4,7 @@ import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ public class CheckService {
 
     @Autowired
     private List<CheckExecutor> checkExecutors;
+
+    @Value("${dash.iconsEnabled:true}")
+    private boolean iconsEnabled;
 
     private int numberOfParallelTask = 8;
 
@@ -42,12 +46,20 @@ public class CheckService {
     private List<CheckResult> executeCheck(Check check) {
         CheckExecutor checkExecutor = executor(check);
         try {
-            return checkExecutor.executeCheck(check);
+            List<CheckResult> checkResults = checkExecutor.executeCheck(check);
+            return decorateCheckResults(check, checkResults);
         } catch (Exception e) {
             LOG.error("There are unhandled errors when performing check '{}' on stage '{}' for team '{}'", check.getName(), check.getGroup(), check.getTeam());
             LOG.error(e.getMessage(), e);
             return Collections.singletonList(new CheckResult(State.RED, "unhandled check error", check.getName(), 0, 0, check.getGroup()));
         }
+    }
+
+    private List<CheckResult> decorateCheckResults(Check check, List<CheckResult> results) {
+        if(iconsEnabled){
+            results.stream().forEach(r -> r.withIconSrc(check.getIconSrc()));
+        }
+        return results;
     }
 
     @SuppressWarnings("unchecked")

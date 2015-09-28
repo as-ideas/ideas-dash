@@ -8,9 +8,18 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
  */
 public interface Check {
 
-    public String getName();
+    String getName();
 
-    public Group getGroup();
+    Group getGroup();
 
-    public Team getTeam();
+    Team getTeam();
+
+    /**
+     * Implement this method to provide an image source path for the check to be visibale in the monitor
+     * @return the [relative] image source path
+     */
+    default String getIconSrc(){
+        return null;
+    }
+
 }
