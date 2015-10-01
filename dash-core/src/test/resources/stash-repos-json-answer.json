@@ -1,0 +1,59 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": false,
+  "values": [
+    {
+      "slug": "c1-ocb-integrator",
+      "id": 1175,
+      "name": "c1-ocb-integrator",
+      "scmId": "git",
+      "state": "AVAILABLE",
+      "statusMessage": "Available",
+      "forkable": true,
+      "project": {
+        "key": "XXX",
+        "id": 324,
+        "name": "Premium Content Platform",
+        "public": false,
+        "type": "NORMAL",
+        "link": {
+          "url": "/projects/XXX",
+          "rel": "self"
+        },
+        "links": {
+          "self": [
+            {
+              "href": "https://as-stash.xxx/projects/XXX"
+            }
+          ]
+        }
+      },
+      "public": false,
+      "link": {
+        "url": "/projects/XXX/repos/c1-ocb-integrator/browse",
+        "rel": "self"
+      },
+      "cloneUrl": "https://xxx@as-stash.xxx/scm/xxx/c1-ocb-integrator.git",
+      "links": {
+        "clone": [
+          {
+            "href": "ssh://git@as-stash.xxx/xxx/c1-ocb-integrator.git",
+            "name": "ssh"
+          },
+          {
+            "href": "https://xxx@as-stash.xxx/scm/xxx/c1-ocb-integrator.git",
+            "name": "http"
+          }
+        ],
+        "self": [
+          {
+            "href": "https://as-stash.xxx/projects/XXX/repos/c1-ocb-integrator/browse"
+          }
+        ]
+      }
+    }
+  ],
+  "start": 0,
+  "nextPageStart": 25
+}

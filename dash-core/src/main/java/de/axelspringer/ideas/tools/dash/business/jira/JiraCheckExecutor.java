@@ -69,6 +69,8 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         requestParams.put("maxResults", "30");
         requestParams.put("jql", jiraCheck.getJql());
 
+        final String jiraApiUrl = jiraCheck.getUrl() + "/rest/api/2/search";
+
         // fetch results from jira
         log.debug("Retrieving jira status with JQL {}", jiraCheck.getJql());
         final SearchResult searchResult;
@@ -77,7 +79,8 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
                     .withCredentials(jiraCheck.getUserName(), jiraCheck.getPassword())
                     .withQueryParameters(requestParams)
                     .withTimeout(CloseableHttpClientRestClient.THIRTY_SECONS_IN_MS)
-                    .get(jiraCheck.getUrl() + "/rest/api/2/search");
+                    .withHeader("accept-encoding", "gzip;q=0")
+                    .get(jiraApiUrl);
             searchResult = gson.fromJson(resultAsString, SearchResult.class);
         } catch (Exception e) {
             log.error("error fetching jira results", e);
@@ -85,7 +88,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         }
 
         if (searchResult == null) {
-            log.error("deserialized to null. [Query=" + jiraCheck.getJql() + "]");
+            log.error("deserialized to null. [Url= " + jiraApiUrl + ",Query=" + jiraCheck.getJql() + "]");
             throw new IllegalStateException("deserialized to null. [Query=" + jiraCheck.getJql() + "]");
         }
 

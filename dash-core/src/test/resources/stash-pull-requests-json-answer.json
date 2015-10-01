@@ -1,0 +1,96 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "id": 65,
+      "version": 4,
+      "title": "no ticket: first step of a refactoring of sso acceptance test (general login/password recovery/registraiton tests are not implemented as service spefic tests anymore)",
+      "state": "OPEN",
+      "open": true,
+      "closed": false,
+      "createdDate": 1441204503000,
+      "updatedDate": 1441268794000,
+      "fromRef": {},
+      "toRef": {},
+      "locked": false,
+      "author": {},
+      "reviewers": [
+        {
+          "user": {
+            "name": "sX",
+            "emailAddress": "sX@xxx",
+            "id": 34313,
+            "displayName": "XXX XXX",
+            "active": true,
+            "slug": "sX",
+            "type": "NORMAL",
+            "link": {
+              "url": "/users/sX",
+              "rel": "self"
+            },
+            "links": {
+              "self": [
+                {
+                  "href": "https://as-stash.xxx/users/sX"
+                }
+              ]
+            }
+          },
+          "role": "REVIEWER",
+          "approved": true
+        }
+      ],
+      "participants": [
+        {
+          "user": {
+            "name": "8107t03",
+            "emailAddress": "8107t03@xxx",
+            "id": 34467,
+            "displayName": "Technical User XXX",
+            "active": true,
+            "slug": "8107t03",
+            "type": "NORMAL",
+            "link": {
+              "url": "/users/8107t03",
+              "rel": "self"
+            },
+            "links": {
+              "self": [
+                {
+                  "href": "https://as-stash.xxx/users/8107t03"
+                }
+              ]
+            }
+          },
+          "role": "PARTICIPANT",
+          "approved": false
+        }
+      ],
+      "attributes": {
+        "resolvedTaskCount": [
+          "0"
+        ],
+        "openTaskCount": [
+          "0"
+        ],
+        "commentCount": [
+          "23"
+        ]
+      },
+      "link": {
+        "url": "/projects/XXX/repos/xxx-sso/pull-requests/65",
+        "rel": "self"
+      },
+      "links": {
+        "self": [
+          {
+            "href": "https://as-stash.xxx/projects/XXX/repos/xxx-sso/pull-requests/65"
+          }
+        ]
+      }
+    }
+  ],
+  "start": 0
+}
