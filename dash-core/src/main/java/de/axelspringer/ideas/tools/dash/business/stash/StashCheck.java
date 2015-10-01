@@ -6,6 +6,8 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 public class StashCheck extends AbstractCheck {
 
+    private static final String IMG_SRC = "assets/stash-logo.png";
+
     private final StashConfig stashConfig;
 
     public StashCheck(String name, Group group, Team team, StashConfig stashConfig) {
@@ -15,5 +17,10 @@ public class StashCheck extends AbstractCheck {
 
     public StashConfig stashConfig() {
         return stashConfig;
+    }
+
+    @Override
+    public String getIconSrc() {
+        return IMG_SRC;
     }
 }
