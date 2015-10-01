@@ -6,9 +6,9 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
-public class FabricCheckExecutorTest {
+public class FabricServiceTest {
 
-    private FabricCheckExecutor fabricCheckExecutor = new FabricCheckExecutor();
+    private FabricService fabricService = new FabricService();
 
     @Test
     public void testExtractToken() throws FabricExecutionException {
@@ -28,6 +28,6 @@ public class FabricCheckExecutorTest {
                 "      <i class=\"icon-fabric\"></i>\n" +
                 "      </div>";
 
-        assertEquals(testToken, fabricCheckExecutor.extractToken(testMarkup));
+        assertEquals(testToken, fabricService.extractToken(testMarkup));
     }
 }
