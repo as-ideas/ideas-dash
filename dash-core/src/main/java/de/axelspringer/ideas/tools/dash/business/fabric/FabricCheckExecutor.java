@@ -94,7 +94,7 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
 
     private boolean ignoreIssue(FabricIssue fabricIssue, String fabricAppId, FabricAuth fabricAuth) {
 
-        return fabricIssue.getNotes_count() > 1
+        return fabricIssue.getNotes_count() > 0
                 && fabricService.loadNotes(fabricAppId, fabricIssue.getId(), fabricAuth).stream().anyMatch(note -> note.getBody().contains("#ignoreIssue"));
     }
 
