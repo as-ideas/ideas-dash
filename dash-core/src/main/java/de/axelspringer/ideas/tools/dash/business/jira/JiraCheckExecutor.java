@@ -79,7 +79,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
                     .withCredentials(jiraCheck.getUserName(), jiraCheck.getPassword())
                     .withQueryParameters(requestParams)
                     .withTimeout(CloseableHttpClientRestClient.THIRTY_SECONS_IN_MS)
-                    .withHeader("accept-encoding", "application/json")
+                    .withHeader("accept-encoding", "gzip;q=0")
                     .get(jiraApiUrl);
             searchResult = gson.fromJson(resultAsString, SearchResult.class);
         } catch (Exception e) {
