@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.jira.issuestatemapper.IssueStateMapper;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import de.axelspringer.ideas.tools.dash.util.CloseableHttpClientRestClient;
@@ -24,6 +25,9 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
     @Autowired
     private Gson gson;
+
+    @Autowired
+    private IssueStateMapper issueStateMapper;
 
     @Override
     public List<CheckResult> executeCheck(JiraCheck jiraCheck) {
@@ -50,7 +54,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         final JiraProjectConfiguration jiraProjectConfiguration = jiraCheck.getJiraProjectConfiguration();
 
         final State staticState = jiraProjectConfiguration.stateForIssueState(issue.getFields().getStatus().getName());
-        final State state = staticState != null ? staticState : state(issue);
+        final State state = staticState != null ? staticState : issueStateMapper.mapToState(issue);
         final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, state == State.GREEN ? 0 : 1, jiraCheck.getGroup())
                 .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
 
@@ -95,48 +99,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         return searchResult;
     }
 
-    private State state(Issue issue) {
-        if (issue.isBug()) {
-            return stateForBug(issue);
-        }
-        return stateForIssue(issue);
-    }
 
-    private State stateForIssue(Issue issue) {
-        switch (issue.getFields().getStatus().getName().toLowerCase()) {
-            case "done":
-                return State.GREEN;
-            default:
-                return State.YELLOW;
-        }
-    }
-
-    private State stateForBug(Issue issue) {
-        if (isPriorityBlocker(issue)) {
-            return State.RED;
-        }
-
-        if (isStatusDone(issue)) {
-            return State.GREEN;
-        }
-        return State.YELLOW;
-    }
-
-    private boolean isStatusDone(Issue issue) {
-        return issue.getFields().getStatus().getName().toLowerCase().equals("done");
-    }
-
-    private boolean isPriorityBlocker(Issue issue) {
-        Priority jiraTicketPriority = issue.getFields().getPriority();
-        if (jiraTicketPriority == null) {
-            log.error("Priority is not set! Issue: " + issue.getKey());
-            return false;
-        }
-
-
-        String priority = jiraTicketPriority.getName();
-        return Priority.BLOCKER_NAME.equals(priority);
-    }
 
     @Override
     public boolean isApplicable(Check check) {

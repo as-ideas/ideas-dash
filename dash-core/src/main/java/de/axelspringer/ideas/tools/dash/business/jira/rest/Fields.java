@@ -1,6 +1,5 @@
 package de.axelspringer.ideas.tools.dash.business.jira.rest;
 
-import de.axelspringer.ideas.tools.dash.business.jira.Priority;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -31,36 +30,36 @@ public class Fields {
         return this.customfield_10144;
     }
 
-    public Assignee getAssignee() {
-        return this.assignee;
-    }
-
-    public Priority getPriority() {
-        return this.priority;
-    }
-
-    public IssueType getIssuetype() {
-        return this.issuetype;
-    }
-
-    public IssueStatus getStatus() {
-        return this.status;
-    }
-
     public void setCustomfield_10144(CustomField customfield_10144) {
         this.customfield_10144 = customfield_10144;
+    }
+
+    public Assignee getAssignee() {
+        return this.assignee;
     }
 
     public void setAssignee(Assignee assignee) {
         this.assignee = assignee;
     }
 
+    public Priority getPriority() {
+        return this.priority;
+    }
+
     public void setPriority(Priority priority) {
         this.priority = priority;
     }
 
+    public IssueType getIssuetype() {
+        return this.issuetype;
+    }
+
     public void setIssuetype(IssueType issuetype) {
         this.issuetype = issuetype;
+    }
+
+    public IssueStatus getStatus() {
+        return this.status;
     }
 
     public void setStatus(IssueStatus status) {

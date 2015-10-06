@@ -31,6 +31,7 @@ public class JiraCheckExecutorTest {
     public static final String GIVEN_PASSWORT = "pw";
     public static final String GIVEN_JQL = "jql";
     public static final Group GIVEN_GROUP = mock(Group.class);
+
     @Spy
     @InjectMocks
     private JiraCheckExecutor jiraCheckExecutor;
@@ -65,16 +66,11 @@ public class JiraCheckExecutorTest {
 
     private void givenTwoIssuesAreFound() {
         SearchResult toBeReturned = new SearchResult();
-        toBeReturned.setIssues(Arrays.asList(issue(), issue()));
+        toBeReturned.setIssues(Arrays.asList(new Issue(), new Issue()));
         doReturn(toBeReturned).when(jiraCheckExecutor).queryJira(any(JiraCheck.class));
     }
 
     private void givenDoNothingForFoundIssues() {
         doReturn(null).when(jiraCheckExecutor).createCheckResultForIssue(any(JiraCheck.class), any(Issue.class));
-    }
-
-    private Issue issue() {
-        Issue issue = new Issue();
-        return issue;
     }
 }
