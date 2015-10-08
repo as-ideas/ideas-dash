@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.business.jira;
+package de.axelspringer.ideas.tools.dash.business.jira.rest;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
