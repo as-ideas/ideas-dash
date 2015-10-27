@@ -3,6 +3,7 @@ package de.axelspringer.ideas.tools.dash.example;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 public enum ExampleTeam implements Team {
+
     FE("'Frontend'"), BE("'Backend'");
 
     private final String jiraTeamName;

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 public class ClientConfig {
@@ -53,7 +53,7 @@ public class ClientConfig {
         MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
         mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
 
-        restTemplate.setMessageConverters(Arrays.asList(mappingJackson2HttpMessageConverter));
+        restTemplate.setMessageConverters(Collections.singletonList(mappingJackson2HttpMessageConverter));
         return restTemplate;
     }
 

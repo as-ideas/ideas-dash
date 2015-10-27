@@ -5,7 +5,7 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -33,7 +33,7 @@ public class ExampleCheckExecutor implements CheckExecutor<ExampleCheck> {
             throw new RuntimeException(e.getMessage(), e);
         }
 
-        return Arrays.asList(result);
+        return Collections.singletonList(result);
     }
 
     @Override

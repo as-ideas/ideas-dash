@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class UIGroup {
@@ -29,7 +29,7 @@ public class UIGroup {
     }
 
     public void add(CheckResult checkResult) {
-        checks.addAll(Arrays.asList(checkResult));
+        checks.addAll(Collections.singletonList(checkResult));
     }
 
     public void add(List<CheckResult> checkResults) {
@@ -40,52 +40,52 @@ public class UIGroup {
         return this.name;
     }
 
-    public String getInfo() {
-        return this.info;
-    }
-
-    public State getState() {
-        return this.state;
-    }
-
-    public int getTotalCount() {
-        return this.totalCount;
-    }
-
-    public int getFailCount() {
-        return this.failCount;
-    }
-
-    public List<CheckResult> getChecks() {
-        return this.checks;
-    }
-
-    public int getOrderScore() {
-        return this.orderScore;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getInfo() {
+        return this.info;
     }
 
     public void setInfo(String info) {
         this.info = info;
     }
 
+    public State getState() {
+        return this.state;
+    }
+
     public void setState(State state) {
         this.state = state;
+    }
+
+    public int getTotalCount() {
+        return this.totalCount;
     }
 
     public void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
     }
 
+    public int getFailCount() {
+        return this.failCount;
+    }
+
     public void setFailCount(int failCount) {
         this.failCount = failCount;
     }
 
+    public List<CheckResult> getChecks() {
+        return this.checks;
+    }
+
     public void setChecks(List<CheckResult> checks) {
         this.checks = checks;
+    }
+
+    public int getOrderScore() {
+        return this.orderScore;
     }
 
     public void setOrderScore(int orderScore) {

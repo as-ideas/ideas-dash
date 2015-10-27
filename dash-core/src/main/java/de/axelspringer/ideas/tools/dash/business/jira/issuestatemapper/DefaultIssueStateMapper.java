@@ -13,22 +13,17 @@ public class DefaultIssueStateMapper implements IssueStateMapper {
 
     @Override
     public State mapToState(Issue issue) {
-        if (issue.isBug()) {
-            return forBug(issue);
-        }
-        return forIssue(issue);
+
+        return issue.isBug() ? forBug(issue) : forIssue(issue);
     }
 
     private State forIssue(Issue issue) {
-        switch (issue.getFields().getStatus().getName().toLowerCase()) {
-            case "done":
-                return State.GREEN;
-            default:
-                return State.YELLOW;
-        }
+
+        return  isStatusDone(issue) ? State.GREEN : State.YELLOW;
     }
 
     private State forBug(Issue issue) {
+
         if (isPriorityBlocker(issue)) {
             return State.RED;
         }
@@ -40,10 +35,12 @@ public class DefaultIssueStateMapper implements IssueStateMapper {
     }
 
     private boolean isStatusDone(Issue issue) {
+
         return issue.getFields().getStatus().getName().toLowerCase().equals("done");
     }
 
     private boolean isPriorityBlocker(Issue issue) {
+
         Priority jiraTicketPriority = issue.getFields().getPriority();
 
         if (jiraTicketPriority == null) {
