@@ -2,11 +2,6 @@ package de.axelspringer.ideas.tools.dash.business.datadog;
 
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
-import de.axelspringer.ideas.tools.dash.business.customization.Team;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DataDogCheck extends AbstractCheck {
 
@@ -16,7 +11,6 @@ public class DataDogCheck extends AbstractCheck {
     private final String appKey;
 
     private final String nameFilter;
-    private Map<String, Team> jobNameTeamMappings = new HashMap<>();
 
     public DataDogCheck(String name, Group group, String apiKey, String appKey, String nameFilter) {
 
@@ -41,14 +35,5 @@ public class DataDogCheck extends AbstractCheck {
     @Override
     public String getIconSrc() {
         return ICON_SRC;
-    }
-
-    public Map<String, Team> getJobNameTeamMappings() {
-        return Collections.unmodifiableMap(jobNameTeamMappings);
-    }
-
-    public DataDogCheck withJobNameTeamMapping(String jobName, Team team) {
-        jobNameTeamMappings.put(jobName, team);
-        return this;
     }
 }

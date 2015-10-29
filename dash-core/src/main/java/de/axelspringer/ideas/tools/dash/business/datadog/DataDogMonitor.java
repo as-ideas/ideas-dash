@@ -67,6 +67,10 @@ public class DataDogMonitor {
         return STATE_OK.equals(overallState);
     }
 
+    public boolean isTriggeredConsideringDowntimes(DataDogDowntimes downtimes) {
+        return !isOverallStateOk() && !isSilencedMonitor() && !downtimes.hasDowntime(this);
+    }
+
     public List<String> getTags() {
         if (tags == null) {
             tags = findAllTagsInQuery();
