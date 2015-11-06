@@ -31,6 +31,7 @@
 
 .panel-content-left {
     float: left;
+    max-width: 320px;
 }
 
 .panel-content-right {
