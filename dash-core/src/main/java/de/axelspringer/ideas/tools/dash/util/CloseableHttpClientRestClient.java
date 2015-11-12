@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.config.RequestConfig;
@@ -62,6 +63,12 @@ public class CloseableHttpClientRestClient {
         return this;
     }
 
+    public CloseableHttpClientRestClient setQueryParameter(String key, String value) {
+        queryParameters.remove(key);
+        queryParameters.put(key, value);
+        return this;
+    }
+
     public CloseableHttpClientRestClient withQueryParameters(Map<String, String> entries) {
         for (Map.Entry<String, String> entry : entries.entrySet()) {
             withQueryParameter(entry.getKey(), entry.getValue());
@@ -70,6 +77,10 @@ public class CloseableHttpClientRestClient {
     }
 
     public String get(String url) {
+        return get(url, String.class);
+    }
+
+    public <T> T get(String url, Class<T> clazz) {
         try {
             final HttpGet httpGet = new HttpGet(buildUrl(url, queryParameters));
 
@@ -91,10 +102,16 @@ public class CloseableHttpClientRestClient {
 
             try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
                 if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                    return EntityUtils.toString(httpResponse.getEntity());
+                    String result = EntityUtils.toString(httpResponse.getEntity());
+                    if (clazz == String.class) {
+                        return (T) result;
+                    } else {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        return objectMapper.readValue(result, clazz);
+                    }
                 }
                 LOG.warn("Error [Status=" + httpResponse.getStatusLine().getStatusCode() + " , Url=" + url + ", Body=" + EntityUtils.toString(httpResponse.getEntity()) + "]");
-                return "";
+                return null;
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
