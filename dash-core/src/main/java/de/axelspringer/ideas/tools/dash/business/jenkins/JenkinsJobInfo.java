@@ -10,6 +10,8 @@ public class JenkinsJobInfo {
 
     private LastBuild lastBuild;
 
+    private Boolean buildable;
+
     public JenkinsJobInfo() {
     }
 
@@ -21,12 +23,8 @@ public class JenkinsJobInfo {
         return this.lastBuild;
     }
 
-    public void setLastCompletedBuild(LastBuild lastCompletedBuild) {
-        this.lastCompletedBuild = lastCompletedBuild;
-    }
-
-    public void setLastBuild(LastBuild lastBuild) {
-        this.lastBuild = lastBuild;
+    public Boolean isBuildable() {
+        return buildable;
     }
 
     @Override
