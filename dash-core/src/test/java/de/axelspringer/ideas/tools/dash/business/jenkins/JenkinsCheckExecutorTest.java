@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -59,13 +60,16 @@ public class JenkinsCheckExecutorTest {
     public void testBuildWithoutLastBuildResultResultsInGreyState() throws IOException, AuthenticationException {
 
         final List<CheckResult> checkResults = jenkinsCheckExecutor.executeCheck(jenkinsCheck());
+
         assertEquals(1, checkResults.size());
         final CheckResult checkResult = checkResults.get(0);
         assertEquals(State.GREY, checkResult.getState());
     }
 
     private JenkinsJobInfo jenkinsJobInfo() {
-        return new JenkinsJobInfo();
+        JenkinsJobInfo jenkinsJobInfo = new JenkinsJobInfo();
+        Whitebox.setInternalState(jenkinsJobInfo, "buildable", true);
+        return jenkinsJobInfo;
     }
 
     private JenkinsCheck jenkinsCheck() {

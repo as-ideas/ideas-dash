@@ -43,6 +43,10 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
             final JenkinsJobInfo.LastBuild lastBuild = jobInfo.getLastBuild();
             lastBuildInfo = lastBuild != null ? queryJenkins(jenkinsCheck, lastBuild.getUrl(), JenkinsBuildInfo.class) : null;
 
+            if (!jobInfo.isBuildable()) {
+                return Collections.emptyList();
+            }
+
         } catch (Exception e) {
             log.error("error fetching jenkins result: {}", jobName, e);
             return Collections.singletonList(new CheckResult(State.RED, shortName(jobName), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(url).withTeam(jenkinsCheck.getTeam()));
