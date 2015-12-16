@@ -25,7 +25,7 @@
 <body>
 
 <div class="panel" ng-class="{true: 'alert-danger', false: 'alert-info'}[lastUpdate.state == 'red']">
-    <div class="global-info" ng-class="{true: 'alert-danger'}[lastUpdate.outdated == 'red']">Last update: {{ infos.lastUpdateTime | date:'medium' }}</div>
+    <div class="global-info" ng-class="{true: 'alert-danger'}[lastUpdate.state == 'red']">Last update: {{ infos.lastUpdateTime | date:'medium' }}</div>
 
     <div class="panel-body">
         <div ng-repeat="group in infos.groups | orderBy:'orderScore'" class="check-group panel">
