@@ -52,7 +52,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     /**
      * contains a mapping for jobNameSegment to team mapping
      */
-    private Map<String, Team> jobNameTeamMapping = new HashMap<>();
+    private Map<String, List<Team>> jobNameTeamMapping = new HashMap<>();
 
     @Autowired
     private JenkinsClient jenkinsClient;
@@ -84,14 +84,14 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
 
         final String jobName = StringUtils.isBlank(jobPrefix) || !job.getName().startsWith(jobPrefix) ? job.getName() : job.getName().substring(jobPrefix.length());
 
-        Team team = null;
+        List<Team> teams = null;
         for (String jobNameTeamPrefix : jobNameTeamMapping.keySet()) {
             if (jobName.startsWith(jobNameTeamPrefix)) {
-                team = jobNameTeamMapping.get(jobNameTeamPrefix);
+                teams = jobNameTeamMapping.get(jobNameTeamPrefix);
             }
         }
 
-        return new JenkinsCheck(jobName, job.getUrl(), user, apiToken, group, team);
+        return new JenkinsCheck(jobName, job.getUrl(), user, apiToken, group, teams);
     }
 
     private List<JenkinsJob> jobs() {
@@ -130,8 +130,8 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
      * @param team              team that jobs prefixed with given prefix will be mapped to
      * @return this {@link JenkinsJobListCheckProvider} instance
      */
-    public JenkinsJobListCheckProvider withJobNameTeamMapping(String jobNameTeamPrefix, Team team) {
-        jobNameTeamMapping.put(jobNameTeamPrefix, team);
+    public JenkinsJobListCheckProvider withJobNameTeamMapping(String jobNameTeamPrefix, List<Team> teams) {
+        jobNameTeamMapping.put(jobNameTeamPrefix, teams);
         return this;
     }
 }

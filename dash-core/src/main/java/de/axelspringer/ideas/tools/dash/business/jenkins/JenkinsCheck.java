@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
+import java.util.List;
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
@@ -14,8 +15,8 @@ public class JenkinsCheck extends AbstractCheck {
 
     private final String apiToken;
 
-    public JenkinsCheck(String name, String url, String userName, String apiToken, Group group, Team team) {
-        super(name, group, team);
+    public JenkinsCheck(String name, String url, String userName, String apiToken, Group group, List<Team> teams) {
+        super(name, group, teams);
         this.url = url;
         this.userName = userName;
         this.apiToken = apiToken;

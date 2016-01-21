@@ -1,25 +1,25 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
-import de.axelspringer.ideas.tools.dash.business.check.Check;
-import de.axelspringer.ideas.tools.dash.business.customization.Group;
-import de.axelspringer.ideas.tools.dash.business.customization.Team;
-import org.apache.http.auth.AuthenticationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.http.auth.AuthenticationException;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 public class JenkinsJobListCheckProviderTest {
 
@@ -74,10 +74,40 @@ public class JenkinsJobListCheckProviderTest {
     @Test
     public void testWithJobNameTeamMappingAndPrefix() {
 
-        final Team team = new Team() {
+    	final Team team = createsFakeTeamWithGivenName("someTeam");
+
+        final List<Check> checks = jenkinsJobListCheckProvider.withJobPrefix("yana-").withJobNameTeamMapping("contentmachine-", Arrays.asList(team)).provideChecks();
+        assertEquals(1, checks.size());
+
+        final Check check = checks.get(0);
+
+        assertEquals("contentmachine-build", check.getName());
+        assertFalse(check.getTeams().isEmpty());
+        assertEquals(team, check.getTeams().get(0));
+    }
+    
+    @Test
+    public void testWithJobNameMultipleTeamsMappingAndPrefix() {
+
+        final Team firstTeam = createsFakeTeamWithGivenName("someTeam");
+        final Team secondTeam = createsFakeTeamWithGivenName("sameName2");
+
+        final List<Check> checks = jenkinsJobListCheckProvider.withJobPrefix("yana-").withJobNameTeamMapping("contentmachine-", Arrays.asList(firstTeam, secondTeam)).provideChecks();
+        assertEquals(1, checks.size());
+
+        final Check check = checks.get(0);
+
+        assertEquals("contentmachine-build", check.getName());
+        assertFalse(check.getTeams().isEmpty());
+        assertEquals(firstTeam, check.getTeams().get(0));
+        assertEquals(secondTeam, check.getTeams().get(1));
+    }
+    
+    private Team createsFakeTeamWithGivenName(final String teamName) {
+    	return new Team() {
             @Override
             public String getTeamName() {
-                return "someTeam";
+                return teamName;
             }
 
             @Override
@@ -85,14 +115,6 @@ public class JenkinsJobListCheckProviderTest {
                 return "someTeamsJiraTeamName";
             }
         };
-
-        final List<Check> checks = jenkinsJobListCheckProvider.withJobPrefix("yana-").withJobNameTeamMapping("contentmachine-", team).provideChecks();
-        assertEquals(1, checks.size());
-
-        final Check check = checks.get(0);
-
-        assertEquals("contentmachine-build", check.getName());
-        assertEquals(team, check.getTeam());
     }
 
     private List<String> checkNames(List<Check> checks) {

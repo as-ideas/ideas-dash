@@ -45,7 +45,7 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
                 State state = stateOfPullRequest(pullRequest);
                 final CheckResult checkResult = new CheckResult(state, "Merge Request " + repo.name, "[" + assigneeName + "]", 1, 1, check.getGroup());
                 checkResult.withLink(pullRequest.html_url);
-                checkResult.withTeam(check.getTeam());
+                checkResult.withTeams(check.getTeams());
                 checkResults.add(checkResult);
             }
         }

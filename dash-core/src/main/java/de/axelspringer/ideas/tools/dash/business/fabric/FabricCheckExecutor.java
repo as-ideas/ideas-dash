@@ -29,7 +29,7 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
     @Override
     public List<CheckResult> executeCheck(FabricCheck fabricCheck) {
 
-        final Team team = fabricCheck.getTeam();
+        final List<Team> teams = fabricCheck.getTeams();
         final Group group = fabricCheck.getGroup();
 
         // log-in
@@ -37,7 +37,7 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
         try {
             fabricAuth = fabricService.logIn(fabricCheck.getEmail(), fabricCheck.getPassword());
         } catch (FabricExecutionException e) {
-            return Collections.singletonList(new CheckResult(State.RED, "FABRIC", e.getMessage(), 1, 1, group).withTeam(team));
+            return Collections.singletonList(new CheckResult(State.RED, "FABRIC", e.getMessage(), 1, 1, group).withTeams(teams));
         }
 
         // load apps
@@ -45,12 +45,12 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
         try {
             fabricApps = fabricService.loadApps(fabricAuth);
         } catch (FabricExecutionException e) {
-            return Collections.singletonList(new CheckResult(State.RED, "FABRIC", e.getMessage(), 1, 1, group).withTeam(team));
+            return Collections.singletonList(new CheckResult(State.RED, "FABRIC", e.getMessage(), 1, 1, group).withTeams(teams));
         }
 
         return fabricApps.stream()
                 .map(fabricApp -> issues(fabricAuth, fabricApp))
-                .map(fabricAppWithProblems -> mapFabricAppWithProblemsToCheckResult(fabricAppWithProblems, group, team))
+                .map(fabricAppWithProblems -> mapFabricAppWithProblemsToCheckResult(fabricAppWithProblems, group, teams))
                 .collect(Collectors.toList());
     }
 
@@ -81,7 +81,7 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
         return new FabricAppWithProblems(fabricApp, warningCount, severeCount);
     }
 
-    private CheckResult mapFabricAppWithProblemsToCheckResult(FabricAppWithProblems fabricAppWithProblems, Group group, Team team) {
+    private CheckResult mapFabricAppWithProblemsToCheckResult(FabricAppWithProblems fabricAppWithProblems, Group group, List<Team> teams) {
 
         final FabricApp fabricApp = fabricAppWithProblems.getFabricApp();
         final Integer problemCount = fabricAppWithProblems.getWarningCount() + fabricAppWithProblems.getSevereCount();
@@ -89,7 +89,7 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
         final State state = problemCount < 1 ? State.GREEN : fabricAppWithProblems.getSevereCount() > 0 ? State.RED : State.YELLOW;
         return new CheckResult(state, fabricApp.getName(), problemCount + " unresolved", 1 + problemCount, problemCount, group)
                 .withLink(fabricApp.getDashboard_url())
-                .withTeam(team);
+                .withTeams(teams);
     }
 
     private boolean ignoreIssue(FabricIssue fabricIssue, String fabricAppId, FabricAuth fabricAuth) {

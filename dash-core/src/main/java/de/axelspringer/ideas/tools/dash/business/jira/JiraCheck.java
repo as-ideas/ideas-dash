@@ -1,5 +1,7 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
+import java.util.List;
+
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
@@ -18,8 +20,8 @@ public class JiraCheck extends AbstractCheck {
 
     private JiraProjectConfiguration jiraProjectConfiguration = new JiraProjectConfiguration();
 
-    public JiraCheck(String name, Team team, String url, String userName, String password, String jql, Group group) {
-        super(name, group, team);
+    public JiraCheck(String name, List<Team> teams, String url, String userName, String password, String jql, Group group) {
+        super(name, group, teams);
         this.url = url;
         this.userName = userName;
         this.password = password;

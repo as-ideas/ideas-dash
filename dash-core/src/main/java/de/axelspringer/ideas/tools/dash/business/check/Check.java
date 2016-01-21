@@ -1,5 +1,7 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
+import java.util.List;
+
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
@@ -12,7 +14,7 @@ public interface Check {
 
     Group getGroup();
 
-    Team getTeam();
+    List<Team> getTeams();
 
     /**
      * Implement this method to provide an image source path for the check to be visibale in the monitor

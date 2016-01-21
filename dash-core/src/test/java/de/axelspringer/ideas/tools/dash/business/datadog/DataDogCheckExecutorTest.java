@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,7 +142,7 @@ public class DataDogCheckExecutorTest {
         assertEquals("OK (query: null)", checkResult.getInfo());
         assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
-        assertNull(checkResult.getTeam());
+        assertNull(checkResult.getTeams());
     }
 
     @Test
@@ -155,7 +156,7 @@ public class DataDogCheckExecutorTest {
         assertEquals("alert (query: null)", checkResult.getInfo());
         assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
-        assertNull(checkResult.getTeam());
+        assertNull(checkResult.getTeams());
     }
 
     @Test
@@ -169,7 +170,7 @@ public class DataDogCheckExecutorTest {
         assertEquals("alert (query: null)", checkResult.getInfo());
         assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
-        assertNull(checkResult.getTeam());
+        assertNull(checkResult.getTeams());
     }
 
     @Test
@@ -185,17 +186,23 @@ public class DataDogCheckExecutorTest {
         assertEquals("MAINTENANCE!", checkResult.getInfo());
         assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
-        assertNull(checkResult.getTeam());
+        assertNull(checkResult.getTeams());
     }
 
     @Test
-    public void decideTeam() {
+    public void decideTeams() {
 
-        assertNull(dataDogCheckExecutor.decideTeam("[foo]some_monitor", teamMappings()));
-        assertNull(dataDogCheckExecutor.decideTeam("some_monitor", teamMappings()));
-        assertEquals(TestTeam.INSTANCE, dataDogCheckExecutor.decideTeam("[yana][cm]some_monitor", teamMappings()));
-        assertEquals(TestTeam.INSTANCE, dataDogCheckExecutor.decideTeam("[yana][foo][cm]some_monitor", teamMappings()));
-        assertEquals(TestTeam.INSTANCE, dataDogCheckExecutor.decideTeam("[cm]some_monitor", teamMappings()));
+        assertNull(dataDogCheckExecutor.decideTeams("[foo]some_monitor", teamMappings()));
+        assertNull(dataDogCheckExecutor.decideTeams("some_monitor", teamMappings()));
+        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][cm]some_monitor", teamMappings()));
+        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][foo][cm]some_monitor", teamMappings()));
+        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[cm]some_monitor", teamMappings()));
+    }
+    
+    @Test
+    public void decideTeams_withTwoTeams() {
+
+        assertEquals(Arrays.asList(new Team[] {TestTeam.INSTANCE, TestTeam.INSTANCE}), dataDogCheckExecutor.decideTeams("[yana][cm]some_monitor", teamMultipleMappings()));
     }
 
     private DataDogDowntimes downtimes() {
@@ -220,10 +227,17 @@ public class DataDogCheckExecutorTest {
         return monitor;
     }
 
-    private Map<String, Team> teamMappings() {
+    private Map<String, List<Team>> teamMappings() {
 
-        Map<String, Team> teamMappings = new HashMap<>();
-        teamMappings.put("[cm]", TestTeam.INSTANCE);
+        Map<String, List<Team>> teamMappings = new HashMap<>();
+        teamMappings.put("[cm]", Arrays.asList(new Team[] {TestTeam.INSTANCE}));
+        return teamMappings;
+    }
+    
+    private Map<String, List<Team>> teamMultipleMappings() {
+
+        Map<String, List<Team>> teamMappings = new HashMap<>();
+        teamMappings.put("[cm]", Arrays.asList(new Team[] {TestTeam.INSTANCE, TestTeam.INSTANCE}));
         return teamMappings;
     }
 
