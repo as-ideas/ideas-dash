@@ -1,7 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.fabric;
 
 import java.util.List;
-
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
