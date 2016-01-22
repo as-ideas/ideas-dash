@@ -236,10 +236,10 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         };
 
         $scope.teamFilter = function (check) {
-            return isTeamSelected(check.teams);
+            return isAnyTeamSelected(check.teams);
         };
 
-        function isTeamSelected(teams) {
+        function isAnyTeamSelected(teams) {
             // team can be null or empty, because a check might not contain a team.
             // in this case, the check should be displayed
             if (!teams || teams.length == 0) {

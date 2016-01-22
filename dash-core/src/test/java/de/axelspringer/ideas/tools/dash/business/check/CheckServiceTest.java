@@ -3,13 +3,11 @@ package de.axelspringer.ideas.tools.dash.business.check;
 import static junit.framework.TestCase.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
-import de.axelspringer.ideas.tools.dash.TestTeam;
 
 public class CheckServiceTest {
 
@@ -46,13 +44,6 @@ public class CheckServiceTest {
 	public void testStuffExplodesOnTwoMatchingExecutors() {
 
 		checkService.executor(new TestCheckB());
-	}
-
-	@Test
-	public void testArrayToString() {
-
-		final String result = checkService.arrayToString(Arrays.asList(TestTeam.INSTANCE, TestTeam.INSTANCE));
-		assertEquals("TeamName: TestTeam, JirateamName: test, TeamName: TestTeam, JirateamName: test", result);
 	}
 
 	class TestCheckA extends AbstractCheck {

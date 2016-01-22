@@ -49,7 +49,7 @@ public class CheckService {
             List<CheckResult> checkResults = checkExecutor.executeCheck(check);
             return decorateCheckResults(check, checkResults);
         } catch (Exception e) {
-            LOG.error("There are unhandled errors when performing check '{}' on stage '{}' for teams '{}'", check.getName(), check.getGroup(), arrayToString(check.getTeams()));
+            LOG.error("There are unhandled errors when performing check '{}' on stage '{}' for teams '{}'", check.getName(), check.getGroup(), check.getTeams());
             LOG.error(e.getMessage(), e);
             return Collections.singletonList(new CheckResult(State.RED, "unhandled check error", check.getName(), 0, 0, check.getGroup()));
         }
@@ -89,12 +89,5 @@ public class CheckService {
      */
     public void setNumberOfParallelTask(int numberOfParallelTask) {
         this.numberOfParallelTask = numberOfParallelTask;
-    }
-    
-    protected String arrayToString(final List<Team> array) {
-        if (array != null) {
-            return array.stream().map(i -> "TeamName: " + i.getTeamName().toString() + ", JirateamName: " + i.getJiraTeamName()).collect(Collectors.joining(", "));
-        }
-        return "null";
     }
 }
