@@ -1,7 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
 import java.util.List;
-
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
