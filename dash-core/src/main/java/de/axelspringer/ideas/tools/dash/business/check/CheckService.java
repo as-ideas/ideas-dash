@@ -1,18 +1,17 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
-import de.axelspringer.ideas.tools.dash.presentation.State;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import de.axelspringer.ideas.tools.dash.presentation.State;
 
 
 @Service
@@ -49,7 +48,7 @@ public class CheckService {
             List<CheckResult> checkResults = checkExecutor.executeCheck(check);
             return decorateCheckResults(check, checkResults);
         } catch (Exception e) {
-            LOG.error("There are unhandled errors when performing check '{}' on stage '{}' for team '{}'", check.getName(), check.getGroup(), check.getTeam());
+            LOG.error("There are unhandled errors when performing check '{}' on stage '{}' for teams '{}'", check.getName(), check.getGroup(), check.getTeams());
             LOG.error(e.getMessage(), e);
             return Collections.singletonList(new CheckResult(State.RED, "unhandled check error", check.getName(), 0, 0, check.getGroup()));
         }

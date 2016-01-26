@@ -35,7 +35,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         final DataDogDowntimes downtimes = new DataDogDowntimes(restTemplate, check.getApiKey(), check.getAppKey());
 
         if (monitorResponse.getStatusCode() != HttpStatus.OK) {
-            return Collections.singletonList(new CheckResult(State.RED, "DataDog", "got http " + monitorResponse.getStatusCode(), 1, 1, check.getGroup()).withTeam(check.getTeam()));
+            return Collections.singletonList(new CheckResult(State.RED, "DataDog", "got http " + monitorResponse.getStatusCode(), 1, 1, check.getGroup()).withTeams(check.getTeams()));
         }
 
         return Arrays.asList(monitorResponse.getBody()).stream()
@@ -56,7 +56,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
     CheckResult convertMonitorToCheckResult(DataDogMonitor monitor, DataDogCheck check, DataDogDowntimes downtimes) {
         Group group = check.getGroup();
-        Map<String, Team> jobNameTeamMappings = check.getJobNameTeamMappings();
+        Map<String, List<Team>> jobNameTeamMappings = check.getJobNameTeamMappings();
 
         String infoMessage = monitor.getOverallState() + " (query: " + monitor.getQuery() + ")";
         State state = State.RED;
@@ -72,9 +72,9 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         }
 
         final CheckResult checkResult = new CheckResult(state, monitor.getName() + "@DataDog", infoMessage, 1, State.GREEN == state ? 0 : 1, group);
-        final Team team = decideTeam(monitor.getName(), jobNameTeamMappings);
-        if (team != null) {
-            checkResult.withTeam(team);
+        final List<Team> teams = decideTeams(monitor.getName(), jobNameTeamMappings);
+        if (teams != null && !teams.isEmpty()) {
+            checkResult.withTeams(teams);
         }
 
         // HINT https://app.datadoghq.com/monitors#status?id=182437&group=all
@@ -82,7 +82,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         return checkResult;
     }
 
-    Team decideTeam(String monitorName, Map<String, Team> jobNameTeamMappings) {
+    List<Team> decideTeams(String monitorName, Map<String, List<Team>> jobNameTeamMappings) {
 
         // operate on this string
         monitorName = monitorName.toLowerCase();

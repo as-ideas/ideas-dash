@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.example;
 
+import java.util.List;
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
@@ -13,8 +14,8 @@ public class ExampleCheck extends AbstractCheck {
 
     private State state = State.YELLOW;
 
-    protected ExampleCheck(String name, Group group, Team team) {
-        super(name, group, team);
+    protected ExampleCheck(String name, Group group, List<Team> teams) {
+        super(name, group, teams);
     }
 
     public ExampleCheck withLink(String link) {

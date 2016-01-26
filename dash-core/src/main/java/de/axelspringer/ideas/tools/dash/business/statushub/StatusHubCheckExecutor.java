@@ -29,7 +29,7 @@ public class StatusHubCheckExecutor implements CheckExecutor<StatusHubCheck> {
         return Collections.singletonList(
                 new CheckResult(incidentCount > 0 ? State.RED : State.GREEN, "Statushub", incidentCount + " incidents on statushub", 1, incidentCount, check.getGroup())
                         .withLink(link)
-                        .withTeam(check.getTeam())
+                        .withTeams(check.getTeams())
         );
     }
 

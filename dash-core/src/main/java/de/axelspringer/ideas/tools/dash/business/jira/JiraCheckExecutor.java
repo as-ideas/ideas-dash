@@ -36,7 +36,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
         if (issues == null || issues.size() < 1) {
             final CheckResult checkResult = new CheckResult(State.GREEN, jiraCheck.getName(), "no issues", 1, 0, jiraCheck.getGroup())
-                    .withLink(jiraCheck.getUrl()).withTeam(jiraCheck.getTeam());
+                    .withLink(jiraCheck.getUrl()).withTeams(jiraCheck.getTeams());
             return Collections.singletonList(checkResult);
         }
 
@@ -55,7 +55,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
         final State state = issueStateMapper.mapToState(issue);
         final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, state == State.GREEN ? 0 : 1, jiraCheck.getGroup())
-                .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeam(jiraCheck.getTeam());
+                .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeams(jiraCheck.getTeams());
 
         if (jiraProjectConfiguration.isIssueInProgress(issue)) {
             checkResult.markRunning();

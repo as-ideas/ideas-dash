@@ -1,9 +1,13 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
-import de.axelspringer.ideas.tools.dash.business.customization.Group;
-import de.axelspringer.ideas.tools.dash.business.customization.Team;
-import de.axelspringer.ideas.tools.dash.presentation.State;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.util.List;
 import org.apache.http.auth.AuthenticationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,15 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.presentation.State;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JenkinsCheckExecutorTest {
@@ -73,6 +71,6 @@ public class JenkinsCheckExecutorTest {
     }
 
     private JenkinsCheck jenkinsCheck() {
-        return new JenkinsCheck("", "", "", "", mock(Group.class), mock(Team.class));
+        return new JenkinsCheck("", "", "", "", mock(Group.class), mock(List.class));
     }
 }

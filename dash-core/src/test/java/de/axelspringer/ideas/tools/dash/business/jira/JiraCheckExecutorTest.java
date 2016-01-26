@@ -1,25 +1,24 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
-import de.axelspringer.ideas.tools.dash.business.customization.Group;
-import de.axelspringer.ideas.tools.dash.business.customization.Team;
-import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
-import de.axelspringer.ideas.tools.dash.presentation.State;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Arrays;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+
+import java.util.Arrays;
+import java.util.List;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
+import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.customization.Team;
+import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
+import de.axelspringer.ideas.tools.dash.presentation.State;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JiraCheckExecutorTest {
@@ -40,7 +39,7 @@ public class JiraCheckExecutorTest {
     public void executeChecks_WithNoIssuesFound() throws Exception {
         doReturn(new SearchResult()).when(jiraCheckExecutor).queryJira(any(JiraCheck.class));
 
-        List<CheckResult> checkResults = jiraCheckExecutor.executeCheck(new JiraCheck(GIVEN_NAME, GIVEN_TEAM, GIVEN_URL, GIVEN_USER, GIVEN_PASSWORT, GIVEN_JQL, GIVEN_GROUP));
+        List<CheckResult> checkResults = jiraCheckExecutor.executeCheck(new JiraCheck(GIVEN_NAME, Arrays.asList(GIVEN_TEAM), GIVEN_URL, GIVEN_USER, GIVEN_PASSWORT, GIVEN_JQL, GIVEN_GROUP));
 
         assertThat(checkResults.size(), is(1));
         CheckResult singleResult = checkResults.get(0);
@@ -49,7 +48,7 @@ public class JiraCheckExecutorTest {
         assertThat(singleResult.getInfo(), is(equalTo("no issues")));
         assertThat(singleResult.getLink(), is(GIVEN_URL));
         assertThat(singleResult.getName(), is(GIVEN_NAME));
-        assertThat(singleResult.getTeam(), is(GIVEN_TEAM));
+        assertThat(singleResult.getTeams().get(0), is(GIVEN_TEAM));
         assertThat(singleResult.getFailCount(), is(0));
         assertThat(singleResult.getTestCount(), is(1));
     }
@@ -59,7 +58,7 @@ public class JiraCheckExecutorTest {
         givenTwoIssuesAreFound();
         givenDoNothingForFoundIssues();
 
-        List<CheckResult> checkResults = jiraCheckExecutor.executeCheck(new JiraCheck(GIVEN_NAME, GIVEN_TEAM, GIVEN_URL, GIVEN_USER, GIVEN_PASSWORT, GIVEN_JQL, GIVEN_GROUP));
+        List<CheckResult> checkResults = jiraCheckExecutor.executeCheck(new JiraCheck(GIVEN_NAME, Arrays.asList(GIVEN_TEAM), GIVEN_URL, GIVEN_USER, GIVEN_PASSWORT, GIVEN_JQL, GIVEN_GROUP));
 
         assertThat(checkResults.size(), is(2));
     }

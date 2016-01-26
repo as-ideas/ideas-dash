@@ -2,6 +2,7 @@ package de.axelspringer.ideas.tools.dash.business.check;
 
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
+import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -12,12 +13,12 @@ public abstract class AbstractCheck implements Check {
 
     private final Group group;
 
-    private final Team team;
+    private final List<Team> teams;
 
-    protected AbstractCheck(String name, Group group, Team team) {
+    protected AbstractCheck(String name, Group group, List<Team> teams) {
         this.name = name;
         this.group = group;
-        this.team = team;
+        this.teams = teams;
     }
 
     @Override
@@ -31,8 +32,8 @@ public abstract class AbstractCheck implements Check {
     }
 
     @Override
-    public Team getTeam() {
-        return team;
+    public List<Team> getTeams() {
+        return teams;
     }
 
     @Override

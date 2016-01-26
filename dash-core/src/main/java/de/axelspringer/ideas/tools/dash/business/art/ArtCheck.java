@@ -17,8 +17,8 @@ public class ArtCheck extends AbstractCheck {
 
     private List<String> ignoredTestSuites = new ArrayList<>();
 
-    public ArtCheck(String name, String url, HttpHost proxy, Group group, Team team) {
-        super(name, group, team);
+    public ArtCheck(String name, String url, HttpHost proxy, Group group, List<Team> teams) {
+        super(name, group, teams);
         this.url = url;
         this.proxy = proxy;
     }

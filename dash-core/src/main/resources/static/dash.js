@@ -236,17 +236,22 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         };
 
         $scope.teamFilter = function (check) {
-            return isTeamSelected(check.team);
+            return isAnyTeamSelected(check.teams);
         };
 
-        function isTeamSelected(team) {
-            // team can be null, because a check might not contain a team.
+        function isAnyTeamSelected(teams) {
+            // team can be null or empty, because a check might not contain a team.
             // in this case, the check should be displayed
-            if (!team) {
+            if (!teams || teams.length == 0) {
                 return true;
             }
-
-            return $scope.config.teams[team];
+            for (var i = 0; i < teams.length; i ++) {
+            	if ($scope.config.teams[teams[i]]) {
+            		return true;
+            	}
+            		
+            }
+            return false;
         }
 
         function selectAllTeams() {

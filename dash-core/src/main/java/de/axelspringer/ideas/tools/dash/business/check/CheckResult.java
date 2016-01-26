@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
+import java.util.List;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
@@ -34,7 +35,7 @@ public class CheckResult {
 
     private Group group;
 
-    private Team team;
+    private List<Team> teams;
 
     public CheckResult(State state, String name, String info, int testCount, int failCount, Group group) {
         this.state = state;
@@ -55,8 +56,8 @@ public class CheckResult {
         return this;
     }
 
-    public CheckResult withTeam(Team team) {
-        this.team = team;
+    public CheckResult withTeams(List<Team> teams) {
+        this.teams = teams;
         return this;
     }
 
@@ -110,7 +111,7 @@ public class CheckResult {
         return this.group;
     }
 
-    public Team getTeam() {
-        return this.team;
+    public List<Team> getTeams() {
+        return this.teams;
     }
 }
