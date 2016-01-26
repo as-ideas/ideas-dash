@@ -1,5 +1,9 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
@@ -8,10 +12,6 @@ import org.apache.http.auth.AuthenticationException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 
 @Service
@@ -49,7 +49,7 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
 
         } catch (Exception e) {
             log.error("error fetching jenkins result: {}", jobName, e);
-            return Collections.singletonList(new CheckResult(State.RED, shortName(jobName), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(url).withTeams(jenkinsCheck.getTeams()));
+            return Collections.singletonList(new CheckResult(State.RED, shortName(jenkinsCheck), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(url).withTeams(jenkinsCheck.getTeams()));
         }
 
         int failedTestCount = 0;
@@ -67,7 +67,7 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
         final String checkInfo = failedTestCount > 0 ? failedTestCount + "/" + totalTestCount : "" + totalTestCount;
 
         State state = identifyStatus(lastCompletedBuildInfo, failedTestCount);
-        CheckResult checkResult = new CheckResult(state, shortName(jobName), checkInfo, totalTestCount, failedTestCount, jenkinsCheck.getGroup()).withLink(url).withTeams(jenkinsCheck.getTeams());
+        CheckResult checkResult = new CheckResult(state, shortName(jenkinsCheck), checkInfo, totalTestCount, failedTestCount, jenkinsCheck.getGroup()).withLink(url).withTeams(jenkinsCheck.getTeams());
         if (lastBuildInfo != null && lastBuildInfo.isBuilding()) {
             checkResult = checkResult.markRunning();
         }
@@ -116,12 +116,10 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
         }
     }
 
-    String shortName(String jobName) {
-
-        String[] splitJobName = jobName.split("_");
-        if (splitJobName.length < 2) {
-            return jobName;
+    String shortName(JenkinsCheck check) {
+        if (check.getJenkinsJobNameMapper() != null) {
+            return check.getJenkinsJobNameMapper().map(check);
         }
-        return splitJobName[1];
+        return check.getName();
     }
 }
