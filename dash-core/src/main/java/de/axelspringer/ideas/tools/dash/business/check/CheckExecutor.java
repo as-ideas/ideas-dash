@@ -6,7 +6,7 @@ import java.util.List;
 public interface CheckExecutor<T extends Check> {
 
     /**
-     * @param check
+     * @param check The check to execute
      * @return Never an empty collection. In case of "everything is fine" a "green" result check must be returned!
      */
     List<CheckResult> executeCheck(T check);

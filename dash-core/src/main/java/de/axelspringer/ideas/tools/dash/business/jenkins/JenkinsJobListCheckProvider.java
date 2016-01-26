@@ -1,6 +1,12 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckProvider;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
@@ -9,13 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.auth.AuthenticationException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Helper that will load a jenkins job list and
@@ -62,7 +61,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
      * @param host     {@link #host}
      * @param user     {@link #user}
      * @param apiToken {@link #apiToken}
-     * @param group
+     * @param group    {@link #group}
      */
     public JenkinsJobListCheckProvider(String host, String user, String apiToken, Group group) {
         this.host = host;
@@ -128,7 +127,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
 
     /**
      * @param jobNameTeamPrefix team prefix in the job name
-     * @param team              team that jobs prefixed with given prefix will be mapped to
+     * @param teams             teams that jobs prefixed with given prefix will be mapped to
      * @return this {@link JenkinsJobListCheckProvider} instance
      */
     public JenkinsJobListCheckProvider withJobNameTeamMapping(String jobNameTeamPrefix, List<Team> teams) {

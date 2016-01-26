@@ -7,6 +7,8 @@ public interface IssueStateMapper {
 
     /**
      * Maps an {@link de.axelspringer.ideas.tools.dash.business.jira.rest.Issue} to a {@link de.axelspringer.ideas.tools.dash.presentation.State}
+     * @param issue The jira issue to map the state from
+     * @return The mapped state
      */
     State mapToState(Issue issue);
 }
