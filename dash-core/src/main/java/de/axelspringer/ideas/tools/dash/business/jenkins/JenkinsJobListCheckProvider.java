@@ -85,9 +85,9 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
         final String jobName = StringUtils.isBlank(jobPrefix) || !job.getName().startsWith(jobPrefix) ? job.getName() : job.getName().substring(jobPrefix.length());
 
         List<Team> teams = null;
-        for (String jobNameTeamPrefix : jobNameTeamMapping.keySet()) {
-            if (jobName.startsWith(jobNameTeamPrefix)) {
-                teams = jobNameTeamMapping.get(jobNameTeamPrefix);
+        for (String jobIdentificationName : jobNameTeamMapping.keySet()) {
+            if (jobName.contains(jobIdentificationName)) {
+                teams = jobNameTeamMapping.get(jobIdentificationName);
             }
         }
 
@@ -126,12 +126,12 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     }
 
     /**
-     * @param jobNameTeamPrefix team prefix in the job name
+     * @param jobIdentificationName job identification in the job name
      * @param teams             teams that jobs prefixed with given prefix will be mapped to
      * @return this {@link JenkinsJobListCheckProvider} instance
      */
-    public JenkinsJobListCheckProvider withJobNameTeamMapping(String jobNameTeamPrefix, List<Team> teams) {
-        jobNameTeamMapping.put(jobNameTeamPrefix, teams);
+    public JenkinsJobListCheckProvider withJobNameTeamMapping(String jobIdentificationName, List<Team> teams) {
+        jobNameTeamMapping.put(jobIdentificationName, teams);
         return this;
     }
 }
