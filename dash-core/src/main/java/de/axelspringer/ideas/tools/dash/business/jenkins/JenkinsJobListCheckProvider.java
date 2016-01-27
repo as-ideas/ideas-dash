@@ -54,6 +54,11 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
      */
     private Map<String, List<Team>> jobNameTeamMapping = new HashMap<>();
 
+    /**
+     * Optional jenkins job name mapper
+     */
+    private JenkinsJobNameMapper jenkinsJobNameMapper;
+
     @Autowired
     private JenkinsClient jenkinsClient;
 
@@ -80,6 +85,10 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
                 .collect(Collectors.toList());
     }
 
+    public void setJenkinsJobNameMapper(JenkinsJobNameMapper jenkinsJobNameMapper) {
+        this.jenkinsJobNameMapper = jenkinsJobNameMapper;
+    }
+
     private Check check(JenkinsJob job) {
 
         final String jobName = StringUtils.isBlank(jobPrefix) || !job.getName().startsWith(jobPrefix) ? job.getName() : job.getName().substring(jobPrefix.length());
@@ -91,7 +100,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
             }
         }
 
-        return new JenkinsCheck(jobName, job.getUrl(), user, apiToken, group, teams);
+        return new JenkinsCheck(jobName, job.getUrl(), user, apiToken, group, teams, jenkinsJobNameMapper);
     }
 
     private List<JenkinsJob> jobs() {
