@@ -10,6 +10,12 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import de.axelspringer.ideas.tools.dash.TestTeam;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
@@ -25,11 +31,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataDogCheckExecutorTest {
@@ -204,12 +205,33 @@ public class DataDogCheckExecutorTest {
         assertEquals(Arrays.asList(new Team[] {TestTeam.INSTANCE, TestTeam.INSTANCE}), dataDogCheckExecutor.decideTeams("[yana][cm]some_monitor", teamMultipleMappings()));
     }
 
+    @Test
+    public void defaultStateMapper() {
+        mockDatadogApiCallAndReturn(dataDogMonitor("[YANA]Monitor", DataDogMonitor.STATE_ALERT));
+
+        List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(dataDogCheck());
+        assertEquals(1, checkResults.size());
+        assertEquals(State.RED, checkResults.get(0).getState());
+    }
+
+    @Test
+    public void customStateMapper() {
+        DataDogCheck check = dataDogCheck();
+        check.withTriggeredStateMapper(monitor -> State.YELLOW);
+
+        mockDatadogApiCallAndReturn(dataDogMonitor("[YANA]Monitor", DataDogMonitor.STATE_ALERT));
+
+        List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(check);
+        assertEquals(1, checkResults.size());
+        assertEquals(State.YELLOW, checkResults.get(0).getState());
+    }
+
     private DataDogDowntimes downtimes() {
         return Mockito.mock(DataDogDowntimes.class);
     }
 
     private DataDogCheck dataDogCheck() {
-        return new DataDogCheck("name", null, "apiKey", "appKey", "nameFilter");
+        return new DataDogCheck("name", null, "apiKey", "appKey", null);
     }
 
     private DataDogMonitor dataDogMonitor(String name, String stateOk) {

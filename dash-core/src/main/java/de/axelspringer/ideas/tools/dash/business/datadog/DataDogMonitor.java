@@ -1,19 +1,20 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.StringUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"tags"})
 public class DataDogMonitor {
 
     public final static String STATE_OK = "OK";
     public final static String STATE_NO_DATA = "No Data";
+    public final static String STATE_ALERT = "Alert";
 
     // This is the inner data from the JSON
     private String name;
