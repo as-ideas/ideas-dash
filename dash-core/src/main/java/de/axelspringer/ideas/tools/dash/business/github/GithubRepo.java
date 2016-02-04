@@ -1,7 +1,9 @@
 package de.axelspringer.ideas.tools.dash.business.github;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GithubRepo {
     public Long id;
     public String name;
@@ -71,5 +73,6 @@ public class GithubRepo {
     public Long open_issues;
     public Long watchers;
     public String default_branch;
+    public String deployments_url;
     public GithubRepoPermissions permissions;
 }
