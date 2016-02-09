@@ -15,7 +15,7 @@ public class Fields {
     /**
      * JIRA has a non standard ISO Date format E.G. 2016-01-18T17:16:59.000+0100 - https://answers.atlassian.com/questions/180275/update-jira-rest-api-datetime-value
      */
-    public static final String JIRA_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm";
+    private static final String JIRA_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm";
 
     /**
      * Team
@@ -42,7 +42,7 @@ public class Fields {
 
     public LocalDateTime getCreatedAtDateTime() {
         //Note this is not precise but mostly good enough - captures the essential fields up to hh:mm
-        //Decided not to map this at Gson Level as it may have undesireable side effects for other date fields with different formats.
+        //Decided not to map this at Gson Level as it may have undesireable side effects for other date fields with different date formats.
         DateFormat format = new SimpleDateFormat(JIRA_DATE_FORMAT);
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
@@ -114,6 +114,4 @@ public class Fields {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
-
-
 }
