@@ -4,7 +4,18 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.TimeZone;
+
 public class Fields {
+    /**
+     * JIRA has a non standard ISO Date format E.G. 2016-01-18T17:16:59.000+0100 - https://answers.atlassian.com/questions/180275/update-jira-rest-api-datetime-value
+     */
+    public static final String JIRA_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm";
 
     /**
      * Team
@@ -19,7 +30,30 @@ public class Fields {
 
     private IssueStatus status;
 
+    private String created;
+
+
     public Fields() {
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public LocalDateTime getCreatedAtDateTime() {
+        //Note this is not precise but mostly good enough - captures the essential fields up to hh:mm
+        //Decided not to map this at Gson Level as it may have undesireable side effects for other date fields with different formats.
+        DateFormat format = new SimpleDateFormat(JIRA_DATE_FORMAT);
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            return LocalDateTime.ofInstant(format.parse(getCreated()).toInstant(), ZoneId.systemDefault());
+        } catch (ParseException e) {
+            throw new RuntimeException("Failed to parse issue creation date " + getCreated(), e);
+        }
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
     }
 
     public boolean isBug() {
@@ -80,4 +114,6 @@ public class Fields {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
+
 }

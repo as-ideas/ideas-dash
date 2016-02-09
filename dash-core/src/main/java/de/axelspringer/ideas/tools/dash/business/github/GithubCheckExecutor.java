@@ -38,18 +38,22 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
         List<CheckResult> checkResults = new ArrayList<>();
 
         for (GithubRepo repo : filterRepos(readRepos(check), check.regexForMatchingRepoNames())) {
+
             GithubPullRequest[] githubPullRequests = readPullRequests(check.githubConfig(), repo);
+            if (githubPullRequests.length > 0) {
+                LOG.info(repo.name + ":" + githubPullRequests.length + " pull requests");
+            }
+
             for (GithubPullRequest pullRequest : githubPullRequests) {
                 String assigneeName = pullRequest.assignee == null ? "?" : pullRequest.assignee.login;
-
                 State state = stateOfPullRequest(pullRequest);
-                final CheckResult checkResult = new CheckResult(state, "Merge Request " + repo.name, "[" + assigneeName + "]", 1, 1, check.getGroup());
+                final CheckResult checkResult = new CheckResult(state, "[" + repo.name + "]" + pullRequest.title, "[" + assigneeName + "]", 1, 1, check.getGroup());
                 checkResult.withLink(pullRequest.html_url);
                 checkResult.withTeams(check.getTeams());
                 checkResults.add(checkResult);
             }
         }
-        LOG.info("Finished Github-Check.");
+        LOG.info("Finished Github-Check." + checkResults.size());
         return checkResults;
     }
 

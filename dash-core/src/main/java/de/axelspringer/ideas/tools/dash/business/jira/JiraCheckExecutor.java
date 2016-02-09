@@ -99,7 +99,6 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
     }
 
 
-
     @Override
     public boolean isApplicable(Check check) {
         return check instanceof JiraCheck;
