@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,15 +35,21 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
 
     @Override
     public List<CheckResult> executeCheck(GithubCheck check) {
+
         LOG.info("Executing Github-Check: " + check.getName() + " for Github-Account " + check.githubFullyQualifiedName());
         List<CheckResult> checkResults = new ArrayList<>();
 
         for (GithubRepo repo : filterRepos(readRepos(check), check.regexForMatchingRepoNames())) {
 
-            GithubPullRequest[] githubPullRequests = readPullRequests(check.githubConfig(), repo);
-            if (githubPullRequests.length > 0) {
-                LOG.info(repo.name + ":" + githubPullRequests.length + " pull requests");
+            final List<GithubPullRequest> githubPullRequests = Arrays.asList(readPullRequests(check.githubConfig(), repo));
+
+            if (githubPullRequests.size() > 0) {
+                LOG.info(repo.name + ": zero pull requests");
             }
+
+            githubPullRequests.removeIf(githubPullRequest ->
+                    StringUtils.hasLength(check.getFilterKeyword()) && !githubPullRequest.title.toLowerCase().contains(check.getFilterKeyword().toLowerCase())
+            );
 
             for (GithubPullRequest pullRequest : githubPullRequests) {
                 String assigneeName = pullRequest.assignee == null ? "?" : pullRequest.assignee.login;

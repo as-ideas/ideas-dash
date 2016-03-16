@@ -1,15 +1,21 @@
 package de.axelspringer.ideas.tools.dash.business.github;
 
-import java.util.List;
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
+
+import java.util.List;
 
 public class GithubCheck extends AbstractCheck {
 
     private final GithubConfig githubConfig;
 
     private String regexForMatchingRepoNames = "";
+
+    /**
+     * if specified the pr results will be filtered down to prs containing this keyword
+     */
+    private String filterKeyword;
 
     // eg. orgs/as-ideas or user/waschnick
     private String githubFullyQualifiedName;
@@ -31,5 +37,14 @@ public class GithubCheck extends AbstractCheck {
 
     public String githubFullyQualifiedName() {
         return githubFullyQualifiedName;
+    }
+
+    public GithubCheck withFilterKeyword(String filterKeyword) {
+        this.filterKeyword = filterKeyword;
+        return this;
+    }
+
+    public String getFilterKeyword() {
+        return filterKeyword;
     }
 }
