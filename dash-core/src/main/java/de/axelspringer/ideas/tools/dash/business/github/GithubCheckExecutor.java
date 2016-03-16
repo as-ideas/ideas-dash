@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
@@ -41,15 +42,16 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
 
         for (GithubRepo repo : filterRepos(readRepos(check), check.regexForMatchingRepoNames())) {
 
-            final List<GithubPullRequest> githubPullRequests = Arrays.asList(readPullRequests(check.githubConfig(), repo));
+            List<GithubPullRequest> githubPullRequests = Arrays.asList(readPullRequests(check.githubConfig(), repo));
 
             if (githubPullRequests.size() > 0) {
                 LOG.info(repo.name + ": zero pull requests");
             }
 
-            githubPullRequests.removeIf(githubPullRequest ->
-                    StringUtils.hasLength(check.getFilterKeyword()) && !githubPullRequest.title.toLowerCase().contains(check.getFilterKeyword().toLowerCase())
-            );
+            // ugly :)
+            if (StringUtils.hasLength(check.getFilterKeyword())) {
+                githubPullRequests = githubPullRequests.stream().filter(githubPullRequest -> githubPullRequest.title.toLowerCase().contains(check.getFilterKeyword().toLowerCase())).collect(Collectors.toList());
+            }
 
             for (GithubPullRequest pullRequest : githubPullRequests) {
                 String assigneeName = pullRequest.assignee == null ? "?" : pullRequest.assignee.login;
