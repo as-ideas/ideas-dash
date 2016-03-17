@@ -46,6 +46,7 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
 
             if (githubPullRequests.size() > 0) {
                 LOG.info(repo.name + ": zero pull requests");
+                checkResults.add(new CheckResult(State.GREEN, "no open PRs", "no open PRs", 1, 0, check.getGroup()));
             }
 
             // ugly :)
