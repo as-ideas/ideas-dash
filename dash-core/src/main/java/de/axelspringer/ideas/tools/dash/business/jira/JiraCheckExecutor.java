@@ -1,38 +1,34 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
-import com.google.gson.Gson;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.jira.issuestatemapper.IssueStateMapper;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
 import de.axelspringer.ideas.tools.dash.presentation.State;
-import de.axelspringer.ideas.tools.dash.util.CloseableHttpClientRestClient;
-import de.axelspringer.ideas.tools.dash.util.RestClient;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JiraCheckExecutor.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private RestClient restClient;
-
-    @Autowired
-    private Gson gson;
+    private JiraClient jiraClient;
 
     @Autowired
     private IssueStateMapper issueStateMapper;
 
     @Override
     public List<CheckResult> executeCheck(JiraCheck jiraCheck) {
-        final SearchResult searchResult = queryJira(jiraCheck);
-        final List<Issue> issues = searchResult.getIssues();
+        final List<Issue> issues = jiraClient.queryJiraForIssues(jiraCheck.getUrl(), jiraCheck.getJql(), jiraCheck.getUserName(), jiraCheck.getPassword());
 
         if (issues == null || issues.size() < 1) {
             final CheckResult checkResult = new CheckResult(State.GREEN, jiraCheck.getName(), "no issues", 1, 0, jiraCheck.getGroup())
@@ -65,39 +61,6 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         checkResult.withName(jiraCheck.getName() + " (" + assignee + ")");
         return checkResult;
     }
-
-    SearchResult queryJira(JiraCheck jiraCheck) {
-        // init request
-        Map<String, String> requestParams = new HashMap<>();
-        requestParams.put("maxResults", "30");
-        requestParams.put("jql", jiraCheck.getJql());
-
-        final String jiraApiUrl = jiraCheck.getUrl() + "/rest/api/2/search";
-
-        // fetch results from jira
-        log.debug("Retrieving jira status with JQL {}", jiraCheck.getJql());
-        final SearchResult searchResult;
-        try {
-            final String resultAsString = restClient.create()
-                    .withCredentials(jiraCheck.getUserName(), jiraCheck.getPassword())
-                    .withQueryParameters(requestParams)
-                    .withTimeout(CloseableHttpClientRestClient.THIRTY_SECONS_IN_MS)
-                    .withHeader("accept-encoding", "gzip;q=0")
-                    .get(jiraApiUrl);
-            searchResult = gson.fromJson(resultAsString, SearchResult.class);
-        } catch (Exception e) {
-            log.error("error fetching jira results", e);
-            throw new RuntimeException(e.getMessage(), e);
-        }
-
-        if (searchResult == null) {
-            log.error("deserialized to null. [Url= " + jiraApiUrl + ",Query=" + jiraCheck.getJql() + "]");
-            throw new IllegalStateException("deserialized to null. [Query=" + jiraCheck.getJql() + "]");
-        }
-
-        return searchResult;
-    }
-
 
     @Override
     public boolean isApplicable(Check check) {

@@ -2,6 +2,7 @@ package de.axelspringer.ideas.tools.dash.business.jira;
 
 import com.google.gson.Gson;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
+import de.axelspringer.ideas.tools.dash.business.jira.rest.SearchResult;
 import org.junit.Test;
 
 import java.io.InputStream;

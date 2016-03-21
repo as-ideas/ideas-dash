@@ -1,24 +1,26 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
+import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.customization.Team;
+import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
+import de.axelspringer.ideas.tools.dash.business.jira.rest.SearchResult;
+import de.axelspringer.ideas.tools.dash.presentation.State;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-
-import java.util.Arrays;
-import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
-import de.axelspringer.ideas.tools.dash.business.customization.Group;
-import de.axelspringer.ideas.tools.dash.business.customization.Team;
-import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
-import de.axelspringer.ideas.tools.dash.presentation.State;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JiraCheckExecutorTest {
