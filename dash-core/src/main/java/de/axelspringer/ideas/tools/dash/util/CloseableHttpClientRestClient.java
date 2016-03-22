@@ -23,6 +23,7 @@ public class CloseableHttpClientRestClient {
 
     public static final int TEN_SECONS_IN_MS = 10 * 1000;
     public static final int THIRTY_SECONS_IN_MS = 30 * 1000;
+    public static final int FORTYFIVE_SECONS_IN_MS = 30 * 1000;
 
     private CloseableHttpClient httpClient;
     private int timeoutInMs = TEN_SECONS_IN_MS;

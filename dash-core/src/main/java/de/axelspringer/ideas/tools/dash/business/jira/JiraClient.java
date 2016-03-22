@@ -64,7 +64,7 @@ public class JiraClient {
 
         final String resultAsString = restClient.create()
                 .withCredentials(username, password)
-                .withTimeout(CloseableHttpClientRestClient.THIRTY_SECONS_IN_MS)
+                .withTimeout(CloseableHttpClientRestClient.FORTYFIVE_SECONS_IN_MS)
                 .withHeader("accept-encoding", "gzip;q=0")
                 .get(jiraUrl + "/rest/api/2/project");
 
