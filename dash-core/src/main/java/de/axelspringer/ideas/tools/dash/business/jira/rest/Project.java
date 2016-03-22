@@ -10,6 +10,11 @@ public class Project {
 
     }
 
+    public Project(String name, String key) {
+        this.name = name;
+        this.key = key;
+    }
+
     public String getName() {
         return name;
     }
