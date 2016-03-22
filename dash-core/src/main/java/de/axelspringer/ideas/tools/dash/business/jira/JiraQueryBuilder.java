@@ -78,7 +78,7 @@ public class JiraQueryBuilder {
     }
 
     public String build() {
-        StringBuilder queryBuilder = new StringBuilder("project = " + projectName);
+        StringBuilder queryBuilder = new StringBuilder("project = '" + projectName + "'");
         queryBuilder.append(" and issuetype in (")
                 .append(StringUtils.join(issueTypes, ", "))
                 .append(")");
