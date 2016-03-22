@@ -1,9 +1,11 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
-import java.util.List;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CheckResult {
 
@@ -35,7 +37,7 @@ public class CheckResult {
 
     private Group group;
 
-    private List<Team> teams;
+    private List<String> teams;
 
     public CheckResult(State state, String name, String info, int testCount, int failCount, Group group) {
         this.state = state;
@@ -57,7 +59,8 @@ public class CheckResult {
     }
 
     public CheckResult withTeams(List<Team> teams) {
-        this.teams = teams;
+
+        this.teams = teams.stream().map(Object::toString).collect(Collectors.toList());
         return this;
     }
 
@@ -111,7 +114,7 @@ public class CheckResult {
         return this.group;
     }
 
-    public List<Team> getTeams() {
+    public List<String> getTeams() {
         return this.teams;
     }
 }
