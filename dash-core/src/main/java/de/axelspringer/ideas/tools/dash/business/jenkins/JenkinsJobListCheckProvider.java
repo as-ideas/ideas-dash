@@ -1,12 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckProvider;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
@@ -15,6 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.auth.AuthenticationException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Helper that will load a jenkins job list and
@@ -93,12 +94,13 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
 
         final String jobName = StringUtils.isBlank(jobPrefix) || !job.getName().startsWith(jobPrefix) ? job.getName() : job.getName().substring(jobPrefix.length());
 
-        List<Team> teams = null;
-        for (String jobIdentificationName : jobNameTeamMapping.keySet()) {
-            if (jobName.contains(jobIdentificationName)) {
-                teams = jobNameTeamMapping.get(jobIdentificationName);
+        final List<Team> teams = new ArrayList<>();
+
+        jobNameTeamMapping.forEach((jobIdentifactionName, mappedTeams) -> {
+            if (jobName.contains(jobIdentifactionName)) {
+                teams.addAll(mappedTeams);
             }
-        }
+        });
 
         return new JenkinsCheck(jobName, job.getUrl(), user, apiToken, group, teams, jenkinsJobNameMapper);
     }
