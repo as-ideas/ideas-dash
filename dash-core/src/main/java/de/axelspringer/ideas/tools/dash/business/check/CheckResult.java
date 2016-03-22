@@ -61,7 +61,11 @@ public class CheckResult {
     public CheckResult withTeams(List<Team> teams) {
 
         if (teams != null) {
-            teams.forEach(team -> this.teams.add(team.getTeamName()));
+            teams.forEach(team -> {
+                if (team != null) {
+                    this.teams.add(team.getTeamName());
+                }
+            });
         }
         return this;
     }
