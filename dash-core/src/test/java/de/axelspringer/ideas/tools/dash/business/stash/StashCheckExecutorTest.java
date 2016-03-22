@@ -1,23 +1,24 @@
 package de.axelspringer.ideas.tools.dash.business.stash;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import de.axelspringer.ideas.tools.dash.TestTeam;
+import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.failure.FailureGroup;
+import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import de.axelspringer.ideas.tools.dash.TestTeam;
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
-import de.axelspringer.ideas.tools.dash.business.failure.FailureGroup;
-import de.axelspringer.ideas.tools.dash.presentation.State;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StashCheckExecutorTest {
@@ -53,8 +54,8 @@ public class StashCheckExecutorTest {
 		whenCheckIsExecutedWithTwoTeams();
 
 		assertEquals(2, checkResult.get(0).getTeams().size());
-		assertEquals(TestTeam.INSTANCE, this.checkResult.get(0).getTeams().get(0));
-		assertEquals(TestTeam.INSTANCE, this.checkResult.get(0).getTeams().get(1));
+		assertEquals(TestTeam.INSTANCE.getTeamName(), this.checkResult.get(0).getTeams().get(0));
+		assertEquals(TestTeam.INSTANCE.getTeamName(), this.checkResult.get(0).getTeams().get(1));
 	}
 
 	private void givenTwoReposAndThreeMergeRequests() {
@@ -111,7 +112,7 @@ public class StashCheckExecutorTest {
 		assertEquals("http://stash.rockt/projects/PCP/repos/repo1/pull-requests/1", checkResult1.getLink());
 		assertEquals(FailureGroup.INSTANCE, checkResult1.getGroup());
 		assertEquals(State.RED, checkResult1.getState());
-		assertEquals(TestTeam.INSTANCE, checkResult1.getTeams().get(0));
+		assertEquals(TestTeam.INSTANCE.getTeamName(), checkResult1.getTeams().get(0));
 
 		final CheckResult checkResult2 = this.checkResult.get(1);
 		assertEquals("Merge Request repo1", checkResult2.getName());
@@ -119,7 +120,7 @@ public class StashCheckExecutorTest {
 		assertEquals("http://stash.rockt/projects/PCP/repos/repo1/pull-requests/2", checkResult2.getLink());
 		assertEquals(FailureGroup.INSTANCE, checkResult2.getGroup());
 		assertEquals(State.RED, checkResult2.getState());
-		assertEquals(TestTeam.INSTANCE, checkResult2.getTeams().get(0));
+		assertEquals(TestTeam.INSTANCE.getTeamName(), checkResult2.getTeams().get(0));
 
 		final CheckResult checkResult3 = this.checkResult.get(2);
 		assertEquals("Merge Request repo2", checkResult3.getName());
@@ -127,6 +128,6 @@ public class StashCheckExecutorTest {
 		assertEquals("http://stash.rockt/projects/PCP/repos/repo2/pull-requests/3", checkResult3.getLink());
 		assertEquals(FailureGroup.INSTANCE, checkResult3.getGroup());
 		assertEquals(State.RED, checkResult3.getState());
-		assertEquals(TestTeam.INSTANCE, checkResult3.getTeams().get(0));
+		assertEquals(TestTeam.INSTANCE.getTeamName(), checkResult3.getTeams().get(0));
 	}
 }

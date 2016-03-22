@@ -29,7 +29,17 @@ import static org.mockito.Mockito.mock;
 public class JiraCheckExecutorTest {
 
     public static final String GIVEN_NAME = "name";
-    public static final Team GIVEN_TEAM = mock(Team.class);
+    public static final Team GIVEN_TEAM = new Team() {
+        @Override
+        public String getTeamName() {
+            return "given team";
+        }
+
+        @Override
+        public String getJiraTeamName() {
+            return "GIVT";
+        }
+    };
     public static final String GIVEN_URL = "url";
     public static final String GIVEN_USER = "user";
     public static final String GIVEN_PASSWORT = "pw";
@@ -56,7 +66,7 @@ public class JiraCheckExecutorTest {
         assertThat(singleResult.getInfo(), is(equalTo("no issues")));
         assertThat(singleResult.getLink(), is(GIVEN_URL));
         assertThat(singleResult.getName(), is(GIVEN_NAME));
-        assertThat(singleResult.getTeams().get(0), is(GIVEN_TEAM));
+        assertThat(singleResult.getTeams().get(0), is(GIVEN_TEAM.getTeamName()));
         assertThat(singleResult.getFailCount(), is(0));
         assertThat(singleResult.getTestCount(), is(1));
     }

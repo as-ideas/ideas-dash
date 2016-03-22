@@ -1,21 +1,5 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import de.axelspringer.ideas.tools.dash.TestTeam;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
@@ -31,6 +15,20 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataDogCheckExecutorTest {
@@ -142,7 +140,7 @@ public class DataDogCheckExecutorTest {
         assertEquals("OK (query: null)", checkResult.getInfo());
         assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
-        assertNull(checkResult.getTeams());
+        assertEquals(0, checkResult.getTeams().size());
     }
 
     @Test
@@ -156,7 +154,7 @@ public class DataDogCheckExecutorTest {
         assertEquals("alert (query: null)", checkResult.getInfo());
         assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
-        assertNull(checkResult.getTeams());
+        assertEquals(0, checkResult.getTeams().size());
     }
 
     @Test
@@ -170,7 +168,7 @@ public class DataDogCheckExecutorTest {
         assertEquals("alert (query: null)", checkResult.getInfo());
         assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
-        assertNull(checkResult.getTeams());
+        assertEquals(0, checkResult.getTeams().size());
     }
 
     @Test
@@ -186,7 +184,7 @@ public class DataDogCheckExecutorTest {
         assertEquals("MAINTENANCE!", checkResult.getInfo());
         assertEquals("https://app.datadoghq.com/monitors#status?id=null&group=all", checkResult.getLink());
         assertNull(checkResult.getGroup());
-        assertNull(checkResult.getTeams());
+        assertEquals(0, checkResult.getTeams().size());
     }
 
     @Test

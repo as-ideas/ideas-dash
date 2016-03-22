@@ -4,8 +4,8 @@ import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CheckResult {
 
@@ -37,7 +37,7 @@ public class CheckResult {
 
     private Group group;
 
-    private List<String> teams;
+    private final List<String> teams = new ArrayList<>();
 
     public CheckResult(State state, String name, String info, int testCount, int failCount, Group group) {
         this.state = state;
@@ -60,7 +60,9 @@ public class CheckResult {
 
     public CheckResult withTeams(List<Team> teams) {
 
-        this.teams = teams.stream().map(Object::toString).collect(Collectors.toList());
+        if (teams != null) {
+            teams.forEach(team -> this.teams.add(team.getTeamName()));
+        }
         return this;
     }
 
