@@ -41,7 +41,16 @@ public class JiraQueryBuilder {
     }
 
     public JiraQueryBuilder withTeam(Team team) {
-        teams.add(team.getJiraTeamName());
+
+        final String escapedTeamName = team.getJiraTeamName().startsWith("'") ? team.getJiraTeamName() : "'" + team.getJiraTeamName() + "'";
+        teams.add(escapedTeamName);
+        return this;
+    }
+
+    public JiraQueryBuilder withoutTeam(Team team) {
+
+        final String escapedTeamName = team.getJiraTeamName().startsWith("'") ? team.getJiraTeamName() : "'" + team.getJiraTeamName() + "'";
+        teamsExcluded.add(escapedTeamName);
         return this;
     }
 
@@ -65,12 +74,6 @@ public class JiraQueryBuilder {
 
     public JiraQueryBuilder withCurrentSprint() {
         this.useOnlyCurrentSprint = true;
-        return this;
-    }
-
-
-    public JiraQueryBuilder withoutTeam(Team team) {
-        teamsExcluded.add(team.getJiraTeamName());
         return this;
     }
 
