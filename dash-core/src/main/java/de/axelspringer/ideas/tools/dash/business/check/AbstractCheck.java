@@ -2,10 +2,12 @@ package de.axelspringer.ideas.tools.dash.business.check;
 
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
-import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractCheck implements Check {
 
@@ -18,7 +20,7 @@ public abstract class AbstractCheck implements Check {
     protected AbstractCheck(String name, Group group, List<Team> teams) {
         this.name = name;
         this.group = group;
-        this.teams = teams;
+        this.teams = teams != null ? teams : new ArrayList<>();
     }
 
     @Override
