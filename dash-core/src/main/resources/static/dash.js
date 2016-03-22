@@ -221,7 +221,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 var check = group.checks[i];
 
                 // include the check only if it belongs to the displayed team(s)
-                if (isTeamSelected(check.team)) {
+                if (isAnyTeamSelected(check.teams)) {
                     // aggregate state (worst of two :))
                     state = aggregateState(state, check.state);
                 }
