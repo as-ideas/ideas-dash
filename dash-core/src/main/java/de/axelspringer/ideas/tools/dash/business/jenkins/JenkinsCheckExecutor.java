@@ -1,9 +1,5 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
@@ -12,6 +8,10 @@ import org.apache.http.auth.AuthenticationException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 
 @Service
@@ -79,27 +79,27 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
         return check instanceof JenkinsCheck;
     }
 
-    private State identifyStatus(JenkinsBuildInfo lastSuccessfullBuildInfo, int failedTestCount) {
+    private State identifyStatus(JenkinsBuildInfo jenkinsBuildInfo, int failedTestCount) {
 
         if (failedTestCount > 0) {
             return State.YELLOW;
         }
 
-        if (lastSuccessfullBuildInfo == null) {
+        if (jenkinsBuildInfo == null) {
             return State.GREY;
         }
 
-        if (lastSuccessfullBuildInfo.getResult() == null) {
+        if (jenkinsBuildInfo.getResult() == null) {
             return State.RED;
         }
 
-        switch (lastSuccessfullBuildInfo.getResult()) {
+        switch (jenkinsBuildInfo.getResult()) {
             case ABORTED:
                 return State.GREY;
             case UNSTABLE:
                 // if there were only test failures, we never get here. therefore treat unstable as failed
             case FAILURE:
-                return State.RED;
+                return State.YELLOW;
             case SUCCESS:
                 return State.GREEN;
             default:
