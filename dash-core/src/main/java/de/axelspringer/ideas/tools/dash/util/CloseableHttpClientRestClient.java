@@ -111,7 +111,7 @@ public class CloseableHttpClientRestClient {
                         return objectMapper.readValue(result, clazz);
                     }
                 }
-                LOG.warn("Error [Status=" + httpResponse.getStatusLine().getStatusCode() + " , Url=" + url + ", Body=" + EntityUtils.toString(httpResponse.getEntity()) + "]");
+                LOG.warn("Error [Status=" + httpResponse.getStatusLine().getStatusCode() + " , Url=" + url + "]");
                 return null;
             }
         } catch (Exception e) {
