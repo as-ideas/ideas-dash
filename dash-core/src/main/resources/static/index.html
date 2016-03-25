@@ -35,7 +35,7 @@
                     <div>{{group.info}}</div>
                 </div>
                 <div class="checks">
-                    <div ng-repeat="check in group.checks | filter:teamFilter | orderBy:[checkOrder, 'name']"
+                    <div ng-repeat="check in group.checks | orderBy:[checkOrder, 'name']"
                          class="panel check {{ classForState(check.state) }}"
                          ng-class="{'running': check.running}" title="{{check.info}}">
 
@@ -61,17 +61,22 @@
         </div>
     </div>
 
-    Settings:
     <label class="team-label">
         <input type="checkbox" ng-model="config.aggregate" ng-click="loadInfos()"/> aggregate green checks
     </label>
     <label class="team-label">
         <input type="checkbox" ng-model="config.aggregateDuplicated" ng-click="loadInfos()"/> aggregate duplicated checks
     </label>
-
-    Teams:
+    <label class="team-label">
+        <input type="checkbox" ng-model="config.hue.enabled" ng-click="loadInfos()"/> hue
+        <div ng-show="config.hue.enabled">
+            ip <input type="text" size="12" ng-model="config.hue.ip">
+            key <input type="text" size="12" ng-model="config.hue.key">
+            light# <input type="text" size="1" ng-model="config.hue.light">
+        </div>
+    </label>
     <label ng-repeat="team in teams" class="team-label">
-        <input type="checkbox" ng-model="config.teams[team]"/> {{ team }}
+        <input type="checkbox" ng-model="config.teams[team]" ng-click="loadInfos()"/> {{ team }}
     </label>
 </div>
 </body>

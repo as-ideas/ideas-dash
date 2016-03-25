@@ -154,8 +154,16 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 for (var i = 0; i < infos.groups.length; i++) {
                     aggregateGreenChecks(infos.groups[i]);
                     aggregateDuplicated(infos.groups[i]);
+                    filterByTeam(infos.groups[i]);
                 }
 
+                // find overall state
+                $scope.overallState = "GREEN";
+                for (var j = 0; j < infos.groups.length; j++) {
+                    $scope.overallState = aggregateState(groupState(infos.groups[j]), $scope.overallState);
+                }
+
+                switchHueLights($scope.overallState);
 
                 $scope.infos = infos;
 
@@ -184,6 +192,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         };
 
         var scoreForState = function (state) {
+
             if (state == 'GREEN' || state == 'green') {
                 return 0;
             }
@@ -213,20 +222,19 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             return "alert-danger";
         };
 
-        $scope.groupClass = function (group) {
-
+        function groupState(group) {
             var state = 'GREEN';
             for (var i = 0; i < group.checks.length; i++) {
 
                 var check = group.checks[i];
-
-                // include the check only if it belongs to the displayed team(s)
-                if (isAnyTeamSelected(check.teams)) {
-                    // aggregate state (worst of two :))
-                    state = aggregateState(state, check.state);
-                }
+                state = aggregateState(state, check.state);
             }
-            return $scope.classForState(state);
+            return state;
+        }
+
+        $scope.groupClass = function (group) {
+
+            return $scope.classForState(groupState(group));
         };
 
         $scope.checkOrder = function (check) {
@@ -235,23 +243,33 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             return 4 - scoreForState(state);
         };
 
-        $scope.teamFilter = function (check) {
-            return isAnyTeamSelected(check.teams);
-        };
+        function filterByTeam(group) {
 
-        function isAnyTeamSelected(teams) {
-            // team can be null or empty, because a check might not contain a team.
-            // in this case, the check should be displayed
-            if (!teams || teams.length == 0) {
-                return true;
+            // new array for filtered checks
+            var filteredChecks = [];
+
+            // iterate over checks and add to filtered teams if team selected or no team selected
+            for (var i = 0; i < group.checks.length; i++) {
+
+                var check = group.checks[i];
+                var teams = check.teams;
+
+                // team can be null or empty, because a check might not contain a team.
+                // in this case, the check should be displayed
+                if (!teams || teams.length == 0) {
+                    filteredChecks.push(check);
+                    break;
+                }
+                // only add check if teams match
+                for (var j = 0; j < teams.length; j++) {
+                    if ($scope.config.teams[teams[j]]) {
+                        filteredChecks.push(check);
+                    }
+                }
             }
-            for (var i = 0; i < teams.length; i ++) {
-            	if ($scope.config.teams[teams[i]]) {
-            		return true;
-            	}
-            		
-            }
-            return false;
+
+            // replace original checks with aggregated checks
+            group.checks = filteredChecks;
         }
 
         function selectAllTeams() {
@@ -262,6 +280,44 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
 
         function isEmptyObject(obj) {
             return Object.getOwnPropertyNames(obj).length == 0;
+        }
+
+        function switchHueLights(state) {
+
+            // dont do anything if hue is disabled
+            if (!$scope.config.hue.enabled) {
+                return;
+            }
+
+            var ip = $scope.config.hue.ip;
+            var key = $scope.config.hue.key;
+            var light = $scope.config.hue.light;
+
+            // dont do anything if hue settings are not complete
+            if (!ip || !key || !light) {
+                console.error("hue settings not complete");
+                return
+            }
+
+            var data;
+            if (state == "GREEN") {
+                data = {"on": true, "hue": 25500, "sat": 254};
+            } else if (state == "YELLOW") {
+                data = {"on": true, "hue": 12750, "sat": 254};
+            } else if (state == "RED") {
+                data = {"on": true, "hue": 0, "sat": 254};
+            } else {
+                // GREY
+                data = {"on": true, "hue": 50000, "sat": 0};
+            }
+
+            var hueResource = $resource("http://" + ip + "/api/" + key + "/lights/" + light + "/state", null, {
+                'update': {
+                    method: 'PUT',
+                    isArray: true
+                }
+            });
+            hueResource.update(data);
         }
     }
 );

@@ -1,8 +1,9 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
-import java.util.List;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
+
+import java.util.List;
 
 /**
  * Defines the model check belonging to a team and group.
@@ -22,5 +23,4 @@ public interface Check {
     default String getIconSrc(){
         return null;
     }
-
 }
