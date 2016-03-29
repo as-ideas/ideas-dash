@@ -271,7 +271,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 // in this case, the check should be displayed
                 if (!teams || teams.length == 0) {
                     filteredChecks.push(check);
-                    break;
+                    continue;
                 }
                 // only add check if teams match
                 for (var j = 0; j < teams.length; j++) {
