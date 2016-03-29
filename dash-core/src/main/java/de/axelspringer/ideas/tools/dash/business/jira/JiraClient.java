@@ -51,6 +51,12 @@ public class JiraClient {
             } catch (Exception e) {
                 lastException = e;
             }
+            try {
+                // give jira some rest
+                Thread.sleep(500 + i * 500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         log.error("error fetching jira results", lastException);
