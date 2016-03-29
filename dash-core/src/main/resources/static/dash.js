@@ -198,7 +198,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             if (group.checks.length < 1) {
                 group.checks.push({
                     name: 'F-I-N-E',
-                    info: greenCount + ' Checks',
+                    info: 'F-I-N-E',
                     state: 'GREEN'
                 });
             }
