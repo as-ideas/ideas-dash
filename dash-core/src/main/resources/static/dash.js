@@ -15,7 +15,8 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
         $scope.config = angular.extend({}, {
             teams: {},
             aggregate: true,
-            aggregateDuplicated: true
+            aggregateDuplicated: true,
+            hue: {}
         }, $scope.config);
 
         // migration from old team config to teams object, can be removed once all monitors ran this version
