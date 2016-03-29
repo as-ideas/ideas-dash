@@ -19,6 +19,9 @@ import java.util.Map;
 @Service
 public class JiraClient {
 
+    // as jira tends to behave badly sometimes (rejected requests, timeouts, ...) we need to retry to avoid wrong red bubbles
+    private final static int RETRY_COUNT = 3;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -38,23 +41,37 @@ public class JiraClient {
 
         // fetch results from jira
         log.debug("Retrieving jira status with JQL {}", jql);
-        final SearchResult searchResult;
-        try {
-            final String resultAsString = restClient.create()
-                    .withCredentials(username, password)
-                    .withQueryParameters(requestParams)
-                    .withTimeout(CloseableHttpClientRestClient.THIRTY_SECONS_IN_MS)
-                    .withHeader("accept-encoding", "gzip;q=0")
-                    .get(jiraApiUrl);
-            searchResult = gson.fromJson(resultAsString, SearchResult.class);
-        } catch (Exception e) {
-            log.error("error fetching jira results", e);
-            throw new RuntimeException(e.getMessage(), e);
+
+        Exception lastException = null;
+
+        for (int i = 0; i < RETRY_COUNT; i++) {
+
+            try {
+                return queryJiraForIssues(jiraApiUrl, requestParams, jql, username, password);
+            } catch (Exception e) {
+                lastException = e;
+            }
         }
 
+        log.error("error fetching jira results", lastException);
+        throw new RuntimeException(lastException.getMessage(), lastException);
+    }
+
+    private List<Issue> queryJiraForIssues(String jiraApiUrl, Map<String, String> requestParams, String jql, String username, String password) throws Exception {
+
+        final SearchResult searchResult;
+
+        final String resultAsString = restClient.create()
+                .withCredentials(username, password)
+                .withQueryParameters(requestParams)
+                .withTimeout(CloseableHttpClientRestClient.THIRTY_SECONS_IN_MS)
+                .withHeader("accept-encoding", "gzip;q=0")
+                .get(jiraApiUrl);
+
+        searchResult = gson.fromJson(resultAsString, SearchResult.class);
+
         if (searchResult == null) {
-            log.error("deserialized to null. [Url= " + jiraApiUrl + ",Query=" + jql + "]");
-            throw new IllegalStateException("deserialized to null. [Query=" + jql + "]");
+            throw new Exception("deserialized to null. [Query=" + jql + "]");
         }
 
         return searchResult.getIssues();

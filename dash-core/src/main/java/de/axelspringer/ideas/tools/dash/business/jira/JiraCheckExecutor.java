@@ -28,6 +28,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
     @Override
     public List<CheckResult> executeCheck(JiraCheck jiraCheck) {
+
         final List<Issue> issues = jiraClient.queryJiraForIssues(jiraCheck.getUrl(), jiraCheck.getJql(), jiraCheck.getUserName(), jiraCheck.getPassword());
 
         if (issues == null || issues.size() < 1) {
@@ -47,6 +48,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
     }
 
     CheckResult createCheckResultForIssue(JiraCheck jiraCheck, Issue issue) {
+
         final JiraProjectConfiguration jiraProjectConfiguration = jiraCheck.getJiraProjectConfiguration();
 
         final State state = issueStateMapper.mapToState(issue);
