@@ -82,7 +82,7 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
     }
 
     private State stateOfPullRequest(GithubPullRequest pullRequest) {
-        return pullRequest == null ? State.RED : State.GREY;
+        return pullRequest == null ? State.RED : State.YELLOW;
     }
 
     /**

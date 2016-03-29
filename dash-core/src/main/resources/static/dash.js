@@ -154,8 +154,9 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 // aggregate
                 for (var i = 0; i < infos.groups.length; i++) {
                     aggregateGreenChecks(infos.groups[i]);
-                    aggregateDuplicated(infos.groups[i]);
                     filterByTeam(infos.groups[i]);
+                    fillEmptyWithGreen(infos.groups[i]);
+                    aggregateDuplicated(infos.groups[i]);
                 }
 
                 // find overall state
@@ -190,6 +191,17 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 return state1;
             }
             return state2;
+        };
+
+        var fillEmptyWithGreen = function (group) {
+
+            if (group.checks.length < 1) {
+                group.checks.push({
+                    name: 'F-I-N-E',
+                    info: greenCount + ' Checks',
+                    state: 'GREEN'
+                });
+            }
         };
 
         var scoreForState = function (state) {
@@ -263,8 +275,10 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 }
                 // only add check if teams match
                 for (var j = 0; j < teams.length; j++) {
+
                     if ($scope.config.teams[teams[j]]) {
                         filteredChecks.push(check);
+                        break;
                     }
                 }
             }
