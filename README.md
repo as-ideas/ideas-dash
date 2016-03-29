@@ -35,7 +35,7 @@ For windows you could use something like http://www.dhcpserver.de/ (dont forget 
 * Find the bridge IP and go to http://bridge.ip/debug/clip.html
 * Create new developer by firing a GET request against api/newdeveloper and holding the key on the bridge at the same time (following http://www.developers.meethue.com/documentation/getting-started)
 * Fire a GET request against /api/yourkey/lights and find the light that says state.on = true
-* Enter the bridge ip, the key and the light # in the hue configuartion in the dash ui
+* Enter the bridge ip, the key and the light # in the hue configuration in the dash ui
 
 ```xml
 <dependencies>
