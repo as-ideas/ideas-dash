@@ -51,6 +51,11 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     private String jobPrefix;
 
     /**
+     * jobs with names containing a string represented in this list will be excluded
+     */
+    private List<String> blacklist = new ArrayList<>();
+
+    /**
      * contains a mapping for jobNameSegment to team mapping
      */
     private Map<String, List<Team>> jobNameTeamMapping = new HashMap<>();
@@ -82,8 +87,19 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
         return jobs().stream()
                 .filter(this::matchesPrefix)
                 .filter(this::isEnabled)
+                .filter(this::isNotBlacklisted)
                 .map(this::check)
                 .collect(Collectors.toList());
+    }
+
+    private boolean isNotBlacklisted(JenkinsJob jenkinsJob) {
+
+        for (String blacklistEntry : blacklist) {
+            if (jenkinsJob.getName().toLowerCase().contains(blacklistEntry.toLowerCase())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void setJenkinsJobNameMapper(JenkinsJobNameMapper jenkinsJobNameMapper) {
@@ -138,11 +154,19 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
 
     /**
      * @param jobIdentificationName job identification in the job name
-     * @param teams             teams that jobs prefixed with given prefix will be mapped to
+     * @param teams                 teams that jobs prefixed with given prefix will be mapped to
      * @return this {@link JenkinsJobListCheckProvider} instance
      */
     public JenkinsJobListCheckProvider withJobNameTeamMapping(String jobIdentificationName, List<Team> teams) {
         jobNameTeamMapping.put(jobIdentificationName, teams);
+        return this;
+    }
+
+    /**
+     * @see {@link #blacklist}
+     */
+    public JenkinsJobListCheckProvider withBlacklistedName(String namePart) {
+        blacklist.add(namePart);
         return this;
     }
 }

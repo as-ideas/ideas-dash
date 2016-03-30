@@ -1,26 +1,25 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
+import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.customization.Team;
+import org.apache.http.auth.AuthenticationException;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.http.auth.AuthenticationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-import de.axelspringer.ideas.tools.dash.business.check.Check;
-import de.axelspringer.ideas.tools.dash.business.customization.Group;
-import de.axelspringer.ideas.tools.dash.business.customization.Team;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class JenkinsJobListCheckProviderTest {
 
@@ -70,6 +69,17 @@ public class JenkinsJobListCheckProviderTest {
         assertEquals(1, checks.size());
 
         assertThat(checkNames(checks), containsInAnyOrder("contentmachine-build"));
+    }
+
+    @Test
+    public void testWithBlacklistEntry() {
+
+        final List<Check> checks = jenkinsJobListCheckProvider
+                .withBlacklistedName("yana")
+                .withBlacklistedName("ReCo")
+                .provideChecks();
+        assertEquals(1, checks.size());
+        assertEquals("docker-compose", checks.get(0).getName());
     }
 
     @Test
