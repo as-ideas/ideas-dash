@@ -326,6 +326,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 data = {"on": true, "hue": 50000, "sat": 0, "bri": 100};
             }
 
+
             var hueResource = $resource("http://" + ip + "/api/" + key + "/lights/" + light + "/state", null, {
                 'update': {
                     method: 'PUT',
