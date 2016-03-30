@@ -316,14 +316,14 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
 
             var data;
             if (state == "GREEN") {
-                data = {"on": true, "hue": 25500, "sat": 254};
+                data = {"on": true, "hue": 25500, "sat": 254, "bri": 100};
             } else if (state == "YELLOW") {
-                data = {"on": true, "hue": 12750, "sat": 254};
+                data = {"on": true, "hue": 12750, "sat": 254, "bri": 200};
             } else if (state == "RED") {
-                data = {"on": true, "hue": 0, "sat": 254};
+                data = {"on": true, "hue": 0, "sat": 254, "bri": 254};
             } else {
                 // GREY
-                data = {"on": true, "hue": 50000, "sat": 0};
+                data = {"on": true, "hue": 50000, "sat": 0, "bri": 100};
             }
 
             var hueResource = $resource("http://" + ip + "/api/" + key + "/lights/" + light + "/state", null, {
