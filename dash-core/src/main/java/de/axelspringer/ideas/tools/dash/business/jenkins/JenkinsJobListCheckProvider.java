@@ -163,7 +163,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     }
 
     /**
-     * @see {@link #blacklist}
+     * see {@link #blacklist}
      */
     public JenkinsJobListCheckProvider withBlacklistedName(String namePart) {
         blacklist.add(namePart);
