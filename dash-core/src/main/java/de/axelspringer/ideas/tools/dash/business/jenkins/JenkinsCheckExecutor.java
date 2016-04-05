@@ -86,7 +86,8 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
         }
 
         if (jenkinsBuildInfo == null) {
-            return State.GREY;
+            // never executed = fine
+            return State.GREEN;
         }
 
         if (jenkinsBuildInfo.getResult() == null) {
