@@ -1,14 +1,5 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.List;
-
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.presentation.State;
@@ -20,6 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JenkinsCheckExecutorTest {
@@ -56,13 +56,13 @@ public class JenkinsCheckExecutorTest {
     }
 
     @Test
-    public void testBuildWithoutLastBuildResultResultsInGreyState() throws IOException, AuthenticationException {
+    public void testBuildWithoutLastBuildResultResultsInGreenState() throws IOException, AuthenticationException {
 
         final List<CheckResult> checkResults = jenkinsCheckExecutor.executeCheck(jenkinsCheck());
 
         assertEquals(1, checkResults.size());
         final CheckResult checkResult = checkResults.get(0);
-        assertEquals(State.GREY, checkResult.getState());
+        assertEquals(State.GREEN, checkResult.getState());
     }
 
     private JenkinsJobInfo jenkinsJobInfo() {
