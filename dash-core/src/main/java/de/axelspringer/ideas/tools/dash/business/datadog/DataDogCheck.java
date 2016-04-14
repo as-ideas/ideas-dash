@@ -1,14 +1,11 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import org.springframework.util.Assert;
+
+import java.util.*;
 
 public class DataDogCheck extends AbstractCheck {
 
@@ -18,6 +15,8 @@ public class DataDogCheck extends AbstractCheck {
     private final String appKey;
 
     private final String nameFilter;
+
+    private final List<String> blackList = new ArrayList<>();
 
     private TriggeredDataDogStateMapper triggeredStateMapper = new DefaultTriggeredDataDogStateMapper();
     private Map<String, List<Team>> jobNameTeamMappings = new HashMap<>();
@@ -64,5 +63,19 @@ public class DataDogCheck extends AbstractCheck {
         Assert.notNull(triggeredStateMapper);
         this.triggeredStateMapper = triggeredStateMapper;
         return this;
+    }
+
+    public DataDogCheck withBlacklistedMonitorname(String monitorName) {
+        blackList.add(monitorName.toLowerCase());
+        return this;
+    }
+
+    public List<String> getBlackList() {
+        return Collections.unmodifiableList(blackList);
+    }
+
+    public boolean isBlacklisted(String monitorName) {
+        return blackList.stream()
+                .anyMatch(blacklistedMonitor -> monitorName.toLowerCase().contains(blacklistedMonitor));
     }
 }

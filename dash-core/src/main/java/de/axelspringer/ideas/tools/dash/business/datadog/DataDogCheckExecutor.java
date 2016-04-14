@@ -1,11 +1,5 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
@@ -19,6 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
@@ -40,6 +40,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
         return Arrays.asList(monitorResponse.getBody()).stream()
                 .filter(candidate -> isNameMatching(check, candidate))
+                .filter(candidate -> !check.isBlacklisted(candidate.getName()))
                 .map(monitor -> convertMonitorToCheckResult(monitor, check, downtimes))
                 .collect(Collectors.toList());
     }
