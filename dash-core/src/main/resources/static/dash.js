@@ -323,7 +323,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 data = {"on": true, "hue": 0, "sat": 254, "bri": 254};
             } else {
                 // GREY
-                data = {"on": true, "hue": 50000, "sat": 0, "bri": 100};
+                data = {"on": true, "hue": 50000, "sat": 0, "bri": 40};
             }
 
 
