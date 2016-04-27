@@ -322,8 +322,8 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             } else if (state == "RED") {
                 data = {"on": true, "hue": 0, "sat": 254, "bri": 254};
             } else {
-                // GREY
-                data = {"on": true, "hue": 50000, "sat": 0, "bri": 80};
+                // State of GRAY maps to BLUE
+                data = {"on": true, "hue": 46000, "sat": 254, "bri": 254};
             }
 
 
