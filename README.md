@@ -33,8 +33,10 @@ What you have to do:
 * Connect the hue-bridge to the same network as the computer running the dash. if you want to connect it directly you need to enable a dhcp-server on the machine.
 For windows you could use something like http://www.dhcpserver.de/ (dont forget to add firewall exceptions).
 * Find the bridge IP and go to http://bridge.ip/debug/clip.html
-* Create new developer by firing a GET request against api/newdeveloper and holding the key on the bridge at the same time (following http://www.developers.meethue.com/documentation/getting-started)
-* Fire a GET request against /api/yourkey/lights and find the light that says state.on = true
+* Create new developer by firing a POST request with a payload like this: {"devicetype":"my_hue_app#gaffa"} against /api and holding the key on the bridge at the same time (following http://www.developers.meethue.com/documentation/getting-started) - you will receive a 'username' which you shall enter in the "key" - field of yana-dash.
+* If you want to register a new light, POST a request against /api/key/lights with a payload like this: {"deviceid":["34AFBE"]} 
+(deviceide being the serial on the bulb)
+* Fire a GET request against /api/yourkey/lights and find the light you want to use
 * Enter the bridge ip, the key and the light # in the hue configuration in the dash ui
 
 ```xml
