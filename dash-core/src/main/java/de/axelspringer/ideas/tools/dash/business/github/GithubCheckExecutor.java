@@ -44,8 +44,8 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
 
             List<GithubPullRequest> githubPullRequests = Arrays.asList(readPullRequests(check.githubConfig(), repo));
 
-            if (githubPullRequests.size() > 0) {
-                LOG.info(repo.name + ": zero pull requests");
+            if (githubPullRequests.isEmpty()) {
+                LOG.trace(repo.name + ": zero pull requests");
                 checkResults.add(new CheckResult(State.GREEN, "no open PRs", "no open PRs", 1, 0, check.getGroup()));
             }
 
@@ -57,13 +57,13 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
             for (GithubPullRequest pullRequest : githubPullRequests) {
                 String assigneeName = pullRequest.assignee == null ? "?" : pullRequest.assignee.login;
                 State state = stateOfPullRequest(pullRequest);
-                final CheckResult checkResult = new CheckResult(state, "[" + repo.name + "]" + pullRequest.title, "[" + assigneeName + "]", 1, 1, check.getGroup());
+                final CheckResult checkResult = new CheckResult(state, "[" + repo.name + "] " + pullRequest.title, " [" + assigneeName + "]", 1, 1, check.getGroup());
                 checkResult.withLink(pullRequest.html_url);
                 checkResult.withTeams(check.getTeams());
                 checkResults.add(checkResult);
             }
         }
-        LOG.info("Finished Github-Check." + checkResults.size());
+        LOG.trace("Finished Github-Check. Results: " + checkResults.size());
         return checkResults;
     }
 
@@ -77,7 +77,7 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
                 result.add(githubRepo);
             }
         }
-        LOG.info("Found " + result.size() + " matching Repos for RegEx '" + regexForMatchingRepoNames + "'");
+        LOG.info("Found " + result.size() + " (from " + githubRepos.size() + " repos overall) matching Repos for RegEx '" + regexForMatchingRepoNames + "'");
         return result;
     }
 
