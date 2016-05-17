@@ -1,7 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.pingdom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.axelspringer.ideas.dash.business.GroupLanes;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
@@ -56,7 +55,7 @@ public class PingdomCheckExecutor implements CheckExecutor<PingdomCheck> {
             state = State.GREEN;
         }
 
-        return new CheckResult(state, pingdomAnswer.status + ": " + pingdomAnswer.name, pingdomAnswer.hostname, 1, 1, GroupLanes.PINGDOM)
+        return new CheckResult(state, pingdomAnswer.status + ": " + pingdomAnswer.name, pingdomAnswer.hostname, 1, 1, check.getGroup())
                 .withLink("https://my.pingdom.com/newchecks/checks#check=" + pingdomAnswer.id);
     }
 
