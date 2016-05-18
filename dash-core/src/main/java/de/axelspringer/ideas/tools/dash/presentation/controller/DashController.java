@@ -26,7 +26,7 @@ public class DashController {
     @Autowired
     private UiInfoService UiInfoService;
 
-    @Autowired
+    @Autowired(required = false)
     private TeamProvider teamProvider;
 
     @Autowired
@@ -44,6 +44,9 @@ public class DashController {
 
     @RequestMapping(value = "teams")
     public UiTeams teams() {
+        if(teamProvider == null) {
+            return UiTeams.ALL;
+        }
         List<String> teams = teamProvider.getTeams().stream().map(Team::getTeamName).collect(Collectors.toList());
         return new UiTeams(teams);
     }

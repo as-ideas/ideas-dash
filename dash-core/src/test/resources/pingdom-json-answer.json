@@ -1,0 +1,45 @@
+{
+  "checks": [
+    {
+      "id": 943180,
+      "created": 1377872827,
+      "name": "XXX",
+      "hostname": "xxx.com",
+      "use_legacy_notifications": false,
+      "resolution": 5,
+      "type": "http",
+      "ipv6": false,
+      "lasterrortime": 1461781125,
+      "lasttesttime": 1463149423,
+      "lastresponsetime": 534,
+      "status": "up",
+      "alert_policy": 10831,
+      "alert_policy_name": "Normal (Recommended)",
+      "acktimeout": 0,
+      "autoresolve": 0
+    },
+    {
+      "id": 1076119,
+      "created": 1389027852,
+      "name": "[XXX] www.XXX.de (Akamai)",
+      "hostname": "www.xxx.de",
+      "use_legacy_notifications": false,
+      "resolution": 1,
+      "type": "http",
+      "ipv6": false,
+      "lasterrortime": 1444410452,
+      "lasttesttime": 1463149555,
+      "lastresponsetime": 707,
+      "status": "up",
+      "alert_policy": 2214322,
+      "alert_policy_name": "ASIdeas",
+      "acktimeout": 0,
+      "autoresolve": 0
+    }
+  ],
+  "counts": {
+    "total": 2,
+    "limited": 2,
+    "filtered": 2
+  }
+}

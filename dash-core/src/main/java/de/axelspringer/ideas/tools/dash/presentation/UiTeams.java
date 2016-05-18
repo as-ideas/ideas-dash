@@ -4,9 +4,12 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class UiTeams {
+
+    public static final UiTeams ALL = new UiTeams(Arrays.asList("ALL"));
 
     private final List<String> teams;
 

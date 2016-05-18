@@ -47,4 +47,9 @@ public class GithubCheck extends AbstractCheck {
     public String getFilterKeyword() {
         return filterKeyword;
     }
+
+    @Override
+    public String getIconSrc() {
+        return "assets/github-logo.png";
+    }
 }
