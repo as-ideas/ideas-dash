@@ -35,4 +35,10 @@ public class PingdomCheck extends AbstractCheck {
         return pattern;
     }
 
+
+    @Override
+    public String getIconSrc() {
+        return "assets/pingdom-logo.png";
+    }
+
 }
