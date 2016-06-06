@@ -62,7 +62,7 @@ public class GoCdCheckExecutor implements CheckExecutor<GoCdCheck> {
 
             for (GoCdStage stage : latestPipeline.stages) {
                 for (GoCdJob job : stage.jobs) {
-                    State resultState = job.result.equalsIgnoreCase("Passed") ? State.GREEN : State.RED;
+                    State resultState = isPassedOrCancelled(job) ? State.GREEN : State.RED;
                     result.add(new CheckResult(resultState, latestPipeline.name + " - " + stage.name + " - " + job.name, job.result, 0, 0, check.getGroup()));
                 }
 
@@ -70,6 +70,10 @@ public class GoCdCheckExecutor implements CheckExecutor<GoCdCheck> {
         }
 
 
+    }
+
+    private boolean isPassedOrCancelled(GoCdJob job) {
+        return job.result.equalsIgnoreCase("Passed") || job.result.equalsIgnoreCase("Cancelled");
     }
 
 //    private CheckResult convertToCheckResult(PingdomAnswer pingdomAnswer, de.axelspringer.ideas.tools.dash.business.pingdom.PingdomCheck check) {
