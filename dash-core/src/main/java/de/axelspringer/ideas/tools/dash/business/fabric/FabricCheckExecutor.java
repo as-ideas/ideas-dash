@@ -86,7 +86,7 @@ public class FabricCheckExecutor implements CheckExecutor<FabricCheck> {
         final FabricApp fabricApp = fabricAppWithProblems.getFabricApp();
         final Integer problemCount = fabricAppWithProblems.getWarningCount() + fabricAppWithProblems.getSevereCount();
 
-        final State state = problemCount < 1 ? State.GREEN : fabricAppWithProblems.getSevereCount() > 0 ? State.RED : State.YELLOW;
+        final State state = problemCount < 1 ? State.GREEN : fabricAppWithProblems.getSevereCount() > 0 ? State.YELLOW : State.GREY;
         return new CheckResult(state, fabricApp.getName(), problemCount + " unresolved", 1 + problemCount, problemCount, group)
                 .withLink(fabricApp.getDashboard_url())
                 .withTeams(teams);
