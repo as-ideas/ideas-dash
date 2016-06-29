@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins;
+package de.axelspringer.ideas.tools.dash.business.jenkins.domain;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -6,20 +6,26 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class JenkinsJobInfo {
 
-    private LastBuild lastCompletedBuild;
+    private Build lastCompletedBuild;
 
-    private LastBuild lastBuild;
+    private Build lastBuild;
+
+    private Build lastSuccessfulBuild;
 
     private Boolean buildable;
 
     public JenkinsJobInfo() {
     }
 
-    public LastBuild getLastCompletedBuild() {
+    public Build getLastSuccessfulBuild() {
+        return lastSuccessfulBuild;
+    }
+
+    public Build getLastCompletedBuild() {
         return this.lastCompletedBuild;
     }
 
-    public LastBuild getLastBuild() {
+    public Build getLastBuild() {
         return this.lastBuild;
     }
 
@@ -42,7 +48,7 @@ public class JenkinsJobInfo {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public class LastBuild {
+    public class Build {
 
         private String url;
 

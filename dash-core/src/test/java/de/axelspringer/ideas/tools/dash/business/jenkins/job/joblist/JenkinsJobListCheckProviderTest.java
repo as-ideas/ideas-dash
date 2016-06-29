@@ -1,8 +1,13 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins;
+package de.axelspringer.ideas.tools.dash.business.jenkins.job.joblist;
 
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJob;
+import de.axelspringer.ideas.tools.dash.business.jenkins.joblist.JenkinsJobListCheckProvider;
+import de.axelspringer.ideas.tools.dash.business.jenkins.joblist.JenkinsJobListWrapper;
 import org.apache.http.auth.AuthenticationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,11 +16,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -39,7 +46,7 @@ public class JenkinsJobListCheckProviderTest {
         jenkinsJobListWrapper.setJobs(jobs);
 
         final JenkinsClient jenkinsClient = mock(JenkinsClient.class);
-        when(jenkinsClient.query(anyString(), anyString(), anyString(), eq(JenkinsJobListWrapper.class))).thenReturn(jenkinsJobListWrapper);
+        when(jenkinsClient.queryApi(anyString(), any(JenkinsServerConfiguration.class), eq(JenkinsJobListWrapper.class))).thenReturn(jenkinsJobListWrapper);
 
         ReflectionTestUtils.setField(jenkinsJobListCheckProvider, "jenkinsClient", jenkinsClient);
     }
@@ -87,7 +94,7 @@ public class JenkinsJobListCheckProviderTest {
 
     	final Team team = createsFakeTeamWithGivenName("someTeam");
 
-        final List<Check> checks = jenkinsJobListCheckProvider.withJobPrefix("yana-").withJobNameTeamMapping("contentmachine-", Arrays.asList(team)).provideChecks();
+        final List<Check> checks = jenkinsJobListCheckProvider.withJobPrefix("yana-").withJobNameTeamMapping("contentmachine-", Collections.singletonList(team)).provideChecks();
         assertEquals(1, checks.size());
 
         final Check check = checks.get(0);

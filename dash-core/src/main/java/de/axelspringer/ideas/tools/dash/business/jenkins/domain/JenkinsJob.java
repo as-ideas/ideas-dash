@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins;
+package de.axelspringer.ideas.tools.dash.business.jenkins.domain;
 
 public class JenkinsJob {
 

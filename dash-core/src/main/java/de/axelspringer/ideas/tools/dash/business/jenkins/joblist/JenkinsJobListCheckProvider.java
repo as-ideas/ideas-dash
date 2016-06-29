@@ -1,16 +1,18 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins;
+package de.axelspringer.ideas.tools.dash.business.jenkins.joblist;
 
 
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckProvider;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJob;
+import de.axelspringer.ideas.tools.dash.business.jenkins.job.JenkinsJobCheck;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.auth.AuthenticationException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,20 +27,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     private static final String DISABLED_COLOR = "disabled";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsJobListCheckProvider.class);
 
-    /**
-     * jenkins host adress
-     */
-    private final String host;
-
-    /**
-     * jenkins username
-     */
-    private final String user;
-
-    /**
-     * jenkins api token
-     */
-    private final String apiToken;
+    private final JenkinsServerConfiguration serverConfig;
 
     /**
      * group that the checkresult will be added to
@@ -69,15 +58,21 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     private JenkinsClient jenkinsClient;
 
     /**
-     * @param host     {@link #host}
-     * @param user     {@link #user}
-     * @param apiToken {@link #apiToken}
+     * Deprecated, use {@link #JenkinsJobListCheckProvider(JenkinsServerConfiguration, Group)} instead.
+     *
+     * @param host     {@link #serverConfig}
+     * @param user     {@link #serverConfig}
+     * @param apiToken {@link #serverConfig}
      * @param group    {@link #group}
      */
+    @Deprecated
     public JenkinsJobListCheckProvider(String host, String user, String apiToken, Group group) {
-        this.host = host;
-        this.user = user;
-        this.apiToken = apiToken;
+        this.serverConfig = new JenkinsServerConfiguration(host, user, apiToken);
+        this.group = group;
+    }
+
+    public JenkinsJobListCheckProvider(JenkinsServerConfiguration serverConfiguration, Group group) {
+        this.serverConfig = serverConfiguration;
         this.group = group;
     }
 
@@ -118,15 +113,15 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
             }
         });
 
-        return new JenkinsCheck(jobName, job.getUrl(), user, apiToken, group, teams, jenkinsJobNameMapper);
+        return new JenkinsJobCheck(jobName, serverConfig, job.getUrl(), group, teams, jenkinsJobNameMapper);
     }
 
     private List<JenkinsJob> jobs() {
 
-        final String url = host + "/api/json";
+        final String url = serverConfig.getUrl() + "/api/json";
         try {
-            return jenkinsClient.query(url, user, apiToken, JenkinsJobListWrapper.class).getJobs();
-        } catch (IOException | AuthenticationException e) {
+            return jenkinsClient.queryApi(url, serverConfig, JenkinsJobListWrapper.class).getJobs();
+        } catch (Exception e) {
             // does this need further processing? fix it if it fails :D
             log.error("could not load job list from jenkins. URL=" + url);
             throw new RuntimeException(e.getMessage(), e);

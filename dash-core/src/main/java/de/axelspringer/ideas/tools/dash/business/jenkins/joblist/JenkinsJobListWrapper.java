@@ -1,5 +1,7 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins;
+package de.axelspringer.ideas.tools.dash.business.jenkins.joblist;
 
+
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJob;
 
 import java.util.List;
 
