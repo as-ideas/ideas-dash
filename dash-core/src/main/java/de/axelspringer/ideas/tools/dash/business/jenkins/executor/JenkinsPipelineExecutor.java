@@ -1,12 +1,12 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins.pipeline;
+package de.axelspringer.ideas.tools.dash.business.jenkins.executor;
 
-import de.axelspringer.ideas.tools.dash.business.check.Check;
-import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsPipelineBuildInfo;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,18 +17,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class JenkinsPipelineCheckExecutor implements CheckExecutor<JenkinsPipelineCheck> {
+public class JenkinsPipelineExecutor {
 
     @Autowired
     private JenkinsClient jenkinsClient;
 
-    @Override
-    public List<CheckResult> executeCheck(JenkinsPipelineCheck check) {
+    public List<CheckResult> executeCheck(JenkinsJobInfo jobInfo, JenkinsCheck check) {
 
         final JenkinsServerConfiguration serverConfig = check.getServerConfiguration();
-
-        // get all info about the job
-        final JenkinsJobInfo jobInfo = jenkinsClient.queryApi(check.getJobUrl(), serverConfig, JenkinsJobInfo.class);
 
         // try and fetch info from last successful build
         final List<JenkinsPipelineBuildInfo.PipelineStage> lastSuccessfulBuildStages = buildStages(serverConfig, jobInfo.getLastSuccessfulBuild());
@@ -48,7 +44,7 @@ public class JenkinsPipelineCheckExecutor implements CheckExecutor<JenkinsPipeli
         final List<JenkinsPipelineBuildInfo.PipelineStage> pipeDefinition = lastBuildAsTemplate ? lastBuildStages : lastSuccessfulBuildStages;
 
         return pipeDefinition.stream()
-                .map(stage -> checkResult(stage, lastBuildStages, check.getGroup()))
+                .map(stage -> checkResult(stage, lastBuildStages, check.getGroup()).withOrder(pipeDefinition.indexOf(stage)))
                 .collect(Collectors.toList());
     }
 
@@ -74,15 +70,20 @@ public class JenkinsPipelineCheckExecutor implements CheckExecutor<JenkinsPipeli
     }
 
     private String info(JenkinsPipelineBuildInfo.PipelineStage stage) {
-        return stage.getDurationMillis() / 1000 + " seconds";
+        final String status = stage.getStatus() == null ? "UNKNOWN" : stage.getStatus().name();
+        return status + "(" + stage.getDurationMillis() / 1000 + " seconds" + ")";
     }
 
     private State state(JenkinsPipelineBuildInfo.PipelineStage stage) {
 
+        if (stage.getStatus() == null) {
+            return State.GREY;
+        }
         switch (stage.getStatus()) {
             case SUCCESS:
                 return State.GREEN;
             case ABORTED:
+            case PAUSED_PENDING_INPUT:
                 return State.GREY;
             default:
                 return State.RED;
@@ -97,10 +98,5 @@ public class JenkinsPipelineCheckExecutor implements CheckExecutor<JenkinsPipeli
 
         final JenkinsPipelineBuildInfo buildInfo = jenkinsClient.queryWorkflowApi(build.getUrl(), serverConfig, JenkinsPipelineBuildInfo.class);
         return buildInfo.getStages() != null ? buildInfo.getStages() : Collections.emptyList();
-    }
-
-    @Override
-    public boolean isApplicable(Check check) {
-        return check instanceof JenkinsPipelineCheck;
     }
 }

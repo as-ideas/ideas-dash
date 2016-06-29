@@ -1,8 +1,7 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins.job;
+package de.axelspringer.ideas.tools.dash.business.jenkins.executor;
 
-import de.axelspringer.ideas.tools.dash.business.check.Check;
-import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildInfo;
@@ -17,27 +16,24 @@ import java.util.List;
 
 
 @Service
-public class JenkinsJobCheckExecutor implements CheckExecutor<JenkinsJobCheck> {
+public class JenkinsJobExecutor {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsJobCheckExecutor.class);
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsJobExecutor.class);
 
     @Autowired
     private JenkinsClient jenkinsClient;
 
-    @Override
-    public List<CheckResult> executeCheck(JenkinsJobCheck jenkinsJobCheck) {
+    public List<CheckResult> executeCheck(JenkinsJobInfo jobInfo, JenkinsCheck jenkinsCheck) {
 
-        final String jobName = jenkinsJobCheck.getName();
+        final String jobName = jenkinsCheck.getName();
 
         // load results from jenkins
         final JenkinsBuildInfo lastCompletedBuildInfo;
         final JenkinsBuildInfo lastBuildInfo;
-        final JenkinsServerConfiguration serverConfig = jenkinsJobCheck.getServerConfiguration();
+        final JenkinsServerConfiguration serverConfig = jenkinsCheck.getServerConfiguration();
 
         try {
-            log.debug("Retrieving job result from jenkins url {}", jenkinsJobCheck.getJobUrl());
-
-            final JenkinsJobInfo jobInfo = jenkinsClient.queryApi(jenkinsJobCheck.getJobUrl(), serverConfig, JenkinsJobInfo.class);
+            log.debug("Retrieving job result from jenkins url {}", jenkinsCheck.getJobUrl());
 
             final JenkinsJobInfo.Build lastCompletedBuild = jobInfo.getLastCompletedBuild();
             lastCompletedBuildInfo = lastCompletedBuild != null ? jenkinsClient.queryApi(lastCompletedBuild.getUrl(), serverConfig, JenkinsBuildInfo.class) : null;
@@ -51,7 +47,7 @@ public class JenkinsJobCheckExecutor implements CheckExecutor<JenkinsJobCheck> {
 
         } catch (Exception e) {
             log.error("error fetching jenkins result: {}", jobName, e);
-            return Collections.singletonList(new CheckResult(State.RED, shortName(jenkinsJobCheck), "N/A", 0, 0, jenkinsJobCheck.getGroup()).withLink(jenkinsJobCheck.getJobUrl()).withTeams(jenkinsJobCheck.getTeams()));
+            return Collections.singletonList(new CheckResult(State.RED, shortName(jenkinsCheck), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(jenkinsCheck.getJobUrl()).withTeams(jenkinsCheck.getTeams()));
         }
 
         int failedTestCount = 0;
@@ -69,16 +65,11 @@ public class JenkinsJobCheckExecutor implements CheckExecutor<JenkinsJobCheck> {
         final String checkInfo = failedTestCount > 0 ? failedTestCount + "/" + totalTestCount : "" + totalTestCount;
 
         State state = identifyStatus(lastCompletedBuildInfo, failedTestCount);
-        CheckResult checkResult = new CheckResult(state, shortName(jenkinsJobCheck), checkInfo, totalTestCount, failedTestCount, jenkinsJobCheck.getGroup()).withLink(jenkinsJobCheck.getJobUrl()).withTeams(jenkinsJobCheck.getTeams());
+        CheckResult checkResult = new CheckResult(state, shortName(jenkinsCheck), checkInfo, totalTestCount, failedTestCount, jenkinsCheck.getGroup()).withLink(jenkinsCheck.getJobUrl()).withTeams(jenkinsCheck.getTeams());
         if (lastBuildInfo != null && lastBuildInfo.isBuilding()) {
             checkResult = checkResult.markRunning();
         }
         return Collections.singletonList(checkResult);
-    }
-
-    @Override
-    public boolean isApplicable(Check check) {
-        return check.getClass() == JenkinsJobCheck.class;
     }
 
     private State identifyStatus(JenkinsBuildInfo jenkinsBuildInfo, int failedTestCount) {
@@ -110,7 +101,7 @@ public class JenkinsJobCheckExecutor implements CheckExecutor<JenkinsJobCheck> {
         }
     }
 
-    String shortName(JenkinsJobCheck check) {
+    String shortName(JenkinsCheck check) {
         if (check.getJenkinsJobNameMapper() != null) {
             return check.getJenkinsJobNameMapper().map(check);
         }

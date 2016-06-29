@@ -1,6 +1,4 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins.pipeline;
-
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsResult;
+package de.axelspringer.ideas.tools.dash.business.jenkins.domain;
 
 import java.util.List;
 

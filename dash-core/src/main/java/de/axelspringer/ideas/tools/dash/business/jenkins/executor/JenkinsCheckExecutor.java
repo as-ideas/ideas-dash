@@ -1,0 +1,57 @@
+package de.axelspringer.ideas.tools.dash.business.jenkins.executor;
+
+import de.axelspringer.ideas.tools.dash.business.check.Check;
+import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
+import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
+import de.axelspringer.ideas.tools.dash.presentation.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+
+@Service
+public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private JenkinsJobExecutor jobExecutor;
+
+    @Autowired
+    private JenkinsPipelineExecutor pipelineExecutor;
+
+    @Autowired
+    private JenkinsClient jenkinsClient;
+
+    @Override
+    public List<CheckResult> executeCheck(JenkinsCheck check) {
+
+        final JenkinsServerConfiguration serverConfiguration = check.getServerConfiguration();
+        final JenkinsJobInfo jobInfo = jenkinsClient.queryApi(check.getJobUrl(), serverConfiguration, JenkinsJobInfo.class);
+
+        if (jobInfo == null) {
+            log.error("error fetching jenkins result. Job query returned null: {}", check.getName());
+            return Collections.singletonList(
+                    new CheckResult(State.RED, check.getName(), "N/A", 0, 0, check.getGroup())
+                            .withLink(check.getJobUrl())
+                            .withTeams(check.getTeams()));
+        }
+
+        if (jobInfo.isPipeline()) {
+            return pipelineExecutor.executeCheck(jobInfo, check);
+        }
+        return jobExecutor.executeCheck(jobInfo, check);
+    }
+
+    @Override
+    public boolean isApplicable(Check check) {
+        return check instanceof JenkinsCheck;
+    }
+}

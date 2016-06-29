@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins.job.joblist;
+package de.axelspringer.ideas.tools.dash.business.jenkins.joblist;
 
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
@@ -6,8 +6,6 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJob;
-import de.axelspringer.ideas.tools.dash.business.jenkins.joblist.JenkinsJobListCheckProvider;
-import de.axelspringer.ideas.tools.dash.business.jenkins.joblist.JenkinsJobListWrapper;
 import org.apache.http.auth.AuthenticationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,9 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +31,7 @@ public class JenkinsJobListCheckProviderTest {
     @Before
     public void initMocks() throws IOException, AuthenticationException {
 
-        jenkinsJobListCheckProvider = new JenkinsJobListCheckProvider("fooHost", "fooUser", "fooApiToken", mock(Group.class));
+        jenkinsJobListCheckProvider = new JenkinsJobListCheckProvider(new JenkinsServerConfiguration("fooHost", "fooUser", "fooApiToken"), mock(Group.class));
 
         final List<JenkinsJob> jobs = new ArrayList<>();
         jobs.add(jenkinsJob("docker-compose", true));

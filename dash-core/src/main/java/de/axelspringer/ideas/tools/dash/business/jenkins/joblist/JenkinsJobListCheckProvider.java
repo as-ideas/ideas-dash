@@ -5,10 +5,10 @@ import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckProvider;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJob;
-import de.axelspringer.ideas.tools.dash.business.jenkins.job.JenkinsJobCheck;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +113,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
             }
         });
 
-        return new JenkinsJobCheck(jobName, serverConfig, job.getUrl(), group, teams, jenkinsJobNameMapper);
+        return new JenkinsCheck(jobName, serverConfig, group, teams).withJobNameMapper(jenkinsJobNameMapper);
     }
 
     private List<JenkinsJob> jobs() {

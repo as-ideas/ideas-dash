@@ -6,6 +6,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class JenkinsJobInfo {
 
+    private final static String PIPELINE_CLASS = "org.jenkinsci.plugins.workflow.job.WorkflowJob";
+
+    private String _class;
+
     private Build lastCompletedBuild;
 
     private Build lastBuild;
@@ -29,8 +33,20 @@ public class JenkinsJobInfo {
         return this.lastBuild;
     }
 
+    public String get_class() {
+        return _class;
+    }
+
+    public void set_class(String _class) {
+        this._class = _class;
+    }
+
     public Boolean isBuildable() {
         return buildable;
+    }
+
+    public Boolean isPipeline() {
+        return _class.equals(PIPELINE_CLASS);
     }
 
     @Override

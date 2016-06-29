@@ -11,6 +11,12 @@ public class CheckResult {
 
     private State state;
 
+    /**
+     * If specified the client will use this to order checkresults in a group.
+     * It will otherwise order by state...
+     */
+    private Integer order;
+
     private String name;
 
     private String info;
@@ -122,5 +128,14 @@ public class CheckResult {
 
     public List<String> getTeams() {
         return this.teams;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public CheckResult withOrder(Integer order) {
+        this.order = order;
+        return this;
     }
 }
