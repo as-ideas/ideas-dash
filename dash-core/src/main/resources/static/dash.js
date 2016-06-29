@@ -255,7 +255,6 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 if (check.order != undefined) {
                     return check.order;
                 }
-
                 var state = check.state;
                 return 4 - scoreForState(state);
             };
