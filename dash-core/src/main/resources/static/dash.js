@@ -252,9 +252,10 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
 
             $scope.checkOrder = function (check) {
 
-                if (check.order != undefined) {
+                if(check.order != undefined) {
                     return check.order;
                 }
+
                 var state = check.state;
                 return 4 - scoreForState(state);
             };
