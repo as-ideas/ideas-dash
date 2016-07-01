@@ -12,6 +12,11 @@ public class JenkinsPipelineBuildInfo {
 
     }
 
+    public JenkinsPipelineBuildInfo(JenkinsResult result, List<PipelineStage> stages) {
+        this.result = result;
+        this.stages = stages;
+    }
+
     public JenkinsResult getResult() {
         return result;
     }
@@ -26,45 +31,5 @@ public class JenkinsPipelineBuildInfo {
 
     public void setStages(List<PipelineStage> stages) {
         this.stages = stages;
-    }
-
-    public class PipelineStage {
-
-        private Integer id;
-        private String name;
-        private JenkinsResult status;
-        private long durationMillis;
-
-        public Integer getId() {
-            return id;
-        }
-
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public JenkinsResult getStatus() {
-            return status;
-        }
-
-        public void setStatus(JenkinsResult status) {
-            this.status = status;
-        }
-
-        public long getDurationMillis() {
-            return durationMillis;
-        }
-
-        public void setDurationMillis(long durationMillis) {
-            this.durationMillis = durationMillis;
-        }
     }
 }

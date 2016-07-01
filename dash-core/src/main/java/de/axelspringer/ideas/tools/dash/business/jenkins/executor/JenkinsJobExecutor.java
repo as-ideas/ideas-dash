@@ -4,6 +4,7 @@ import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.Build;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildInfo;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
 import de.axelspringer.ideas.tools.dash.presentation.State;
@@ -35,10 +36,10 @@ public class JenkinsJobExecutor {
         try {
             log.debug("Retrieving job result from jenkins url {}", jenkinsCheck.getJobUrl());
 
-            final JenkinsJobInfo.Build lastCompletedBuild = jobInfo.getLastCompletedBuild();
+            final Build lastCompletedBuild = jobInfo.getLastCompletedBuild();
             lastCompletedBuildInfo = lastCompletedBuild != null ? jenkinsClient.queryApi(lastCompletedBuild.getUrl(), serverConfig, JenkinsBuildInfo.class) : null;
 
-            final JenkinsJobInfo.Build lastBuild = jobInfo.getLastBuild();
+            final Build lastBuild = jobInfo.getLastBuild();
             lastBuildInfo = lastBuild != null ? jenkinsClient.queryApi(lastBuild.getUrl(), serverConfig, JenkinsBuildInfo.class) : null;
 
             if (!jobInfo.isBuildable()) {

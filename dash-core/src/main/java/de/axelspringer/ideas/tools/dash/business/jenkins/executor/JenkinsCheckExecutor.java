@@ -21,14 +21,19 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private JenkinsJobExecutor jobExecutor;
+    private final JenkinsJobExecutor jobExecutor;
+
+    private final JenkinsPipelineExecutor pipelineExecutor;
+
+    private final JenkinsClient jenkinsClient;
 
     @Autowired
-    private JenkinsPipelineExecutor pipelineExecutor;
+    public JenkinsCheckExecutor(JenkinsJobExecutor jobExecutor, JenkinsPipelineExecutor pipelineExecutor, JenkinsClient jenkinsClient) {
 
-    @Autowired
-    private JenkinsClient jenkinsClient;
+        this.jobExecutor = jobExecutor;
+        this.pipelineExecutor = pipelineExecutor;
+        this.jenkinsClient = jenkinsClient;
+    }
 
     @Override
     public List<CheckResult> executeCheck(JenkinsCheck check) {

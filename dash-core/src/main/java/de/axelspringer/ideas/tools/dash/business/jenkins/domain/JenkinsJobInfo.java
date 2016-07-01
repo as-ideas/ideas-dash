@@ -1,14 +1,16 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class JenkinsJobInfo {
 
-    private final static String PIPELINE_CLASS = "org.jenkinsci.plugins.workflow.job.WorkflowJob";
+    public final static String PIPELINE_CLASS = "org.jenkinsci.plugins.workflow.job.WorkflowJob";
 
-    private String _class;
+    @JsonProperty("_class")
+    private String buildClass;
 
     private Build lastCompletedBuild;
 
@@ -19,6 +21,11 @@ public class JenkinsJobInfo {
     private Boolean buildable;
 
     public JenkinsJobInfo() {
+    }
+
+    public JenkinsJobInfo(Build lastSuccessfulBuild, Build lastBuild) {
+        this.lastSuccessfulBuild = lastSuccessfulBuild;
+        this.lastBuild = lastBuild;
     }
 
     public Build getLastSuccessfulBuild() {
@@ -33,12 +40,12 @@ public class JenkinsJobInfo {
         return this.lastBuild;
     }
 
-    public String get_class() {
-        return _class;
+    public String getBuildClass() {
+        return buildClass;
     }
 
-    public void set_class(String _class) {
-        this._class = _class;
+    public void setBuildClass(String buildClass) {
+        this.buildClass = buildClass;
     }
 
     public Boolean isBuildable() {
@@ -46,7 +53,7 @@ public class JenkinsJobInfo {
     }
 
     public Boolean isPipeline() {
-        return _class.equals(PIPELINE_CLASS);
+        return buildClass.equals(PIPELINE_CLASS);
     }
 
     @Override
@@ -62,18 +69,5 @@ public class JenkinsJobInfo {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }
-
-    public class Build {
-
-        private String url;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
     }
 }
