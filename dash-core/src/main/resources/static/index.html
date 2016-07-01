@@ -28,7 +28,8 @@
     <div class="global-info" ng-class="{true: 'alert-danger'}[lastUpdate.state == 'red']">Last update: {{ infos.lastUpdateTime | date:'medium' }}</div>
 
     <div class="panel-body">
-        <div ng-repeat="group in infos.groups | orderBy:'orderScore'" class="check-group panel">
+        <div ng-repeat="group in infos.groups | orderBy:'orderScore'" class="check-group panel"
+             ng-show="group.checks.length">
             <div class="panel-body">
                 <div class="stage-info {{ groupClass(group) }}">
                     <div class="check-name">{{ group.name }}</div>
@@ -63,6 +64,9 @@
 
     <label class="team-label">
         <input type="checkbox" ng-model="config.aggregate" ng-click="loadInfos()"/> aggregate green checks
+    </label>
+    <label class="team-label">
+        <input type="checkbox" ng-model="config.showEmptyGroups" ng-click="loadInfos()"/> show empty groups
     </label>
     <label class="team-label">
         <input type="checkbox" ng-model="config.aggregateDuplicated" ng-click="loadInfos()"/> aggregate duplicated checks

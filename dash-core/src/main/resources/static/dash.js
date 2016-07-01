@@ -16,6 +16,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
                 teams: {},
                 aggregate: true,
                 aggregateDuplicated: true,
+                showEmptyGroups: true,
                 hue: {}
             }, $scope.config);
 
@@ -195,6 +196,9 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
 
             var fillEmptyWithGreen = function (group) {
 
+                if (!$scope.config.showEmptyGroups) {
+                    return;
+                }
                 if (group.checks.length < 1) {
                     group.checks.push({
                         name: 'F-I-N-E',
