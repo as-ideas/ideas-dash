@@ -44,11 +44,6 @@ public class GithubCheckExecutor implements CheckExecutor<GithubCheck> {
 
             List<GithubPullRequest> githubPullRequests = Arrays.asList(readPullRequests(check.githubConfig(), repo));
 
-            if (githubPullRequests.isEmpty()) {
-                LOG.trace(repo.name + ": zero pull requests");
-                checkResults.add(new CheckResult(State.GREEN, "no open PRs", "no open PRs", 1, 0, check.getGroup()));
-            }
-
             // ugly :)
             if (StringUtils.hasLength(check.getFilterKeyword())) {
                 githubPullRequests = githubPullRequests.stream().filter(githubPullRequest -> githubPullRequest.title.toLowerCase().contains(check.getFilterKeyword().toLowerCase())).collect(Collectors.toList());
