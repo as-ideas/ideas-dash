@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins;
+package de.axelspringer.ideas.tools.dash.business.jenkins.domain;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -53,8 +53,6 @@ public class JenkinsBuildInfo {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
-
-    public enum JenkinsResult {SUCCESS, UNSTABLE, ABORTED, FAILURE}
 
     public class Action {
         private Integer failCount;

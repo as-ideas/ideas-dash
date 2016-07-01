@@ -1,7 +1,12 @@
-package de.axelspringer.ideas.tools.dash.business.jenkins;
+package de.axelspringer.ideas.tools.dash.business.jenkins.executor;
 
 import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
+import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
+import de.axelspringer.ideas.tools.dash.business.jenkins.joblist.JenkinsJobNameMapper;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.apache.http.auth.AuthenticationException;
 import org.junit.Before;
@@ -16,23 +21,22 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class JenkinsCheckExecutorTest {
+public class JenkinsJobExecutorTest {
 
     @Mock
     private JenkinsClient jenkinsClient;
 
     @InjectMocks
-    private JenkinsCheckExecutor jenkinsCheckExecutor;
+    private JenkinsJobExecutor jenkinsJobExecutor;
 
     @Before
     public void initMocks() throws Exception {
-        when(jenkinsClient.query(anyString(), anyString(), anyString(), eq(JenkinsJobInfo.class))).thenReturn(jenkinsJobInfo());
+        when(jenkinsClient.queryApi(anyString(), any(JenkinsServerConfiguration.class), eq(JenkinsJobInfo.class))).thenReturn(jenkinsJobInfo());
     }
 
     @Test
@@ -40,7 +44,7 @@ public class JenkinsCheckExecutorTest {
 
         JenkinsCheck jenkinsCheck = jenkinsCheck("my-name-is-kept-untouched", null);
 
-        final String shortName = jenkinsCheckExecutor.shortName(jenkinsCheck);
+        final String shortName = jenkinsJobExecutor.shortName(jenkinsCheck);
 
         assertEquals("my-name-is-kept-untouched", shortName);
     }
@@ -50,7 +54,7 @@ public class JenkinsCheckExecutorTest {
 
         JenkinsCheck jenkinsCheck = jenkinsCheck("My-Name-Is-Lower-Cased", (check) -> check.getName().toLowerCase());
 
-        final String shortName = jenkinsCheckExecutor.shortName(jenkinsCheck);
+        final String shortName = jenkinsJobExecutor.shortName(jenkinsCheck);
 
         assertEquals("my-name-is-lower-cased", shortName);
     }
@@ -58,7 +62,7 @@ public class JenkinsCheckExecutorTest {
     @Test
     public void testBuildWithoutLastBuildResultResultsInGreenState() throws IOException, AuthenticationException {
 
-        final List<CheckResult> checkResults = jenkinsCheckExecutor.executeCheck(jenkinsCheck());
+        final List<CheckResult> checkResults = jenkinsJobExecutor.executeCheck(jenkinsJobInfo(), jenkinsCheck());
 
         assertEquals(1, checkResults.size());
         final CheckResult checkResult = checkResults.get(0);
@@ -76,6 +80,6 @@ public class JenkinsCheckExecutorTest {
     }
 
     private JenkinsCheck jenkinsCheck(String name, JenkinsJobNameMapper jenkinsJobNameMapper) {
-        return new JenkinsCheck(name, "", "", "", mock(Group.class), mock(List.class), jenkinsJobNameMapper);
+        return new JenkinsCheck(name, "", "", "", mock(Group.class), mock(List.class), jenkinsJobNameMapper, "");
     }
 }

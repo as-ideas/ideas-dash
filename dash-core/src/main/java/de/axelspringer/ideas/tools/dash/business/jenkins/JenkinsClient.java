@@ -2,13 +2,10 @@ package de.axelspringer.ideas.tools.dash.business.jenkins;
 
 import com.google.gson.Gson;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
-import org.apache.http.auth.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Component
 public class JenkinsClient {
@@ -23,15 +20,22 @@ public class JenkinsClient {
     @Autowired
     private Gson gson;
 
-    public <T> T query(String url, String username, String password, Class<T> responseType) throws IOException, AuthenticationException {
+    public <T> T queryApi(String url, JenkinsServerConfiguration serverConfig, Class<T> responseType) {
+        return query(url + "/api/json", serverConfig, responseType);
+    }
 
-        String apiUrl = url + "/api/json";
-        LOG.debug("Querying jenkins URL {}", apiUrl);
+    public <T> T queryWorkflowApi(String url, JenkinsServerConfiguration serverConfig, Class<T> responseType) {
+        return query(url + "/wfapi/describe", serverConfig, responseType);
+    }
+
+    private <T> T query(String fullUrl, JenkinsServerConfiguration serverConfig, Class<T> responseType) {
+
+        LOG.debug("Querying jenkins URL {}", fullUrl);
 
         String response = restClient.create()
                 .withTimeout(THIRTY_SECONDS_IN_MS)
-                .withCredentials(username, password)
-                .get(apiUrl);
+                .withCredentials(serverConfig.getUserName(), serverConfig.getApiToken())
+                .get(fullUrl);
         return gson.fromJson(response, responseType);
     }
 }
