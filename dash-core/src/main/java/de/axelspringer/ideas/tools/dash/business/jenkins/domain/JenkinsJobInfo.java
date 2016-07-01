@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -9,7 +9,7 @@ public class JenkinsJobInfo {
 
     public final static String PIPELINE_CLASS = "org.jenkinsci.plugins.workflow.job.WorkflowJob";
 
-    @JsonProperty("_class")
+    @SerializedName("_class")
     private String buildClass;
 
     private Build lastCompletedBuild;
@@ -53,7 +53,7 @@ public class JenkinsJobInfo {
     }
 
     public Boolean isPipeline() {
-        return buildClass.equals(PIPELINE_CLASS);
+        return PIPELINE_CLASS.equals(buildClass);
     }
 
     @Override
