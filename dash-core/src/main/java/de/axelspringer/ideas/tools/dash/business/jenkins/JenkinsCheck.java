@@ -17,10 +17,13 @@ public class JenkinsCheck extends AbstractCheck {
 
     private final String jobUrl;
 
-    /**
-     * Deprecated. Use {@link #JenkinsCheck(String, JenkinsServerConfiguration, Group, List)} instead.
-     */
-    @Deprecated
+    public JenkinsCheck(String name, String url, String userName, String apiToken, Group group, List<Team> teams, JenkinsJobNameMapper jenkinsJobNameMapper) {
+        super(name, group, teams);
+        this.jobUrl = url;
+        this.serverConfiguration = new JenkinsServerConfiguration(url, userName, apiToken);
+        this.jenkinsJobNameMapper = jenkinsJobNameMapper;
+    }
+
     public JenkinsCheck(String name, String url, String userName, String apiToken, Group group, List<Team> teams, JenkinsJobNameMapper jenkinsJobNameMapper, String jobUrl) {
         super(name, group, teams);
         this.jobUrl = jobUrl;
