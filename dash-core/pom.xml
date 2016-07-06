@@ -7,7 +7,7 @@
     <parent>
         <groupId>de.axelspringer.ideas.tools.dash</groupId>
         <artifactId>dash-parent</artifactId>
-        <version>4</version>
+        <version>6</version>
     </parent>
 
     <artifactId>dash-core</artifactId>

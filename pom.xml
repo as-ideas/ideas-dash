@@ -13,7 +13,7 @@
 
     <groupId>de.axelspringer.ideas.tools.dash</groupId>
     <artifactId>dash-parent</artifactId>
-    <version>4</version>
+    <version>6</version>
     <name>${project.artifactId} : ${project.version}</name>
 
     <modules>
@@ -41,4 +41,23 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>deploy-to-default</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.8.1</version>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
