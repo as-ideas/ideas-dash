@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsPipelineStageResult.IN_PROGRESS;
+
 @Service
 public class JenkinsPipelineExecutor {
 
@@ -74,7 +76,11 @@ public class JenkinsPipelineExecutor {
 
         if (executedStage.isPresent()) {
             final PipelineStage stage = executedStage.get();
-            return new CheckResult(state(stage), stage.getName(), info(stage), 1, failCount(stage), group);
+            final CheckResult checkResult = new CheckResult(state(stage), stage.getName(), info(stage), 1, failCount(stage), group);
+            if (stage.getStatus() == IN_PROGRESS) {
+                checkResult.markRunning();
+            }
+            return checkResult;
         }
         return new CheckResult(State.GREY, stageDefinition.getName(), "NOT EXECUTED", 0, 0, group);
     }
@@ -97,8 +103,10 @@ public class JenkinsPipelineExecutor {
             case SUCCESS:
                 return State.GREEN;
             case ABORTED:
+            case IN_PROGRESS:
             case PAUSED_PENDING_INPUT:
                 return State.GREY;
+            case FAILED:
             default:
                 return State.RED;
         }
