@@ -4,7 +4,7 @@ import java.util.List;
 
 public class JenkinsPipelineBuildInfo {
 
-    private JenkinsResult result;
+    private JenkinsPipelineStageResult result;
 
     private List<PipelineStage> stages;
 
@@ -12,16 +12,16 @@ public class JenkinsPipelineBuildInfo {
 
     }
 
-    public JenkinsPipelineBuildInfo(JenkinsResult result, List<PipelineStage> stages) {
+    public JenkinsPipelineBuildInfo(JenkinsPipelineStageResult result, List<PipelineStage> stages) {
         this.result = result;
         this.stages = stages;
     }
 
-    public JenkinsResult getResult() {
+    public JenkinsPipelineStageResult getResult() {
         return result;
     }
 
-    public void setResult(JenkinsResult result) {
+    public void setResult(JenkinsPipelineStageResult result) {
         this.result = result;
     }
 

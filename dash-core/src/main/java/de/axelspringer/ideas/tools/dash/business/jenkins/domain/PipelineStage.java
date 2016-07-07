@@ -4,7 +4,7 @@ public class PipelineStage {
 
     private Integer id;
     private String name;
-    private JenkinsResult status;
+    private JenkinsPipelineStageResult status;
     private long durationMillis;
 
     public PipelineStage() {
@@ -30,11 +30,11 @@ public class PipelineStage {
         this.name = name;
     }
 
-    public JenkinsResult getStatus() {
+    public JenkinsPipelineStageResult getStatus() {
         return status;
     }
 
-    public void setStatus(JenkinsResult status) {
+    public void setStatus(JenkinsPipelineStageResult status) {
         this.status = status;
     }
 
