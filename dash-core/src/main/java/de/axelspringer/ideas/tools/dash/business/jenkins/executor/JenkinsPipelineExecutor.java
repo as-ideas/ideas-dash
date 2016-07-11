@@ -60,6 +60,7 @@ public class JenkinsPipelineExecutor {
                         checkResult(stage, lastBuildStages, check.getGroup())
                                 .withOrder(pipeDefinition.indexOf(stage))
                                 .withLink(lastBuild.getUrl())
+                                .withTeams(check.getTeams())
                 )
                 .collect(Collectors.toList());
     }
