@@ -5,6 +5,7 @@ import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.Build;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildAction;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildInfo;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
 import de.axelspringer.ideas.tools.dash.presentation.State;
@@ -55,7 +56,7 @@ public class JenkinsJobExecutor {
         int totalTestCount = 0;
 
         if (lastCompletedBuildInfo != null) {
-            for (JenkinsBuildInfo.Action action : lastCompletedBuildInfo.getActions()) {
+            for (JenkinsBuildAction action : lastCompletedBuildInfo.getActions()) {
                 if (action.getFailCount() != null && action.getTotalCount() != null) {
                     failedTestCount += action.getFailCount();
                     totalTestCount += action.getTotalCount();
