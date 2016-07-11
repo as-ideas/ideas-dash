@@ -25,7 +25,30 @@
 <body>
 
 <div class="panel" ng-class="{true: 'alert-danger', false: 'alert-info'}[lastUpdate.state == 'red']">
+
     <div class="global-info" ng-class="{true: 'alert-danger'}[lastUpdate.state == 'red']">Last update: {{ infos.lastUpdateTime | date:'medium' }}</div>
+
+    <label class="team-label">
+        <input type="checkbox" ng-model="config.aggregate" ng-click="loadInfos()"/> aggregate green checks
+    </label>
+    <label class="team-label">
+        <input type="checkbox" ng-model="config.showEmptyGroups" ng-click="loadInfos()"/> show empty groups
+    </label>
+    <label class="team-label">
+        <input type="checkbox" ng-model="config.aggregateDuplicated" ng-click="loadInfos()"/> aggregate duplicated
+        checks
+    </label>
+    <label class="team-label">
+        <input type="checkbox" ng-model="config.hue.enabled" ng-click="loadInfos()"/> hue
+        <div ng-show="config.hue.enabled">
+            ip <input type="text" size="12" ng-model="config.hue.ip">
+            key <input type="text" size="12" ng-model="config.hue.key">
+            light# <input type="text" size="1" ng-model="config.hue.light">
+        </div>
+    </label>
+    <label ng-repeat="team in teams" class="team-label">
+        <input type="checkbox" ng-model="config.teams[team]" ng-click="loadInfos()"/> {{ team }}
+    </label>
 
     <div class="panel-body">
         <div ng-repeat="group in infos.groups | orderBy:'orderScore'" class="check-group panel"
@@ -61,27 +84,6 @@
             </div>
         </div>
     </div>
-
-    <label class="team-label">
-        <input type="checkbox" ng-model="config.aggregate" ng-click="loadInfos()"/> aggregate green checks
-    </label>
-    <label class="team-label">
-        <input type="checkbox" ng-model="config.showEmptyGroups" ng-click="loadInfos()"/> show empty groups
-    </label>
-    <label class="team-label">
-        <input type="checkbox" ng-model="config.aggregateDuplicated" ng-click="loadInfos()"/> aggregate duplicated checks
-    </label>
-    <label class="team-label">
-        <input type="checkbox" ng-model="config.hue.enabled" ng-click="loadInfos()"/> hue
-        <div ng-show="config.hue.enabled">
-            ip <input type="text" size="12" ng-model="config.hue.ip">
-            key <input type="text" size="12" ng-model="config.hue.key">
-            light# <input type="text" size="1" ng-model="config.hue.light">
-        </div>
-    </label>
-    <label ng-repeat="team in teams" class="team-label">
-        <input type="checkbox" ng-model="config.teams[team]" ng-click="loadInfos()"/> {{ team }}
-    </label>
 </div>
 </body>
 </html>
