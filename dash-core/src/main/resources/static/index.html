@@ -26,7 +26,9 @@
 
 <div class="panel" ng-class="{true: 'alert-danger', false: 'alert-info'}[lastUpdate.state == 'red']">
 
-    <div class="global-info" ng-class="{true: 'alert-danger'}[lastUpdate.state == 'red']">Last update: {{ infos.lastUpdateTime | date:'medium' }}</div>
+    <div class="global-info" ng-class="{true: 'alert-danger'}[lastUpdate.state == 'red']">
+        Last update: {{infos.lastUpdateTime | date:'medium' }}
+    </div>
 
     <label class="team-label">
         <input type="checkbox" ng-model="config.aggregate" ng-click="loadInfos()"/> aggregate green checks
@@ -57,6 +59,7 @@
                 <div class="stage-info {{ groupClass(group) }}">
                     <div class="check-name">{{ group.name }}</div>
                     <div>{{group.info}}</div>
+                    <div ng-repeat="metaInfo in group.metaInfo">{{metaInfo}}</div>
                 </div>
                 <div class="checks">
                     <div ng-repeat="check in group.checks | orderBy:[checkOrder, 'name']"

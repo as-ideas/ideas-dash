@@ -5,10 +5,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.Build;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsPipelineBuildInfo;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.PipelineStage;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.*;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +36,7 @@ public class JenkinsPipelineExecutor {
 
         // fetch info from last build
         final Build lastBuild = jobInfo.getLastBuild();
+        decorateGroup(check.getGroup(), lastBuild, serverConfig);
         final List<PipelineStage> lastBuildStages = buildStages(serverConfig, lastBuild);
 
         // make sure we have something to work with
@@ -63,6 +61,36 @@ public class JenkinsPipelineExecutor {
                                 .withTeams(check.getTeams())
                 )
                 .collect(Collectors.toList());
+    }
+
+    private void decorateGroup(Group group, Build lastBuild, JenkinsServerConfiguration serverConfiguration) {
+
+        if (lastBuild == null) {
+            return;
+        }
+
+        JenkinsBuildInfo lastBuildInfo = jenkinsClient.queryApi(lastBuild.getUrl(), serverConfiguration, JenkinsBuildInfo.class);
+
+        if (lastBuildInfo == null) {
+            return;
+        }
+
+        final List<JenkinsBuildAction> actions = lastBuildInfo.getActions();
+
+        if (actions == null) {
+            return;
+        }
+
+        actions.stream()
+                .filter(action -> JenkinsBuildAction.PARAMETERS_ACTION.equals(action.getActionClass()))
+                .forEach(action -> {
+                    final List<JenkinsBuildAction.JenkinsParameter> parameters = action.getParameters();
+                    if (parameters == null) {
+                        return;
+                    }
+                    parameters.stream()
+                            .forEach(parameter -> group.withMetaInfo(parameter.getName() + " = " + parameter.getValue()));
+                });
     }
 
     private boolean containsStageWithName(String name, List<PipelineStage> stages) {

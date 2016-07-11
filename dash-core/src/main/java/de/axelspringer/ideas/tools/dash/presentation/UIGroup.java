@@ -5,9 +5,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class UIGroup {
 
@@ -22,6 +20,8 @@ public class UIGroup {
     private int failCount = 0;
 
     private List<CheckResult> checks = new ArrayList<>();
+
+    private Set<String> metaInfo = new HashSet<>();
 
     private int orderScore = -1;
 
@@ -90,6 +90,15 @@ public class UIGroup {
 
     public void setOrderScore(int orderScore) {
         this.orderScore = orderScore;
+    }
+
+    public UIGroup withMetaInfo(List<String> metaInfo) {
+        this.metaInfo.addAll(metaInfo);
+        return this;
+    }
+
+    public Set<String> getMetaInfo() {
+        return Collections.unmodifiableSet(metaInfo);
     }
 
     @Override

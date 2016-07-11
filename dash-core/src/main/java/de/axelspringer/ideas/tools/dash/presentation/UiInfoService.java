@@ -75,6 +75,8 @@ public class UiInfoService {
             uiGroup.setInfo(info);
             uiGroup.setState(state);
 
+            uiGroup.withMetaInfo(group.getMetaInfo());
+
             newUiInfo.add(uiGroup);
         }
         return newUiInfo;
