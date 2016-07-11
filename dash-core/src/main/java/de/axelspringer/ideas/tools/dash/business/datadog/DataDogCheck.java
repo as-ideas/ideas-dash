@@ -21,6 +21,11 @@ public class DataDogCheck extends AbstractCheck {
     private TriggeredDataDogStateMapper triggeredStateMapper = new DefaultTriggeredDataDogStateMapper();
     private Map<String, List<Team>> jobNameTeamMappings = new HashMap<>();
 
+    /**
+     * if specified, all unmapped jobs (see {@link #jobNameTeamMappings}) will be mapped to this team.
+     */
+    private Team teamMapping;
+
     public DataDogCheck(String name, Group group, String apiKey, String appKey, String nameFilter) {
 
         super(name, group, null);
@@ -70,6 +75,14 @@ public class DataDogCheck extends AbstractCheck {
         return this;
     }
 
+    /**
+     * see {@link #teamMapping}
+     */
+    public DataDogCheck withTeamMapping(Team teamMapping){
+        this.teamMapping = teamMapping;
+        return this;
+    }
+
     public List<String> getBlackList() {
         return Collections.unmodifiableList(blackList);
     }
@@ -77,5 +90,9 @@ public class DataDogCheck extends AbstractCheck {
     public boolean isBlacklisted(String monitorName) {
         return blackList.stream()
                 .anyMatch(blacklistedMonitor -> monitorName.toLowerCase().contains(blacklistedMonitor));
+    }
+
+    public Team getTeamMapping() {
+        return teamMapping;
     }
 }

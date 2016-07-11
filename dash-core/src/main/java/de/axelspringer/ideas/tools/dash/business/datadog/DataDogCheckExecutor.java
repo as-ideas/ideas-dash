@@ -56,8 +56,8 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
     }
 
     CheckResult convertMonitorToCheckResult(DataDogMonitor monitor, DataDogCheck check, DataDogDowntimes downtimes) {
+
         Group group = check.getGroup();
-        Map<String, List<Team>> jobNameTeamMappings = check.getJobNameTeamMappings();
 
         String infoMessage = monitor.getOverallState() + " (query: " + monitor.getQuery() + ")";
 
@@ -74,7 +74,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         }
 
         final CheckResult checkResult = new CheckResult(state, monitor.getName() + "@DataDog", infoMessage, 1, State.GREEN == state ? 0 : 1, group);
-        final List<Team> teams = decideTeams(monitor.getName(), jobNameTeamMappings);
+        final List<Team> teams = decideTeams(monitor.getName(), check.getJobNameTeamMappings(), check.getTeamMapping());
         if (teams != null && !teams.isEmpty()) {
             checkResult.withTeams(teams);
         }
@@ -84,7 +84,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         return checkResult;
     }
 
-    List<Team> decideTeams(String monitorName, Map<String, List<Team>> jobNameTeamMappings) {
+    List<Team> decideTeams(String monitorName, Map<String, List<Team>> jobNameTeamMappings, Team teamMapping) {
 
         // operate on this string
         monitorName = monitorName.toLowerCase();
@@ -95,7 +95,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
                 return jobNameTeamMappings.get(teamName);
             }
         }
-        return null;
+        return teamMapping != null ? Collections.singletonList(teamMapping) : null;
     }
 
     @Override
