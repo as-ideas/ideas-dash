@@ -59,7 +59,7 @@
                 <div class="stage-info {{ groupClass(group) }}">
                     <div class="check-name">{{ group.name }}</div>
                     <div>{{group.info}}</div>
-                    <div ng-repeat="metaInfo in group.metaInfo">{{metaInfo}}</div>
+                    <div class="group-metainfo" ng-repeat="metaInfo in group.metaInfo">{{metaInfo}}</div>
                 </div>
                 <div class="checks">
                     <div ng-repeat="check in group.checks | orderBy:[checkOrder, 'name']"

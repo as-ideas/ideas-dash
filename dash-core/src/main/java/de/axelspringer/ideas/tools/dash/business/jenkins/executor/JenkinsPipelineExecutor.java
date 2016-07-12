@@ -89,7 +89,7 @@ public class JenkinsPipelineExecutor {
                         return;
                     }
                     parameters.stream()
-                            .forEach(parameter -> group.withMetaInfo(parameter.getName() + " = " + parameter.getValue()));
+                            .forEach(parameter -> group.withMetaInfo(parameter.getValue()));
                 });
     }
 
