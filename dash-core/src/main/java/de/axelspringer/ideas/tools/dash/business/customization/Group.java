@@ -20,6 +20,10 @@ public interface Group {
 
     int getOrderScore();
 
+    default boolean groupStatsEnabled() {
+        return true;
+    }
+
     default Group withMetaInfo(String metaInfo) {
         LOG.error("not implemented by group");
         return this;

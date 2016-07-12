@@ -1,17 +1,19 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
+import de.axelspringer.ideas.tools.dash.presentation.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import de.axelspringer.ideas.tools.dash.presentation.State;
 
 
 @Service
@@ -31,10 +33,10 @@ public class CheckService {
         try {
             ForkJoinPool forkJoinPool = new ForkJoinPool(getNumberOfParallelTask());
             return forkJoinPool.submit(() ->
-                            checks.parallelStream()
-                                    .map(this::executeCheck)
-                                    .flatMap(Collection::stream)
-                                    .collect(Collectors.toList())
+                    checks.parallelStream()
+                            .map(this::executeCheck)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList())
             ).get();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
@@ -55,8 +57,12 @@ public class CheckService {
     }
 
     private List<CheckResult> decorateCheckResults(Check check, List<CheckResult> results) {
-        if(iconsEnabled){
-            results.stream().forEach(r -> r.withIconSrc(check.getIconSrc()));
+        if (iconsEnabled) {
+            results.stream().forEach(checkResult -> {
+                if (StringUtils.isEmpty(checkResult.getIconSrc())) {
+                    checkResult.withIconSrc(check.getIconSrc());
+                }
+            });
         }
         return results;
     }

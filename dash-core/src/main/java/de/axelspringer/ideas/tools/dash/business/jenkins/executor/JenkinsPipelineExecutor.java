@@ -57,22 +57,29 @@ public class JenkinsPipelineExecutor {
         final List<PipelineStage> pipeDefinition = lastBuildAsTemplate ? lastBuildStages : lastSuccessfulBuildStages;
 
         final List<CheckResult> checkResults = new ArrayList<>();
-        final List<String> lastBuildParameters = jenkinsClient.buildParameters(lastBuild.getUrl(), serverConfig);
-        if (!lastBuildParameters.isEmpty()) {
-            checkResults.add(
-                    new CheckResult(State.GREEN, "#", String.join(",", lastBuildParameters), 0, 0, check.getGroup())
-                            .withOrder(0)
-                            .withLink(lastBuild.getUrl())
-                            .withTeams(check.getTeams())
-            );
-        }
+
+        //add no-op check results for parameters
+        jenkinsClient.buildParameters(lastBuild.getUrl(), serverConfig)
+                .forEach((name, value) -> checkResults.add(
+                        new CheckResult(State.GREEN, name, value, 0, 0, check.getGroup())
+                                .withOrder(0)
+                                .withLink(lastBuild.getUrl())
+                                .withTeams(check.getTeams())
+                                .withIconSrc("https://cdn4.iconfinder.com/data/icons/keynote-and-powerpoint-icons/256/parameters-512.png"))
+                );
+
+        // add stages as check results
         checkResults.addAll(
                 pipeDefinition.stream()
                         .map(stage ->
-                                checkResult(stage, lastBuildStages, check.getGroup())
-                                        .withOrder(pipeDefinition.indexOf(stage) + 1)
-                                        .withLink(lastBuild.getUrl())
-                                        .withTeams(check.getTeams())
+                                {
+                                    int checkIndex = pipeDefinition.indexOf(stage) + 1;
+                                    return checkResult(stage, lastBuildStages, check.getGroup())
+                                            .withOrder(checkIndex)
+                                            .withLink(lastBuild.getUrl())
+                                            .withTeams(check.getTeams())
+                                            .withIconSrc("http://www.kidsmathgamesonline.com/images/pictures/numbers120/number" + checkIndex + ".jpg");
+                                }
                         )
                         .collect(Collectors.toList()));
         return checkResults;
