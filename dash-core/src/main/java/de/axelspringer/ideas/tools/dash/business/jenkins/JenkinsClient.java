@@ -1,11 +1,18 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
 import com.google.gson.Gson;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildAction;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildInfo;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class JenkinsClient {
@@ -37,5 +44,34 @@ public class JenkinsClient {
                 .withCredentials(serverConfig.getUserName(), serverConfig.getApiToken())
                 .get(fullUrl);
         return gson.fromJson(response, responseType);
+    }
+
+    public List<String> buildParameters(String buildUrl, JenkinsServerConfiguration serverConfiguration) {
+
+        JenkinsBuildInfo lastBuildInfo = queryApi(buildUrl, serverConfiguration, JenkinsBuildInfo.class);
+
+        if (lastBuildInfo == null) {
+            return Collections.emptyList();
+        }
+
+        final List<JenkinsBuildAction> actions = lastBuildInfo.getActions();
+
+        if (actions == null) {
+            return Collections.emptyList();
+        }
+
+        return actions.stream()
+                .filter(action -> JenkinsBuildAction.PARAMETERS_ACTION.equals(action.getActionClass()))
+                .flatMap(this::parameters)
+                .collect(Collectors.toList());
+    }
+
+    private Stream<String> parameters(JenkinsBuildAction action) {
+        if (action.getParameters() == null) {
+            return Stream.empty();
+        }
+        return action.getParameters()
+                .stream()
+                .map(JenkinsBuildAction.JenkinsParameter::getValue);
     }
 }
