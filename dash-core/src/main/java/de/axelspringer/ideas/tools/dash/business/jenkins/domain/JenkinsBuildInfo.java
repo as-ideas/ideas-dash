@@ -9,7 +9,7 @@ import java.util.List;
 public class JenkinsBuildInfo {
 
     private JenkinsResult result;
-    private List<Action> actions;
+    private List<JenkinsBuildAction> actions;
     private boolean building;
 
     public JenkinsBuildInfo() {
@@ -19,7 +19,7 @@ public class JenkinsBuildInfo {
         return this.result;
     }
 
-    public List<Action> getActions() {
+    public List<JenkinsBuildAction> getActions() {
         return this.actions;
     }
 
@@ -31,7 +31,7 @@ public class JenkinsBuildInfo {
         this.result = result;
     }
 
-    public void setActions(List<Action> actions) {
+    public void setActions(List<JenkinsBuildAction> actions) {
         this.actions = actions;
     }
 
@@ -52,26 +52,5 @@ public class JenkinsBuildInfo {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }
-
-    public class Action {
-        private Integer failCount;
-        private Integer totalCount;
-
-        public Integer getFailCount() {
-            return failCount;
-        }
-
-        public void setFailCount(Integer failCount) {
-            this.failCount = failCount;
-        }
-
-        public Integer getTotalCount() {
-            return totalCount;
-        }
-
-        public void setTotalCount(Integer totalCount) {
-            this.totalCount = totalCount;
-        }
     }
 }

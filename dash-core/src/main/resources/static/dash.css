@@ -10,6 +10,10 @@
     display: table-row;
 }
 
+.group-metainfo {
+    white-space: nowrap;
+}
+
 .stage-info {
     width: 6em;
     display: table-cell;

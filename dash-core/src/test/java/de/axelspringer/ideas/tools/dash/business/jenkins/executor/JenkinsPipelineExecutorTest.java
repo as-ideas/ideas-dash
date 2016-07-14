@@ -78,6 +78,6 @@ public class JenkinsPipelineExecutorTest {
         final List<PipelineStage> pipelineStages = Stream.of(stages)
                 .map(PipelineStage::new)
                 .collect(Collectors.toList());
-        return new JenkinsPipelineBuildInfo(JenkinsResult.SUCCESS, pipelineStages);
+        return new JenkinsPipelineBuildInfo(JenkinsPipelineStageResult.SUCCESS, pipelineStages);
     }
 }

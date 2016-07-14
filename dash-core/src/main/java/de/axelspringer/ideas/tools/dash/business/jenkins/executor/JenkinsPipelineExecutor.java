@@ -13,10 +13,13 @@ import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsPipelineStageResult.IN_PROGRESS;
 
 @Service
 public class JenkinsPipelineExecutor {
@@ -53,13 +56,33 @@ public class JenkinsPipelineExecutor {
         );
         final List<PipelineStage> pipeDefinition = lastBuildAsTemplate ? lastBuildStages : lastSuccessfulBuildStages;
 
-        return pipeDefinition.stream()
-                .map(stage ->
-                        checkResult(stage, lastBuildStages, check.getGroup())
-                                .withOrder(pipeDefinition.indexOf(stage))
+        final List<CheckResult> checkResults = new ArrayList<>();
+
+        //add no-op check results for parameters
+        jenkinsClient.buildParameters(lastBuild.getUrl(), serverConfig)
+                .forEach((name, value) -> checkResults.add(
+                        new CheckResult(State.GREEN, name, value, 0, 0, check.getGroup())
+                                .withOrder(0)
                                 .withLink(lastBuild.getUrl())
-                )
-                .collect(Collectors.toList());
+                                .withTeams(check.getTeams())
+                                .withIconSrc("https://cdn4.iconfinder.com/data/icons/keynote-and-powerpoint-icons/256/parameters-512.png"))
+                );
+
+        // add stages as check results
+        checkResults.addAll(
+                pipeDefinition.stream()
+                        .map(stage ->
+                                {
+                                    int checkIndex = pipeDefinition.indexOf(stage) + 1;
+                                    return checkResult(stage, lastBuildStages, check.getGroup())
+                                            .withOrder(checkIndex)
+                                            .withLink(lastBuild.getUrl())
+                                            .withTeams(check.getTeams())
+                                            .withIconSrc("http://www.kidsmathgamesonline.com/images/pictures/numbers120/number" + checkIndex + ".jpg");
+                                }
+                        )
+                        .collect(Collectors.toList()));
+        return checkResults;
     }
 
     private boolean containsStageWithName(String name, List<PipelineStage> stages) {
@@ -74,7 +97,11 @@ public class JenkinsPipelineExecutor {
 
         if (executedStage.isPresent()) {
             final PipelineStage stage = executedStage.get();
-            return new CheckResult(state(stage), stage.getName(), info(stage), 1, failCount(stage), group);
+            final CheckResult checkResult = new CheckResult(state(stage), stage.getName(), info(stage), 1, failCount(stage), group);
+            if (stage.getStatus() == IN_PROGRESS) {
+                checkResult.markRunning();
+            }
+            return checkResult;
         }
         return new CheckResult(State.GREY, stageDefinition.getName(), "NOT EXECUTED", 0, 0, group);
     }
@@ -97,8 +124,10 @@ public class JenkinsPipelineExecutor {
             case SUCCESS:
                 return State.GREEN;
             case ABORTED:
+            case IN_PROGRESS:
             case PAUSED_PENDING_INPUT:
                 return State.GREY;
+            case FAILED:
             default:
                 return State.RED;
         }

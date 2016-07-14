@@ -190,17 +190,17 @@ public class DataDogCheckExecutorTest {
     @Test
     public void decideTeams() {
 
-        assertNull(dataDogCheckExecutor.decideTeams("[foo]some_monitor", teamMappings()));
-        assertNull(dataDogCheckExecutor.decideTeams("some_monitor", teamMappings()));
-        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][cm]some_monitor", teamMappings()));
-        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][foo][cm]some_monitor", teamMappings()));
-        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[cm]some_monitor", teamMappings()));
+        assertNull(dataDogCheckExecutor.decideTeams("[foo]some_monitor", teamMappings(), null));
+        assertNull(dataDogCheckExecutor.decideTeams("some_monitor", teamMappings(), null));
+        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][cm]some_monitor", teamMappings(), null));
+        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][foo][cm]some_monitor", teamMappings(), null));
+        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[cm]some_monitor", teamMappings(), null));
     }
-    
+
     @Test
     public void decideTeams_withTwoTeams() {
 
-        assertEquals(Arrays.asList(new Team[] {TestTeam.INSTANCE, TestTeam.INSTANCE}), dataDogCheckExecutor.decideTeams("[yana][cm]some_monitor", teamMultipleMappings()));
+        assertEquals(Arrays.asList(new Team[]{TestTeam.INSTANCE, TestTeam.INSTANCE}), dataDogCheckExecutor.decideTeams("[yana][cm]some_monitor", teamMultipleMappings(), null));
     }
 
     @Test
@@ -249,14 +249,14 @@ public class DataDogCheckExecutorTest {
     private Map<String, List<Team>> teamMappings() {
 
         Map<String, List<Team>> teamMappings = new HashMap<>();
-        teamMappings.put("[cm]", Arrays.asList(new Team[] {TestTeam.INSTANCE}));
+        teamMappings.put("[cm]", Arrays.asList(new Team[]{TestTeam.INSTANCE}));
         return teamMappings;
     }
-    
+
     private Map<String, List<Team>> teamMultipleMappings() {
 
         Map<String, List<Team>> teamMappings = new HashMap<>();
-        teamMappings.put("[cm]", Arrays.asList(new Team[] {TestTeam.INSTANCE, TestTeam.INSTANCE}));
+        teamMappings.put("[cm]", Arrays.asList(new Team[]{TestTeam.INSTANCE, TestTeam.INSTANCE}));
         return teamMappings;
     }
 

@@ -71,15 +71,19 @@ public class UiInfoService {
             uiGroup.setTotalCount(testCount);
             uiGroup.setFailCount(failCount);
 
-            String info = failCount > 0 ? failCount + "/" + testCount : testCount.toString();
-            uiGroup.setInfo(info);
+            if (group.groupStatsEnabled()) {
+                String info = failCount > 0 ? failCount + "/" + testCount : testCount.toString();
+                uiGroup.setInfo(info);
+            }
+
             uiGroup.setState(state);
+
+            uiGroup.withMetaInfo(group.getMetaInfo());
 
             newUiInfo.add(uiGroup);
         }
         return newUiInfo;
     }
-
     State aggregate(State state1, State state2) {
 
         if (state1 == null) {
