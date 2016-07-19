@@ -123,10 +123,11 @@ public class JenkinsPipelineExecutor {
         switch (stage.getStatus()) {
             case SUCCESS:
                 return State.GREEN;
-            case ABORTED:
             case IN_PROGRESS:
-            case PAUSED_PENDING_INPUT:
                 return State.GREY;
+            case PAUSED_PENDING_INPUT:
+                return State.YELLOW;
+            case ABORTED:
             case FAILED:
             default:
                 return State.RED;
