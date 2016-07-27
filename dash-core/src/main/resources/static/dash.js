@@ -61,7 +61,7 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
             var aggregateGreenChecks = function (group) {
 
                 // if no aggregation is requested, do nothing
-                if (!$scope.config.aggregate) {
+                if (!$scope.config[group.name] || !$scope.config[group.name].aggregate) {
                     return group;
                 }
 
@@ -115,7 +115,6 @@ angular.module('dash', ['ngResource', 'ngSanitize'])
 
                 // if no aggregation is requested, do nothing
                 if (!$scope.config.aggregateDuplicated) {
-                    console.info('Skip aggregate duplicated');
                     return group;
                 }
 
