@@ -52,7 +52,7 @@ public class CheckService {
         } catch (Exception e) {
             LOG.error("There are unhandled errors when performing check '{}' on stage '{}' for teams '{}'", check.getName(), check.getGroup(), check.getTeams());
             LOG.error(e.getMessage(), e);
-            return Collections.singletonList(new CheckResult(State.RED, "unhandled check error", check.getName(), 0, 0, check.getGroup()));
+            return Collections.singletonList(new CheckResult(State.RED, "unhandled check error: " + e.getMessage(), check.getName(), 0, 0, check.getGroup()));
         }
     }
 
