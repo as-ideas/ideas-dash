@@ -1,7 +1,3 @@
-/**
- * Service for interaction with philips hue lights
- */
-
 var dashApp = angular.module('dash');
 
 var appConfigServiceFactory = function ($resource) {
