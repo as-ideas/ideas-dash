@@ -1,19 +1,16 @@
-var dashApp = angular.module('dash');
+angular.module('dash')
+    .factory('AppConfig', function ($resource) {
 
-var appConfigServiceFactory = function ($resource) {
+            var appConfigService = {};
 
-    var appConfigService = {};
+            var appConfig = $resource('rest/config').get();
 
-    var appConfig = $resource('rest/config').get();
+            appConfigService.get = function () {
+                return appConfig;
+            };
 
-    appConfigService.injectWhenLoaded = function (scope, key) {
-        appConfig.$promise.then(function (config) {
-            scope[key] = config[key];
-        });
-    };
+            return appConfigService;
+        }
+    );
 
-    return appConfigService;
-};
-
-dashApp.factory('AppConfig', appConfigServiceFactory);
 
