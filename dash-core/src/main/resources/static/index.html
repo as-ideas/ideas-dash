@@ -20,7 +20,12 @@
     <!-- here for date formatting (last updated)-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.2.10/angular-locale_de-de.min.js"></script>
 
-    <script src="dash.js"></script>
+    <script src="app/dash.js"></script>
+    <script src="app/services/applicationconfiguration.js"></script>
+    <script src="app/services/philipshue.js"></script>
+    <script src="app/services/groupfilterutils.js"></script>
+    <script src="app/services/stateutils.js"></script>
+    <script src="app/controllers/dashcontroller.js"></script>
 </head>
 <body>
 
@@ -66,7 +71,7 @@
                 </div>
                 <div class="checks">
                     <div ng-repeat="check in group.checks | orderBy:[checkOrder, 'name']"
-                         class="panel check {{ classForState(check.state) }}"
+                         class="panel check {{ checkClass(check.state) }}"
                          ng-class="{'running': check.running}" title="{{check.info}}">
 
                         <div class="panel-content-left">
