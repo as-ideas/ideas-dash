@@ -9,40 +9,7 @@
 
     <div class="panel-body">
         <div ng-repeat="group in infos.groups | orderBy:'orderScore'" class="check-group panel"
-             ng-show="group.checks.length">
-            <div class="panel-body">
-                <div class="stage-info {{ groupClass(group) }}">
-                    <div class="check-name">{{ group.name }}</div>
-                    <div>{{group.info}}</div>
-                    <div class="group-metainfo" ng-repeat="metaInfo in group.metaInfo">{{metaInfo}}</div>
-                    <div ng-click="config[group.name].aggregate=!config[group.name].aggregate; loadInfos()">
-                        {{ config[group.name].aggregate ? '+' : '-' }}
-                    </div>
-                </div>
-                <div class="checks">
-                    <div ng-repeat="check in group.checks | orderBy:[checkOrder, 'name']"
-                         class="panel check {{ checkClass(check.state) }}"
-                         ng-class="{'running': check.running}" title="{{check.info}}">
-
-                        <div class="panel-content-left">
-                            <!-- link if specified, div if not -->
-                            <a ng-show="check.link" href="{{ check.link }}" target="_blank">
-                                <div class="check-name">{{ check.name }}</div>
-                                <div ng-bind-html="check.info | limitTo : 25"></div>
-                            </a>
-
-                            <div ng-hide="check.link">
-                                <div class="check-name">{{ check.name }}</div>
-                                <div ng-bind-html="check.info | limitTo : 25"></div>
-                            </div>
-                        </div>
-
-                        <div class="panel-content-right" ng-if="check.iconSrc">
-                            <img src="{{check.iconSrc}}" width="30" height="30"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
+             ng-show="group.checks.length" group>
         </div>
     </div>
 </div>
