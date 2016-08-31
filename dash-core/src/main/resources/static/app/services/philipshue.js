@@ -1,7 +1,7 @@
 /**
  * Service for interaction with philips hue lights
  */
-angular.module('dash')
+angular.module('dashapp')
     .factory('PhilipsHue', function ($resource) {
 
         var hueService = {};

@@ -1,7 +1,7 @@
 /**
  * Utilities that help transforming group data for the view
  */
-angular.module('dash')
+angular.module('dashapp')
     .factory('GroupFilterUtils', function () {
 
             var groupFilterUtils = {};
