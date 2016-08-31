@@ -1,12 +1,7 @@
 <div class="panel-body">
-    <div class="stage-info {{ groupClass(group) }}">
-        <div class="check-name">{{ group.name }}</div>
-        <div>{{group.info}}</div>
-        <div class="group-metainfo" ng-repeat="metaInfo in group.metaInfo">{{metaInfo}}</div>
-        <div ng-click="config[group.name].aggregate=!config[group.name].aggregate; loadInfos()">
-            {{ config[group.name].aggregate ? '+' : '-' }}
-        </div>
-    </div>
+
+    <div groupinfo class="stage-info {{ groupClass(group) }}"></div>
+
     <div class="checks">
         <div ng-repeat="check in group.checks | orderBy:[checkOrder, 'name']"
              class="panel check {{ checkClass(check.state) }}"

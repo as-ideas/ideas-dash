@@ -1,0 +1,6 @@
+<div class="check-name">{{ group.name }}</div>
+<div>{{group.info}}</div>
+<div class="group-metainfo" ng-repeat="metaInfo in group.metaInfo">{{metaInfo}}</div>
+<div ng-click="config[group.name].aggregate=!config[group.name].aggregate; loadInfos()">
+    {{ config[group.name].aggregate ? '+' : '-' }}
+</div>
