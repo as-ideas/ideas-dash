@@ -8,8 +8,10 @@
     <div options ng-show="options"></div>
 
     <div class="panel-body">
-        <div ng-repeat="group in infos.groups | orderBy:'orderScore'" class="check-group panel"
-             ng-show="group.checks.length" group>
+        <div ng-repeat="group in infos.groups | orderBy:'orderScore'"
+             class="check-group panel"
+             ng-show="group.checks.length"
+             group>
         </div>
     </div>
 </div>

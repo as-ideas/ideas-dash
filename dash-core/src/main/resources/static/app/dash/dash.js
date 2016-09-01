@@ -7,26 +7,15 @@ angular.module('dashapp')
         directive.controllerAs = 'dashcontroller';
         directive.bindToController = true;
 
-        directive.controller = function ($scope, $resource, $interval, PhilipsHue, GroupFilterUtils, StateUtils) {
+        directive.controller = function ($scope, $resource, $interval, PhilipsHue, GroupFilterUtils, StateUtils, Persistence) {
 
-            var storage = window['localStorage'];
-
-            // config object from/in localStorage
-            $scope.config = storage && storage['config'] ? JSON.parse(storage['config']) : {};
-            $scope.config = angular.extend({}, {
+            Persistence.init($scope, "config", {
                 teams: {},
                 aggregate: true,
                 aggregateDuplicated: true,
                 showEmptyGroups: true,
                 hue: {}
-            }, $scope.config);
-
-            // watch changes and write to storage
-            $scope.$watch("config", function (config) {
-                if (storage) {
-                    storage['config'] = JSON.stringify(config);
-                }
-            }, true);
+            });
 
             // infos rest resource
             var infosResource = $resource('rest/infos');
