@@ -7,9 +7,5 @@ angular.module('dashapp')
         directive.controllerAs = 'groupcontroller';
         directive.bindToController = true;
 
-        directive.controller = function ($scope) {
-
-        };
-
         return directive;
     });
