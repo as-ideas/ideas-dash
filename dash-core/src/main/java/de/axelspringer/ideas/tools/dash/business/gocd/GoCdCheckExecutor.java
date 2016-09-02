@@ -41,9 +41,8 @@ public class GoCdCheckExecutor implements CheckExecutor<GoCdCheck> {
                 for (JsonNode pipeline : pipelineGroups.get("pipelines")) {
                     String pipelineName = pipeline.get("name").asText();
 
-                    addChecksForPipeline(restClient, check, result, pipelineName);
+                    result.add(addChecksForPipeline(restClient, check, pipelineName));
                 }
-
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
@@ -51,46 +50,77 @@ public class GoCdCheckExecutor implements CheckExecutor<GoCdCheck> {
         return result;
     }
 
-    private void addChecksForPipeline(CloseableHttpClientRestClient restClient, GoCdCheck check, List<CheckResult> result, String pipelineName) throws IOException {
+    private CheckResult addChecksForPipeline(CloseableHttpClientRestClient restClient, GoCdCheck check, String pipelineName) throws IOException {
         GoCdPipelineHistory pipelineHistory = objectMapper.readValue(restClient.get(check.config.goCdServerBaseUrl + "/api/pipelines/" + pipelineName + "/history"), GoCdPipelineHistory.class);
 
         if (pipelineHistory.pipelines == null || pipelineHistory.pipelines.isEmpty()) {
-            result.add(new CheckResult(State.YELLOW, pipelineName, "NO PIPELINES FOUND", 0, 0, check.getGroup()));
+            return new CheckResult(State.GREEN, pipelineName, "PIPELINE HAS NO RUNS", 0, 0, check.getGroup());
         } else {
             // Only take the last pipeline, as it is the most current one
             GoCdPipeline latestPipeline = pipelineHistory.pipelines.get(0);
+            return determineResultDetails(restClient, check, latestPipeline);
+        }
+    }
 
-            for (GoCdStage stage : latestPipeline.stages) {
-                for (GoCdJob job : stage.jobs) {
-                    State resultState = isPassedOrCancelled(job) ? State.GREEN : State.RED;
-                    result.add(new CheckResult(resultState, latestPipeline.name + " - " + stage.name + " - " + job.name, job.result, 0, 0, check.getGroup()));
+    private CheckResult determineResultDetails(CloseableHttpClientRestClient restClient, GoCdCheck check, GoCdPipeline pipeline) throws IOException {
+        String resInfo = "Passed";
+        String stageAndJobAffected = "";
+        State resultState = State.RED;
+        boolean buildRunning = false;
+
+        for (GoCdStage stage : pipeline.stages) {
+            if (isPassedOrCancelled(stage)) {
+                resultState = State.GREEN;
+            } else {
+                resultState = State.RED;
+            }
+
+            for (GoCdJob job : stage.jobs) {
+                if (isJobRunning(job)) {
+                    stageAndJobAffected = stage.name + " - " + job.name;
+                    resInfo = "In Progress";
+                    buildRunning = true;
+                    resultState = State.YELLOW;
+                } else if (!isPassedOrCancelled(job)) {
+                    stageAndJobAffected = stage.name + " - " + job.name;
+                    resInfo = job.result;
                 }
+            }
 
+            if (buildRunning || resultState == State.RED) {
+                break;
             }
         }
 
+        if (!pipeline.can_run && State.RED == resultState) {
+            // It might be deactivated and thus should be green
+            boolean paused = objectMapper.readTree(restClient.get(
+                    check.config.goCdServerBaseUrl + "/api/pipelines/" + pipeline.name + "/status"))
+                    .get("paused").asBoolean();
+            if (paused) {
+                resultState = State.GREEN;
+                resInfo = "PAUSED";
+            }
+        }
 
+        final CheckResult res = new CheckResult(resultState, pipeline.name + " - " + stageAndJobAffected, resInfo, 0, 0, check.getGroup());
+        if(buildRunning){
+            res.markRunning();
+        }
+        return res;
+    }
+
+    private boolean isPassedOrCancelled(GoCdStage stage) {
+        return stage.result == null || "Passed".equalsIgnoreCase(stage.result) || "Cancelled".equalsIgnoreCase(stage.result);
+    }
+
+    private boolean isJobRunning(GoCdJob job) {
+        return "Building".equalsIgnoreCase(job.state);
     }
 
     private boolean isPassedOrCancelled(GoCdJob job) {
-        return job.result.equalsIgnoreCase("Passed") || job.result.equalsIgnoreCase("Cancelled");
+        return "Passed".equalsIgnoreCase(job.result) || "Cancelled".equalsIgnoreCase(job.result);
     }
-
-//    private CheckResult convertToCheckResult(PingdomAnswer pingdomAnswer, de.axelspringer.ideas.tools.dash.business.pingdom.PingdomCheck check) {
-//        State state = State.RED;
-//        if ("up".equals(pingdomAnswer.status) || "paused".equals(pingdomAnswer.status)) {
-//            state = State.GREEN;
-//        }
-//
-//        return new CheckResult(state, pingdomAnswer.status + ": " + pingdomAnswer.name, pingdomAnswer.hostname, 1, 1, check.getGroup())
-//                .withLink("https://my.pingdom.com/newchecks/checks#check=" + pingdomAnswer.id);
-//    }
-//
-//    private boolean isNameMatching(PingdomAnswer candidate, de.axelspringer.ideas.tools.dash.business.pingdom.PingdomCheck check) {
-//        Matcher matcher = check.pattern().matcher(candidate.name);
-//        return matcher.matches();
-//    }
-
 
     @Override
     public boolean isApplicable(Check check) {
