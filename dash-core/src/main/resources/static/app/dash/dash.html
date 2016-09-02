@@ -4,8 +4,9 @@
         Last update: {{infos.lastUpdateTime | date:'medium' }}
     </div>
 
-    <div ng-click="options=!options">{{ options ? 'hide options' : 'show options' }}</div>
-    <div options ng-show="options"></div>
+    <div ng-click="config.showOptions=!config.showOptions">{{ config.showOptions ? 'hide options' : 'show options' }}
+    </div>
+    <div options ng-show="config.showOptions"></div>
 
     <div class="panel-body">
         <div ng-repeat="group in infos.groups | orderBy:'orderScore'"

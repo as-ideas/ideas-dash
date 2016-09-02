@@ -35,8 +35,12 @@ angular.module('dashapp')
                     persist();
                 }, true);
 
-                // set initial state
-                data = angular.extend({}, initialState, data);
+                // copy properties from initial state to data object
+                angular.forEach(initialState, function (value, key) {
+                    if (data[key] == undefined) {
+                        data[key] = value;
+                    }
+                });
 
                 persist();
             };

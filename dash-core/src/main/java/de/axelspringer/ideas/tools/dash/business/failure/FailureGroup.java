@@ -1,8 +1,8 @@
 package de.axelspringer.ideas.tools.dash.business.failure;
 
-import de.axelspringer.ideas.tools.dash.business.customization.Group;
+import de.axelspringer.ideas.tools.dash.business.customization.AbstractGroup;
 
-public class FailureGroup implements Group {
+public class FailureGroup extends AbstractGroup {
 
     public static final FailureGroup INSTANCE = new FailureGroup();
 

@@ -3,10 +3,6 @@
         <input type="checkbox" ng-model="config.showEmptyGroups" ng-click="loadInfos()"/> show empty groups
     </label>
     <label class="team-label">
-        <input type="checkbox" ng-model="config.aggregateDuplicated" ng-click="loadInfos()"/> aggregate duplicated
-        checks
-    </label>
-    <label class="team-label">
         <input type="checkbox" ng-model="config.hue.enabled" ng-click="loadInfos()"/> hue
         <div ng-show="config.hue.enabled">
             ip <input type="text" size="12" ng-model="config.hue.ip">
@@ -15,6 +11,6 @@
         </div>
     </label>
     <label ng-repeat="team in teams" class="team-label">
-        <input type="checkbox" ng-model="config.teams[team]" ng-click="loadInfos()"/> {{ team }}
+        <input type="checkbox" ng-model="config.selectedTeams[team]" ng-click="loadInfos()"/> {{ team }}
     </label>
 </div>

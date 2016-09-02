@@ -7,9 +7,5 @@ angular.module('dashapp')
         directive.controllerAs = 'optionscontroller';
         directive.bindToController = true;
 
-        directive.controller = function ($scope) {
-
-        };
-
         return directive;
     });

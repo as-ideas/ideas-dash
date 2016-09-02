@@ -10,11 +10,10 @@ angular.module('dashapp')
         directive.controller = function ($scope, $resource, $interval, PhilipsHue, GroupFilterUtils, StateUtils, Persistence) {
 
             Persistence.init($scope, "config", {
-                teams: {},
-                aggregate: true,
-                aggregateDuplicated: true,
+                selectedTeams: {},
                 showEmptyGroups: true,
-                hue: {}
+                hue: {},
+                showOptions: true
             });
 
             // infos rest resource
@@ -24,13 +23,15 @@ angular.module('dashapp')
             var teamsResource = $resource('rest/teams');
 
             teamsResource.get().$promise.then(function (teams) {
+
                 $scope.teams = teams['teams'];
 
-                // select all available teams if the user did not make a choice yet
-                // (this is only the case when the team checkboxes have never been touched)
-                if (isEmptyObject($scope.config.teams)) {
-                    selectAllTeams();
-                }
+                // initialize new teams
+                angular.forEach($scope.teams, function (team) {
+                    if ($scope.config.selectedTeams[team] == undefined) {
+                        $scope.config.selectedTeams[team] = true;
+                    }
+                });
             });
 
             // last update time. caused monitor to die if problems occur.
@@ -63,15 +64,13 @@ angular.module('dashapp')
                             GroupFilterUtils.aggregateGreen(group);
                         }
 
-                        GroupFilterUtils.filterByTeam(group, $scope.config.teams);
+                        GroupFilterUtils.filterByTeam(group, $scope.config.selectedTeams);
 
                         if ($scope.config.showEmptyGroups) {
                             GroupFilterUtils.fillEmptyWithGreen(group);
                         }
 
-                        if ($scope.config.aggregateDuplicated) {
-                            GroupFilterUtils.aggregateDuplicated(group);
-                        }
+                        GroupFilterUtils.aggregateDuplicated(group);
                     }
 
                     $scope.overallState = StateUtils.overallState(infos.groups);
@@ -114,16 +113,6 @@ angular.module('dashapp')
                 var state = check.state;
                 return 4 - StateUtils.scoreForState(state);
             };
-
-            function selectAllTeams() {
-                angular.forEach($scope.teams, function (teamName) {
-                    $scope.config.teams[teamName] = true;
-                });
-            }
-
-            function isEmptyObject(obj) {
-                return Object.getOwnPropertyNames(obj).length == 0;
-            }
 
             function switchHueLights(state) {
                 if (state == "GREEN") {
