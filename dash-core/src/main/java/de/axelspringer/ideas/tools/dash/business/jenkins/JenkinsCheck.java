@@ -1,13 +1,13 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins;
 
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.business.jenkins.joblist.JenkinsJobNameMapper;
 
 import java.util.List;
 
-public class JenkinsCheck extends AbstractCheck {
+public class JenkinsCheck extends Check {
 
     private static final String ICON_SRC = "assets/jenkins-logo.png";
 

@@ -1,12 +1,13 @@
 package de.axelspringer.ideas.tools.dash.example;
 
-import java.util.List;
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 
-public class ExampleCheck extends AbstractCheck {
+import java.util.List;
+
+public class ExampleCheck extends Check {
 
     private static final String ICON_SRC = "https://upload.wikimedia.org/wikipedia/commons/5/51/Army-officer-icon.png";
 

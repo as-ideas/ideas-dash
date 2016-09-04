@@ -1,12 +1,12 @@
 package de.axelspringer.ideas.tools.dash.business.pingdom;
 
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 import java.util.regex.Pattern;
 
-public class PingdomCheck extends AbstractCheck {
+public class PingdomCheck extends Check {
 
     private final PingdomConfig githubConfig;
 
