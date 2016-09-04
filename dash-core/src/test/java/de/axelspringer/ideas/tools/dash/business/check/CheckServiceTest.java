@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;

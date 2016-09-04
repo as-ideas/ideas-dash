@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.tools.dash.business.stash;
 
 import de.axelspringer.ideas.tools.dash.TestTeam;
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.failure.FailureGroup;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.junit.Before;

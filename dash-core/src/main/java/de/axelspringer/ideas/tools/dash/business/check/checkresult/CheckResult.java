@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.business.check;
+package de.axelspringer.ideas.tools.dash.business.check.checkresult;
 
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;

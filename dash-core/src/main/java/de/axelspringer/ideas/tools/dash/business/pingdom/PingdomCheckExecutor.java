@@ -3,7 +3,7 @@ package de.axelspringer.ideas.tools.dash.business.pingdom;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import de.axelspringer.ideas.tools.dash.util.CloseableHttpClientRestClient;
 import org.apache.http.impl.client.CloseableHttpClient;
