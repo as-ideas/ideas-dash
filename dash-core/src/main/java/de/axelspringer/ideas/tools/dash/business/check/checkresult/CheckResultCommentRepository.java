@@ -16,13 +16,18 @@ public class CheckResultCommentRepository {
 
     private final List<CheckResultComment> comments = new ArrayList<>();
 
-    public CheckResultCommentRepository addComment(CheckResultComment comment) {
-        comments.add(comment);
-        ;
-        return this;
+    public void addComments(List<CheckResultComment> comments) {
+        comments.forEach(this::addComment);
     }
 
     public List<CheckResultComment> comments() {
         return Collections.unmodifiableList(comments);
+    }
+
+    private CheckResultCommentRepository addComment(CheckResultComment comment) {
+        if (!comments.contains(comment)) {
+            comments.add(comment);
+        }
+        return this;
     }
 }

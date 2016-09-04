@@ -18,12 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/rest/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/rest")
 public class DashController {
 
     @Autowired
@@ -38,32 +39,32 @@ public class DashController {
     @Autowired
     private CheckResultCommentRepository commentRepository;
 
-    @RequestMapping(value = "config", method = RequestMethod.GET)
+    @RequestMapping(value = "/config", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UiConfig config() {
         return uiConfigState.get();
     }
 
-    @RequestMapping(value = "infos", method = RequestMethod.GET)
+    @RequestMapping(value = "/infos", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UiInfo infos() throws IOException, AuthenticationException, ExecutionException, InterruptedException, URISyntaxException {
         return UiInfoService.infos();
     }
 
-    @RequestMapping(value = "teams", method = RequestMethod.GET)
+    @RequestMapping(value = "/teams", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UiTeams teams() {
-        if(teamProvider == null) {
+        if (teamProvider == null) {
             return UiTeams.ALL;
         }
         List<String> teams = teamProvider.getTeams().stream().map(Team::getTeamName).collect(Collectors.toList());
         return new UiTeams(teams);
     }
 
-    @RequestMapping(value = "checkresults/comments", method = RequestMethod.GET)
+    @RequestMapping(value = "/comments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CheckResultComment> comments() {
         return commentRepository.comments();
     }
 
-    @RequestMapping(value = "checkresults/{checkResultIdentifier}/comments", method = RequestMethod.POST)
-    public void storeComment(@RequestBody CheckResultComment comment) {
-        commentRepository.addComment(comment);
+    @RequestMapping(value = "/comments", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void storeComment(@RequestBody ArrayList<CheckResultComment> comments) {
+        commentRepository.addComments(comments);
     }
 }

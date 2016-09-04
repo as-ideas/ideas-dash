@@ -20,6 +20,15 @@
                 </div>
             </div>
 
+            <div ng-show="check.checkResultIdentifier">
+                <input type="text" ng-model="newcomment" title="new comment">
+                <input type="button"
+                       ng-click="addComment(newcomment, check.checkResultIdentifier)">
+                <div ng-repeat="comment in comments | filter:byCheck(check, comment)">
+                    <br>{{ comment.comment }}
+                </div>
+            </div>
+
             <div class="panel-content-right" ng-if="check.iconSrc">
                 <img src="{{check.iconSrc}}" width="30" height="30"/>
             </div>

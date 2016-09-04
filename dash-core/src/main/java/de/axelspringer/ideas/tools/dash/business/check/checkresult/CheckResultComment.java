@@ -9,9 +9,12 @@ public class CheckResultComment {
 
     private final String commentIdentifier = UUID.randomUUID().toString();
 
-    private final String checkResultIdentifier;
+    private String checkResultIdentifier;
 
-    private final String comment;
+    private String comment;
+
+    public CheckResultComment() {
+    }
 
     public CheckResultComment(String checkResultIdentifier, String comment) {
         this.checkResultIdentifier = checkResultIdentifier;
