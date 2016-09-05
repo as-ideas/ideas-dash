@@ -9,6 +9,8 @@ public class CheckResultComment {
 
     private String commentIdentifier = UUID.randomUUID().toString();
 
+    private long creationTime = System.currentTimeMillis();
+
     private String checkResultIdentifier;
 
     private String comment;
@@ -21,10 +23,15 @@ public class CheckResultComment {
         this.comment = comment;
     }
 
-    public CheckResultComment(String commentIdentifier, String checkResultIdentifier, String comment) {
+    public CheckResultComment(String commentIdentifier, long creationTime, String checkResultIdentifier, String comment) {
         this.commentIdentifier = commentIdentifier;
+        this.creationTime = creationTime;
         this.checkResultIdentifier = checkResultIdentifier;
         this.comment = comment;
+    }
+
+    public long getCreationTime() {
+        return creationTime;
     }
 
     public String getComment() {
