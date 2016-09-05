@@ -1,13 +1,7 @@
 angular.module('dashapp')
-    .directive('dash', function () {
-
-        var directive = {};
-
-        directive.templateUrl = 'app/dash/dash.html';
-        directive.controllerAs = 'dashcontroller';
-        directive.bindToController = true;
-
-        directive.controller = function ($scope, $resource, $interval, PhilipsHue, GroupFilterUtils, StateUtils, Persistence) {
+    .component('dash', {
+        templateUrl: 'app/dash/dash.html',
+        controller: function ($scope, $resource, $interval, PhilipsHue, GroupFilterUtils, StateUtils, Persistence) {
 
             Persistence.init($scope, "config", {
                 selectedTeams: {},
@@ -125,7 +119,5 @@ angular.module('dashapp')
                     PhilipsHue.update($scope.config.hue, PhilipsHue.BLUE);
                 }
             }
-        };
-        return directive;
-    })
-;
+        }
+    });
