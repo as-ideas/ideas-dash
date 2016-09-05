@@ -4,15 +4,12 @@
         Last update: {{infos.lastUpdateTime | date:'medium' }}
     </div>
 
-    <div ng-click="config.showOptions=!config.showOptions">{{ config.showOptions ? 'hide options' : 'show options' }}
-    </div>
-    <div options ng-show="config.showOptions"></div>
+    <options></options>
 
     <div class="panel-body">
-        <div ng-repeat="group in infos.groups | orderBy:'orderScore'"
-             class="check-group panel"
-             ng-show="group.checks.length"
-             group>
-        </div>
+        <group ng-repeat="group in infos.groups | orderBy:'orderScore'"
+               class="check-group panel"
+               ng-show="group.checks.length">
+        </group>
     </div>
 </div>
