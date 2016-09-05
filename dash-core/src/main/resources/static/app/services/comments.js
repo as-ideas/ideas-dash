@@ -18,17 +18,17 @@ angular.module('dashapp')
 
             Persistence.save('comments', comments);
 
-            // TODO: regular reload from server
-
             // public API
             var commentService = {};
 
             commentService.comments = function () {
+                comments = commentResource.query();
                 return comments;
             };
 
             commentService.comment = function (comment) {
-                comments.push(comment);
+                commentResource.save([comment]);
+                comments = commentResource.query();
             };
 
             return commentService;
