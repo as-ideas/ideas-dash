@@ -7,7 +7,7 @@ import java.util.UUID;
  */
 public class CheckResultComment {
 
-    private final String commentIdentifier = UUID.randomUUID().toString();
+    private String commentIdentifier = UUID.randomUUID().toString();
 
     private String checkResultIdentifier;
 
@@ -17,6 +17,12 @@ public class CheckResultComment {
     }
 
     public CheckResultComment(String checkResultIdentifier, String comment) {
+        this.checkResultIdentifier = checkResultIdentifier;
+        this.comment = comment;
+    }
+
+    public CheckResultComment(String commentIdentifier, String checkResultIdentifier, String comment) {
+        this.commentIdentifier = commentIdentifier;
         this.checkResultIdentifier = checkResultIdentifier;
         this.comment = comment;
     }
