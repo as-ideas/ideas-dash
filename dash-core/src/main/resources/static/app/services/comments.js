@@ -18,7 +18,6 @@ angular.module('dashapp')
 
             Persistence.save('comments', comments);
 
-            // TODO: cleanup local storage
             // TODO: regular reload from server
 
             // public API
@@ -30,7 +29,6 @@ angular.module('dashapp')
 
             commentService.comment = function (comment) {
                 comments.push(comment);
-                commentResource.save(comments);
             };
 
             return commentService;

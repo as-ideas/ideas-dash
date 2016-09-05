@@ -15,24 +15,22 @@ angular.module('dashapp')
                 commentObject.checkResultIdentifier = checkResultIdentifier;
                 Comments.comment(commentObject);
             };
-
-            $scope.byCheck = function () {
-                return function (check, foo, comments) {
-                    var filteredComments = [];
-                    angular.forEach(comments, function (comment) {
-                        if (check['checkResultIdentifier'] == comment['checkResultIdentifier']) {
-                            console.log("match");
-                            console.log(check['checkResultIdentifier']);
-                            console.log(comment['checkResultIdentifier']);
-                            console.log("...");
-                            filteredComments.push(comment);
-                        }
-                    });
-
-                    return filteredComments;
-                }
-            }
         };
 
         return directive;
     });
+
+angular.module('dashapp')
+    .filter('byCheckResultIdentifier', function () {
+            return function (comments, checkResultIdentifier) {
+                var filteredComments = [];
+                angular.forEach(comments, function (comment) {
+                    if (checkResultIdentifier == comment['checkResultIdentifier']) {
+                        filteredComments.push(comment);
+                    }
+                });
+
+                return filteredComments;
+            }
+        }
+    );

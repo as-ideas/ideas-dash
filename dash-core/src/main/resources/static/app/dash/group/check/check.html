@@ -15,7 +15,7 @@
     <input type="text" ng-model="newcomment" title="new comment">
     <input type="button"
            ng-click="addComment(newcomment, check.checkResultIdentifier)">
-    <div ng-repeat="comment in comments | filter:byCheck(check, comment)">
+    <div ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
         <br>{{ comment.comment }}
     </div>
 </div>
