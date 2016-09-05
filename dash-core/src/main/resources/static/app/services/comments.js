@@ -2,7 +2,7 @@
  * Service for interaction with philips hue lights
  */
 angular.module('dashapp')
-    .factory('Comments', function ($resource, Persistence) {
+    .factory('Comments', function ($resource, $interval, Persistence) {
 
             // backend-communication
             var commentResource = $resource('rest/comments');
@@ -21,14 +21,15 @@ angular.module('dashapp')
             // public API
             var commentService = {};
 
+        // TODO: regular update
+
             commentService.comments = function () {
-                comments = commentResource.query();
                 return comments;
             };
 
             commentService.comment = function (comment) {
-                commentResource.save([comment]);
-                comments = commentResource.query();
+                comments.push(comment);
+                Persistence.save('comments', comments);
             };
 
             return commentService;

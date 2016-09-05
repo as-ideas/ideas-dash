@@ -13,6 +13,7 @@
 
 <div ng-show="check.checkResultIdentifier">
     <input type="text" ng-model="newcomment" title="new comment">
+    <!-- TODO: style comments -->
     <input type="button"
            ng-click="addComment(newcomment, check.checkResultIdentifier)">
     <div ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
