@@ -45,7 +45,10 @@ angular.module('dashapp')
                 persist();
             };
 
-        persistenceService.load = function (key) {
+        persistenceService.load = function (key, defaultValue) {
+            if (!data[key]) {
+                return defaultValue;
+            }
             return data[key];
         };
 

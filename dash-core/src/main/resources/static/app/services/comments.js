@@ -2,27 +2,32 @@
  * Service for interaction with philips hue lights
  */
 angular.module('dashapp')
-    .factory('Comments', function ($resource, $timeout, Persistence) {
+    .factory('Comments', function ($resource, Persistence) {
 
             // backend-communication
             var commentResource = $resource('rest/comments');
 
+        var syncComments = function () {
+
             // load comments from local storage/persistence
-            var comments = Persistence.load('comments');
+            var savedComments = Persistence.load('comments', []);
 
             // post them to the server
-            commentResource.save(comments);
+            commentResource.save(savedComments).$promise.then(function () {
+                // load from server
+                commentResource.query().$promise.then(function (serverComments) {
+                    // save to storage
+                    Persistence.save('comments', serverComments);
+                });
+            });
+        };
 
             // public API
             var commentService = {};
 
-        commentService.startPollingComments = function ($scope, fieldName) {
-            commentResource.query().$promise.then(function (comments) {
-                $scope[fieldName] = comments;
-                Persistence.save('comments', comments);
-                $timeout(commentService.startPollingComments, 5000, true, $scope, fieldName);
-            });
-                return comments;
+        commentService.comments = function () {
+            syncComments();
+            return Persistence.load('comments', []);
             };
 
             commentService.comment = function (comment) {
