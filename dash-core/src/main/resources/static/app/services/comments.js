@@ -19,7 +19,7 @@ angular.module('dashapp')
                     // save to storage
                     Persistence.save('comments', serverComments);
                 });
-            });
+                });
         };
 
             // public API
