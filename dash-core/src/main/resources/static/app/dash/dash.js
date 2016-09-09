@@ -31,7 +31,18 @@ angular.module('dashapp')
             // last update time. caused monitor to die if problems occur.
             $scope.lastUpdate = {};
 
-            $scope.loadInfos = function () {
+            $scope.rawinfos = {};
+            $scope.infos = {};
+
+            var provideFilteredGroups = function () {
+                $scope.infos.groups = GroupFilterUtils.filter($scope.infos.rawgroups, $scope.config);
+            };
+            // add watch for config object (and re-filter groups if it changes)
+            $scope.$watch('config', function () {
+                provideFilteredGroups();
+            }, true);
+
+            var loadInfos = function () {
                 // Do not store the result of query() into the $scope directly.
                 // The rest call may take some time and query() returns an empty resource immediately and updates it later.
                 // This leads to flickering
@@ -49,31 +60,16 @@ angular.module('dashapp')
                     // save start id
                     $scope.applicationStartId = applicationStartId;
 
-                    // aggregate/filter
-                    for (var i = 0; i < infos.groups.length; i++) {
+                    $scope.infos = infos;
+                    $scope.infos.rawgroups = infos.groups;
 
-                        var group = infos.groups[i];
+                    provideFilteredGroups();
 
-                        if ($scope.config[group.name] && $scope.config[group.name].aggregate) {
-                            GroupFilterUtils.aggregateGreen(group);
-                        }
-
-                        GroupFilterUtils.filterByTeam(group, $scope.config.selectedTeams);
-
-                        if ($scope.config.showEmptyGroups) {
-                            GroupFilterUtils.fillEmptyWithGreen(group);
-                        }
-
-                        GroupFilterUtils.aggregateDuplicated(group);
-                    }
-
-                    $scope.overallState = StateUtils.overallState(infos.groups);
+                    $scope.overallState = StateUtils.overallState($scope.infos.groups);
 
                     if ($scope.config.hue['enabled']) {
                         switchHueLights($scope.overallState);
                     }
-
-                    $scope.infos = infos;
 
                     if (infos == undefined || infos.groups == undefined) {
                         $scope.lastUpdate.state = 'red';
@@ -87,10 +83,10 @@ angular.module('dashapp')
             };
 
             // execute loadGroups every 30 seconds
-            $interval($scope.loadInfos, 30 * 1000);
+            $interval(loadInfos, 30 * 1000);
 
             // load groups initially
-            $scope.loadInfos();
+            loadInfos();
 
             $scope.checkClass = StateUtils.classForState;
 

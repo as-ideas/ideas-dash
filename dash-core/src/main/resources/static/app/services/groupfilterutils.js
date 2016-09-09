@@ -4,8 +4,6 @@
 angular.module('dashapp')
     .factory('GroupFilterUtils', function () {
 
-            var groupFilterUtils = {};
-
             /**
              * Helper that determines the existence of a check in a collection of checks
              */
@@ -22,21 +20,25 @@ angular.module('dashapp')
             /**
              * used to group duplicated checks (better overview on monitor)
              */
-            groupFilterUtils.aggregateDuplicated = function (group) {
+            var aggregateDuplicated = function (group) {
+
+                var filteredGroup = angular.copy(group);
 
                 // new array for aggregated checks
                 var groupedChecks = [];
 
                 // iterate over checks, for each check look for already existing check in groupedChecks
-                for (var i = 0; i < group.checks.length; i++) {
-                    var checkOne = group.checks[i];
+                for (var i = 0; i < filteredGroup.checks.length; i++) {
+                    var checkOne = filteredGroup.checks[i];
                     if (!containsCheck(checkOne, groupedChecks)) {
                         groupedChecks.push(checkOne);
                     }
                 }
 
                 // replace original checks with aggregated checks
-                group.checks = groupedChecks;
+                filteredGroup.checks = groupedChecks;
+
+                return filteredGroup;
             };
 
             /**
@@ -45,15 +47,17 @@ angular.module('dashapp')
              * @param group that shall be filtered
              * @param enabledTeams collections of teams that are enabled in the ui
              */
-            groupFilterUtils.filterByTeam = function (group, enabledTeams) {
+            var filterByTeam = function (group, enabledTeams) {
+
+                var filteredGroup = angular.copy(group);
 
                 // new array for filtered checks
                 var filteredChecks = [];
 
                 // iterate over checks and add to filtered teams if team selected or no team selected
-                for (var i = 0; i < group.checks.length; i++) {
+                for (var i = 0; i < filteredGroup.checks.length; i++) {
 
-                    var check = group.checks[i];
+                    var check = filteredGroup.checks[i];
 
                     // teams that the checkresult is mapped to (can be more than one)
                     var teams = check.teams;
@@ -76,13 +80,17 @@ angular.module('dashapp')
                 }
 
                 // replace original checks with aggregated checks
-                group.checks = filteredChecks;
+                filteredGroup.checks = filteredChecks;
+
+                return filteredGroup;
             };
 
             /**
              * used to aggregate green checks in a group
              */
-            groupFilterUtils.aggregateGreen = function (group) {
+            var aggregateGreen = function (group) {
+
+                var filteredGroup = angular.copy(group);
 
                 // new array for aggregated checks
                 var aggregatedChecks = [];
@@ -91,8 +99,8 @@ angular.module('dashapp')
                 var greenCount = 0;
 
                 // iterate over checks, put non-green in aggregated list, count green
-                for (var i = 0; i < group.checks.length; i++) {
-                    var check = group.checks[i];
+                for (var i = 0; i < filteredGroup.checks.length; i++) {
+                    var check = filteredGroup.checks[i];
                     var state = check.state;
                     if (state == 'GREEN') {
                         greenCount++;
@@ -111,20 +119,59 @@ angular.module('dashapp')
                 }
 
                 // replace original checks with aggregated checks
-                group.checks = aggregatedChecks;
+                filteredGroup.checks = aggregatedChecks;
+
+                return filteredGroup;
             };
 
             /**
              * Puts a "fine" - check result in the group if there are no real results
              */
-            groupFilterUtils.fillEmptyWithGreen = function (group) {
-                if (group.checks.length < 1) {
-                    group.checks.push({
+            var fillEmptyWithGreen = function (group) {
+
+                var filteredGroup = angular.copy(group);
+
+                if (filteredGroup.checks.length < 1) {
+                    filteredGroup.checks.push({
                         name: 'F-I-N-E',
                         info: 'F-I-N-E',
                         state: 'GREEN'
                     });
                 }
+
+                return filteredGroup;
+            };
+
+        var groupFilterUtils = {};
+
+        groupFilterUtils.filter = function (groups, config) {
+
+            var filteredGroups = [];
+            if (!groups) {
+                return filteredGroups;
+            }
+
+            // aggregate/filter
+            for (var i = 0; i < groups.length; i++) {
+
+                var group = groups[i];
+
+                if (config[group.name] && config[group.name].aggregate) {
+                    group = aggregateGreen(group);
+                }
+
+                group = filterByTeam(group, config.selectedTeams);
+
+                if (config.showEmptyGroups) {
+                    group = fillEmptyWithGreen(group);
+                }
+
+                group = aggregateDuplicated(group);
+
+                filteredGroups.push(group);
+            }
+
+            return filteredGroups;
             };
 
             return groupFilterUtils;
