@@ -8,7 +8,9 @@ angular.module('dashapp')
         directive.bindToController = true;
 
         directive.controller = function ($scope, Comments) {
-            $scope.comments = Comments.comments();
+
+            $scope.comments = {};
+            Comments.startPollingComments($scope, 'comments');
         };
 
         return directive;
