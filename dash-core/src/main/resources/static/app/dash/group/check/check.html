@@ -13,7 +13,9 @@
 
 <div ng-show="check.checkResultIdentifier">
     <input type="text" ng-model="newcomment" title="new comment">
+    <!-- TODO: disable comments field when commenting in progress -->
     <!-- TODO: style comments -->
+    <!-- TODO: clear input field after submit -->
     <input type="button"
            ng-click="addComment(newcomment, check.checkResultIdentifier)">
     <div ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">

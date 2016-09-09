@@ -10,7 +10,6 @@ import de.axelspringer.ideas.tools.dash.presentation.UiInfoService;
 import de.axelspringer.ideas.tools.dash.presentation.UiTeams;
 import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,17 +38,17 @@ public class DashController {
     @Autowired
     private CheckResultCommentRepository commentRepository;
 
-    @RequestMapping(value = "/config", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/config", method = RequestMethod.GET)
     public UiConfig config() {
         return uiConfigState.get();
     }
 
-    @RequestMapping(value = "/infos", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/infos", method = RequestMethod.GET)
     public UiInfo infos() throws IOException, AuthenticationException, ExecutionException, InterruptedException, URISyntaxException {
         return UiInfoService.infos();
     }
 
-    @RequestMapping(value = "/teams", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/teams", method = RequestMethod.GET)
     public UiTeams teams() {
         if (teamProvider == null) {
             return UiTeams.ALL;
@@ -58,12 +57,12 @@ public class DashController {
         return new UiTeams(teams);
     }
 
-    @RequestMapping(value = "/comments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/comments", method = RequestMethod.GET)
     public List<CheckResultComment> comments() {
         return commentRepository.comments();
     }
 
-    @RequestMapping(value = "/comments", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/comments", method = RequestMethod.POST)
     public void storeComment(@RequestBody ArrayList<CheckResultComment> comments) {
         commentRepository.addComments(comments);
     }
