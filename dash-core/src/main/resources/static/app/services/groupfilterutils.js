@@ -177,4 +177,3 @@ angular.module('dashapp')
             return groupFilterUtils;
         }
     );
-
