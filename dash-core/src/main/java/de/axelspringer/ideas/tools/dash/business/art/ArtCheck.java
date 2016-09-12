@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.art;
 
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import org.apache.http.HttpHost;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ArtCheck extends AbstractCheck {
+public class ArtCheck extends Check {
 
     private final String url;
 

@@ -1,0 +1,15 @@
+<div class="panel" ng-class="{true: 'alert-danger', false: 'alert-info'}[lastUpdate.state == 'red']">
+
+    <div class="global-info" ng-class="{true: 'alert-danger'}[lastUpdate.state == 'red']">
+        Last update: {{infos.lastUpdateTime | date:'medium' }}
+    </div>
+
+    <options></options>
+
+    <div class="panel-body">
+        <group ng-repeat="group in infos.groups | orderBy:'orderScore'"
+               class="check-group panel"
+               ng-show="group.checks.length">
+        </group>
+    </div>
+</div>

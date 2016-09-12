@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="dash" ng-controller="dashcontroller">
+<html lang="en" ng-app="dashapp" ng-controller="indexcontroller">
 <head>
     <title>{{ title }}</title>
     <meta charset="utf-8">
@@ -8,93 +8,34 @@
 
     <link rel="stylesheet" href="dash.css">
 
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="vendor/bootstrap/bootstrap-theme.min.css">
 
     <!-- here for glow-animation (running jobs) -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+    <script src="vendor/prefixfree/prefixfree.min.js"></script>
 
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-sanitize.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-resource.min.js"></script>
+    <script src="vendor/angular-1.5.8/angular.min.js"></script>
+    <script src="vendor/angular-1.5.8/angular-sanitize.min.js"></script>
+    <script src="vendor/angular-1.5.8/angular-resource.min.js"></script>
     <!-- here for date formatting (last updated)-->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.2.10/angular-locale_de-de.min.js"></script>
+    <script src="vendor/angular-locale/angular-locale_de-de.min.js"></script>
 
-    <script src="app/dash.js"></script>
+    <script src="index.js"></script>
     <script src="app/services/applicationconfiguration.js"></script>
     <script src="app/services/philipshue.js"></script>
     <script src="app/services/groupfilterutils.js"></script>
     <script src="app/services/stateutils.js"></script>
-    <script src="app/controllers/dashcontroller.js"></script>
+    <script src="app/services/persistence.js"></script>
+    <script src="app/services/comments.js"></script>
+    <script src="app/dash/dash.js"></script>
+    <script src="app/dash/options/options.js"></script>
+    <script src="app/dash/group/group.js"></script>
+    <script src="app/dash/group/check/check.js"></script>
+    <script src="app/dash/group/info/groupinfo.js"></script>
 </head>
 <body>
 
-<div class="panel" ng-class="{true: 'alert-danger', false: 'alert-info'}[lastUpdate.state == 'red']">
+<dash></dash>
 
-    <div class="global-info" ng-class="{true: 'alert-danger'}[lastUpdate.state == 'red']">
-        Last update: {{infos.lastUpdateTime | date:'medium' }}
-    </div>
-
-    <div ng-click="options=!options">{{ options ? 'hide options' : 'show options' }}</div>
-    <div ng-show="options">
-        <label class="team-label">
-            <input type="checkbox" ng-model="config.showEmptyGroups" ng-click="loadInfos()"/> show empty groups
-        </label>
-        <label class="team-label">
-            <input type="checkbox" ng-model="config.aggregateDuplicated" ng-click="loadInfos()"/> aggregate duplicated
-            checks
-        </label>
-        <label class="team-label">
-            <input type="checkbox" ng-model="config.hue.enabled" ng-click="loadInfos()"/> hue
-            <div ng-show="config.hue.enabled">
-                ip <input type="text" size="12" ng-model="config.hue.ip">
-                key <input type="text" size="12" ng-model="config.hue.key">
-                light# <input type="text" size="1" ng-model="config.hue.light">
-            </div>
-        </label>
-        <label ng-repeat="team in teams" class="team-label">
-            <input type="checkbox" ng-model="config.teams[team]" ng-click="loadInfos()"/> {{ team }}
-        </label>
-    </div>
-
-    <div class="panel-body">
-        <div ng-repeat="group in infos.groups | orderBy:'orderScore'" class="check-group panel"
-             ng-show="group.checks.length">
-            <div class="panel-body">
-                <div class="stage-info {{ groupClass(group) }}">
-                    <div class="check-name">{{ group.name }}</div>
-                    <div>{{group.info}}</div>
-                    <div class="group-metainfo" ng-repeat="metaInfo in group.metaInfo">{{metaInfo}}</div>
-                    <div ng-click="config[group.name].aggregate=!config[group.name].aggregate; loadInfos()">
-                        {{ config[group.name].aggregate ? '+' : '-' }}
-                    </div>
-                </div>
-                <div class="checks">
-                    <div ng-repeat="check in group.checks | orderBy:[checkOrder, 'name']"
-                         class="panel check {{ checkClass(check.state) }}"
-                         ng-class="{'running': check.running}" title="{{check.info}}">
-
-                        <div class="panel-content-left">
-                            <!-- link if specified, div if not -->
-                            <a ng-show="check.link" href="{{ check.link }}" target="_blank">
-                                <div class="check-name">{{ check.name }}</div>
-                                <div ng-bind-html="check.info | limitTo : 25"></div>
-                            </a>
-
-                            <div ng-hide="check.link">
-                                <div class="check-name">{{ check.name }}</div>
-                                <div ng-bind-html="check.info | limitTo : 25"></div>
-                            </div>
-                        </div>
-
-                        <div class="panel-content-right" ng-if="check.iconSrc">
-                            <img src="{{check.iconSrc}}" width="30" height="30"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 </html>

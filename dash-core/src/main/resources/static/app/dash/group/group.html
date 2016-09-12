@@ -1,0 +1,11 @@
+<div class="panel-body">
+
+    <div groupinfo class="stage-info {{ groupClass(group) }}"></div>
+
+    <div class="checks">
+        <check ng-repeat="check in group.checks | orderBy:[checkOrder, 'name']"
+             class="panel check {{ checkClass(check.state) }}"
+             ng-class="{'running': check.running}" title="{{check.info}}">
+        </check>
+    </div>
+</div>

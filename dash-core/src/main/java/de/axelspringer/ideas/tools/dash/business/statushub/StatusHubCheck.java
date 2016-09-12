@@ -1,11 +1,12 @@
 package de.axelspringer.ideas.tools.dash.business.statushub;
 
-import java.util.List;
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
-public class StatusHubCheck extends AbstractCheck {
+import java.util.List;
+
+public class StatusHubCheck extends Check {
 
     private static final String ICON_SRC = "assets/status-hub-logo.png";
     private final String id;

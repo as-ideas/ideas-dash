@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.statushub;
 
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.junit.Test;
 import org.junit.runner.RunWith;

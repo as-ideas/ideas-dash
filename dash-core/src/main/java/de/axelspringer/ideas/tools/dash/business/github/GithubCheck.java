@@ -1,12 +1,12 @@
 package de.axelspringer.ideas.tools.dash.business.github;
 
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
 import java.util.List;
 
-public class GithubCheck extends AbstractCheck {
+public class GithubCheck extends Check {
 
     private final GithubConfig githubConfig;
 

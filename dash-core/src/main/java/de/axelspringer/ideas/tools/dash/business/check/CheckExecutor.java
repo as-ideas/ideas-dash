@@ -1,5 +1,7 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
+
 import java.util.List;
 
 

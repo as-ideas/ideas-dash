@@ -1,11 +1,11 @@
 package de.axelspringer.ideas.tools.dash.business.failure;
 
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class FailingCheck extends AbstractCheck {
+public class FailingCheck extends Check {
 
     private final String failureMessage;
 

@@ -1,14 +1,15 @@
 package de.axelspringer.ideas.tools.dash.business.fabric;
 
-import java.util.List;
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
+
+import java.util.List;
 
 /**
  * Check for fabric/crashlytics
  */
-public class FabricCheck extends AbstractCheck {
+public class FabricCheck extends Check {
 
     private static final String ICON_SRC = "assets/fabric-logo.png";
     private final String email;

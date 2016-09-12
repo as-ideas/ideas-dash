@@ -1,10 +1,10 @@
 package de.axelspringer.ideas.tools.dash.business.gocd;
 
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
-public class GoCdCheck extends AbstractCheck {
+public class GoCdCheck extends Check {
 
     public final GoCdConfig config;
 

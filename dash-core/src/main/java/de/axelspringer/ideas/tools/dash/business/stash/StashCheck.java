@@ -1,11 +1,12 @@
 package de.axelspringer.ideas.tools.dash.business.stash;
 
-import java.util.List;
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
-public class StashCheck extends AbstractCheck {
+import java.util.List;
+
+public class StashCheck extends Check {
 
     private static final String IMG_SRC = "assets/stash-logo.png";
 
