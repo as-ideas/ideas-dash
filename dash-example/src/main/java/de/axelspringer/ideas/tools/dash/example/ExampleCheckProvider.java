@@ -17,12 +17,12 @@ public class ExampleCheckProvider implements CheckProvider {
     public List<Check> provideChecks() {
 
         List<Check> checks = ExampleGroups.exampleGroups().stream()
-                .map(group -> new ExampleCheck(group.getJiraName(), group, Collections.singletonList(ExampleTeam.BE)))
+                .map(group -> new ExampleCheck("Jira issues of " + group.getJiraName(), group, Collections.singletonList(ExampleTeam.BE)))
                 .collect(Collectors.toList());
 
-        checks.add(new FailingCheck("test", "message"));
-        checks.add(new ExampleCheck("test", ExampleGroups.FIRST, Collections.singletonList(ExampleTeam.FE)).withLink("link ONE"));
-        checks.add(new ExampleCheck("test", ExampleGroups.FIRST, Collections.singletonList(ExampleTeam.BE)).withLink("link TWO"));
+        checks.add(new FailingCheck("test1", "message"));
+        checks.add(new ExampleCheck("test2", ExampleGroups.FIRST, Collections.singletonList(ExampleTeam.FE)).withLink("link ONE"));
+        checks.add(new ExampleCheck("test3", ExampleGroups.FIRST, Collections.singletonList(ExampleTeam.BE)).withLink("link TWO"));
 
         checks.add(new ExampleCheck("Green Check ONE", ExampleGroups.SECOND, Collections.singletonList(ExampleTeam.FE)).withState(State.GREEN));
         checks.add(new ExampleCheck("Green Check TWO", ExampleGroups.SECOND, Collections.singletonList(ExampleTeam.FE)).withState(State.GREEN));
