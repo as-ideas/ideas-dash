@@ -32,6 +32,7 @@ angular.module('dashapp')
 
             commentService.comment = function (comment) {
                 commentResource.save([comment]);
+                syncComments();
             };
 
             return commentService;
