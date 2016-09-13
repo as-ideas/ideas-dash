@@ -16,8 +16,6 @@
 </div>
 
 <div ng-show="check.checkResultIdentifier" class="comments">
-    <!-- TODO: disable comments field when commenting in progress -->
-    <!-- TODO: clear input field after submit -->
     <blockquote class="comment" ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
         {{ comment.comment }}
     </blockquote>
