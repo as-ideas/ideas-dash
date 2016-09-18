@@ -2,7 +2,7 @@
  * Utilities that are state-related
  */
 
-angular.module('dash')
+angular.module('dashapp')
     .factory('StateUtils', function () {
 
         var stateUtils = {};

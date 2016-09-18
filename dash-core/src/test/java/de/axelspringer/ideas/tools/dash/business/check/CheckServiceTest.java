@@ -1,13 +1,15 @@
 package de.axelspringer.ideas.tools.dash.business.check;
 
-import static junit.framework.TestCase.assertEquals;
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
+
+import static junit.framework.TestCase.assertEquals;
 
 public class CheckServiceTest {
 
@@ -46,13 +48,13 @@ public class CheckServiceTest {
 		checkService.executor(new TestCheckB());
 	}
 
-	class TestCheckA extends AbstractCheck {
+	class TestCheckA extends Check {
 		protected TestCheckA() {
 			super(null, null, null);
 		}
 	}
 
-	class TestCheckB extends AbstractCheck {
+	class TestCheckB extends Check {
 		protected TestCheckB() {
 			super(null, null, null);
 		}

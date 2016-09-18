@@ -2,7 +2,7 @@ package de.axelspringer.ideas.tools.dash.business.statushub;
 
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

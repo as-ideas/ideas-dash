@@ -1,4 +1,4 @@
-angular.module('dash')
+angular.module('dashapp')
     .factory('AppConfig', function ($resource) {
 
             var appConfigService = {};

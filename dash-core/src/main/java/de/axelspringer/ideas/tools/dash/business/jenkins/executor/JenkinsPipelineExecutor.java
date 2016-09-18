@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins.executor;
 
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
@@ -78,7 +78,8 @@ public class JenkinsPipelineExecutor {
                                             .withOrder(checkIndex)
                                             .withLink(lastBuild.getUrl())
                                             .withTeams(check.getTeams())
-                                            .withIconSrc("http://www.kidsmathgamesonline.com/images/pictures/numbers120/number" + checkIndex + ".jpg");
+                                            .withIconSrc("http://www.kidsmathgamesonline.com/images/pictures/numbers120/number" + checkIndex + ".jpg")
+                                            .withCheckResultIdentifier(lastBuild.getUrl() + "_(stage" + checkIndex + ")");
                                 }
                         )
                         .collect(Collectors.toList()));

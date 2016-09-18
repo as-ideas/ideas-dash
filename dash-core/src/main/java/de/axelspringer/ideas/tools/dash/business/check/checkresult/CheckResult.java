@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.business.check;
+package de.axelspringer.ideas.tools.dash.business.check.checkresult;
 
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
@@ -45,6 +45,13 @@ public class CheckResult {
 
     private final List<String> teams = new ArrayList<>();
 
+    /**
+     * This field serves as an identifier for a check execution. The value of this field should be identical no matter
+     * how often the check is executed if the item under check has not changed (for instance if the same jenkins job is checked several times.
+     * It serves as an identifier for information that is mapped to a check result (eg comments).
+     */
+    private String checkResultIdentifier;
+
     public CheckResult(State state, String name, String info, int testCount, int failCount, Group group) {
         this.state = state;
         this.name = name;
@@ -81,9 +88,24 @@ public class CheckResult {
         return this;
     }
 
-    public CheckResult withIconSrc(String link){
+    public CheckResult withIconSrc(String link) {
         this.iconSrc = link;
         return this;
+    }
+
+    /**
+     * see {@link #checkResultIdentifier}
+     */
+    public CheckResult withCheckResultIdentifier(String checkResultIdentifier) {
+        this.checkResultIdentifier = checkResultIdentifier;
+        return this;
+    }
+
+    /**
+     * see {@link #checkResultIdentifier}
+     */
+    public String getCheckResultIdentifier() {
+        return checkResultIdentifier;
     }
 
     public State getState() {

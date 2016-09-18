@@ -1,13 +1,13 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
-import de.axelspringer.ideas.tools.dash.business.check.AbstractCheck;
+import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import org.springframework.util.Assert;
 
 import java.util.*;
 
-public class DataDogCheck extends AbstractCheck {
+public class DataDogCheck extends Check {
 
     private static final String ICON_SRC = "assets/datadog-logo.png";
     private final String apiKey;
@@ -78,7 +78,7 @@ public class DataDogCheck extends AbstractCheck {
     /**
      * see {@link #teamMapping}
      */
-    public DataDogCheck withTeamMapping(Team teamMapping){
+    public DataDogCheck withTeamMapping(Team teamMapping) {
         this.teamMapping = teamMapping;
         return this;
     }

@@ -1,36 +1,58 @@
 package de.axelspringer.ideas.tools.dash.business.customization;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Deprecated in favor of {@link AbstractGroup} as we want to be able to include meta info
- */
-@Deprecated
-public interface Group {
+public class Group {
 
-    static Logger LOG = LoggerFactory.getLogger(Group.class);
+    private final List<String> metaInfo = new ArrayList<>();
 
-    String getGroupId();
+    private final boolean groupStatsEnabled;
+    private final int orderScore;
+    private final String jiraName;
+    private final String groupId;
 
-    String getJiraName();
-
-    int getOrderScore();
-
-    default boolean groupStatsEnabled() {
-        return true;
+    public Group(boolean groupStatsEnabled, int orderScore, String jiraName, String groupId) {
+        this.groupStatsEnabled = groupStatsEnabled;
+        this.orderScore = orderScore;
+        this.jiraName = jiraName;
+        this.groupId = groupId;
     }
 
-    default Group withMetaInfo(String metaInfo) {
-        LOG.error("not implemented by group");
+    public String getGroupId() {
+        return groupId;
+    }
+
+    ;
+
+    public String getJiraName() {
+        return jiraName;
+    }
+
+    ;
+
+    public int getOrderScore() {
+        return orderScore;
+    }
+
+    ;
+
+    public boolean groupStatsEnabled() {
+        return groupStatsEnabled;
+    }
+
+    public Group withMetaInfo(String metaInfo) {
+        this.metaInfo.add(metaInfo);
         return this;
     }
 
-    default List<String> getMetaInfo() {
-        LOG.error("not implemented by group");
-        return Collections.emptyList();
+    public List<String> getMetaInfo() {
+        return Collections.unmodifiableList(metaInfo);
+    }
+
+    @Override
+    public String toString() {
+        return getGroupId();
     }
 }

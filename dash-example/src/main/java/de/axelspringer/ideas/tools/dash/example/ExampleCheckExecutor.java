@@ -2,7 +2,7 @@ package de.axelspringer.ideas.tools.dash.example;
 
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
-import de.axelspringer.ideas.tools.dash.business.check.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -17,6 +17,7 @@ public class ExampleCheckExecutor implements CheckExecutor<ExampleCheck> {
 
         final CheckResult result = new CheckResult(check.state(), check.getName(), "info", 0, 1, check.getGroup());
         result.withTeams(check.getTeams());
+        result.withCheckResultIdentifier(check.getName());
 
         if (check.link() != null) {
             result.withLink(check.link());

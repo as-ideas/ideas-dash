@@ -23,22 +23,7 @@ public class JiraQueryBuilderTest {
     }
 
     private Group createStage(String stage) {
-        return new Group() {
-            @Override
-            public String getGroupId() {
-                return stage;
-            }
-
-            @Override
-            public String getJiraName() {
-                return stage;
-            }
-
-            @Override
-            public int getOrderScore() {
-                return 0;
-            }
-        };
+        return new Group(false, 0, stage, stage);
     }
 
     private Team createTeam(String team) {
