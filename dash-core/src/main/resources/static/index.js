@@ -4,7 +4,6 @@ angular.module('dashapp', ['ngResource', 'ngSanitize'])
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     }])
     .controller('indexcontroller', function ($scope, AppConfig) {
-
         // inject page title
         AppConfig.get().$promise.then(function (config) {
             $scope['title'] = config['title'];
