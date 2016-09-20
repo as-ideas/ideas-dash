@@ -7,17 +7,8 @@ angular.module('dashapp')
         directive.controllerAs = 'groupcontroller';
         directive.bindToController = true;
 
-        directive.controller = function ($scope, $interval, Comments) {
+        directive.controller = function ($scope, $interval) {
 
-            var loadComments = function () {
-                $scope.comments = Comments.comments();
-            };
-
-            // load comments every 5 seconds
-            $interval(loadComments, 5 * 1000);
-
-            // and initially
-            loadComments();
         };
 
         return directive;
