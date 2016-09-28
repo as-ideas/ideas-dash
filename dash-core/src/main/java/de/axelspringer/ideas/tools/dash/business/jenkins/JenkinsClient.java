@@ -35,7 +35,7 @@ public class JenkinsClient {
         return query(url + "/wfapi/describe", serverConfig, responseType);
     }
 
-    private <T> T query(String fullUrl, JenkinsServerConfiguration serverConfig, Class<T> responseType) {
+    public <T> T query(String fullUrl, JenkinsServerConfiguration serverConfig, Class<T> responseType) {
 
         LOG.debug("Querying jenkins URL {}", fullUrl);
 
