@@ -5,6 +5,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.BuildInfo;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
 import de.axelspringer.ideas.tools.dash.business.jenkins.joblist.JenkinsJobNameMapper;
 import de.axelspringer.ideas.tools.dash.presentation.State;
@@ -62,7 +63,7 @@ public class JenkinsJobExecutorTest {
     @Test
     public void testBuildWithoutLastBuildResultResultsInGreenState() throws IOException, AuthenticationException {
 
-        final List<CheckResult> checkResults = jenkinsJobExecutor.executeCheck(jenkinsJobInfo(), jenkinsCheck());
+        final List<CheckResult> checkResults = jenkinsJobExecutor.executeCheck(jenkinsJobInfo(), jenkinsCheck(),mock(BuildInfo.class));
 
         assertEquals(1, checkResults.size());
         final CheckResult checkResult = checkResults.get(0);

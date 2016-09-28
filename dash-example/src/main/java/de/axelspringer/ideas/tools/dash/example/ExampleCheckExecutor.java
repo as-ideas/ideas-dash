@@ -16,6 +16,7 @@ public class ExampleCheckExecutor implements CheckExecutor<ExampleCheck> {
     public List<CheckResult> executeCheck(ExampleCheck check) {
 
         final CheckResult result = new CheckResult(check.state(), check.getName(), "info", 0, 1, check.getGroup());
+        result.withDescription("some result description");
         result.withTeams(check.getTeams());
         result.withCheckResultIdentifier(check.getName());
 
