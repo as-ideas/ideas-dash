@@ -36,7 +36,7 @@ public class JenkinsCheckExecutorTest {
         executeWithClass(JenkinsJobInfo.PIPELINE_CLASS);
 
         verifyZeroInteractions(jobExecutor);
-        verify(pipelineExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class), mock(BuildInfo.class));
+        verify(pipelineExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class), any(BuildInfo.class));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class JenkinsCheckExecutorTest {
         executeWithClass("some-other-class");
 
         verifyZeroInteractions(pipelineExecutor);
-        verify(jobExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class), mock(BuildInfo.class));
+        verify(jobExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class), any(BuildInfo.class));
     }
 
     private void executeWithClass(String buildClass) {
