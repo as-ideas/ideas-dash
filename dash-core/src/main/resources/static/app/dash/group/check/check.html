@@ -16,15 +16,14 @@
          src="{{check.iconSrc}}"
          width="20"
          height="20"/>
-    <img ng-show="check.description"
-         width="20"
-         height="20"
-         src="http://cdn.mysitemyway.com/etc-mysitemyway/icons/legacy-previews/icons-256/3d-transparent-glass-icons-alphanumeric/068122-3d-transparent-glass-icon-alphanumeric-question-mark1-ps.png"
-         title="{{check.description}}"
-    >
 </div>
 
-<div ng-show="check.checkResultIdentifier" class="comments">
+<div ng-show="check.checkResultIdentifier" class="check-metainfo">
+
+    <div ng-show="check.description" class="description">
+        <i>{{check.description}}</i>
+    </div>
+
     <blockquote class="comment" ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
         {{ comment.comment }}
     </blockquote>
