@@ -4,10 +4,7 @@ import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.Build;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildAction;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildInfo;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.*;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,7 @@ public class JenkinsJobExecutor {
     @Autowired
     private JenkinsClient jenkinsClient;
 
-    public List<CheckResult> executeCheck(JenkinsJobInfo jobInfo, JenkinsCheck jenkinsCheck) {
+    public List<CheckResult> executeCheck(JenkinsJobInfo jobInfo, JenkinsCheck jenkinsCheck, BuildInfo buildInfo) {
 
         final String jobName = jenkinsCheck.getName();
 

@@ -22,6 +22,11 @@ public class CheckResult {
     private String info;
 
     /**
+     * Will be displayed as the 'tooltip' in the UI
+     */
+    private String description;
+
+    /**
      * Link for Detail info.
      */
     private String link;
@@ -158,6 +163,15 @@ public class CheckResult {
 
     public CheckResult withOrder(Integer order) {
         this.order = order;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public CheckResult withDescription(String description) {
+        this.description = description;
         return this;
     }
 }

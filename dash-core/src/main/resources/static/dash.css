@@ -70,7 +70,7 @@
     margin-right: 15px;
 }
 
-.comments {
+.check-metainfo {
     clear: both;
     padding-top: 5px;
 }
@@ -80,6 +80,14 @@
 }
 
 .check:hover .comments-form {
+    display: block;
+}
+
+.description {
+    display: none;
+}
+
+.check:hover .description {
     display: block;
 }
 

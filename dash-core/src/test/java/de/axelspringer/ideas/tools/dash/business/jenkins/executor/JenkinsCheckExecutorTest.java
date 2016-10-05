@@ -3,6 +3,7 @@ package de.axelspringer.ideas.tools.dash.business.jenkins.executor;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.BuildInfo;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,7 @@ public class JenkinsCheckExecutorTest {
         executeWithClass(JenkinsJobInfo.PIPELINE_CLASS);
 
         verifyZeroInteractions(jobExecutor);
-        verify(pipelineExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class));
+        verify(pipelineExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class), any(BuildInfo.class));
     }
 
     @Test
@@ -44,7 +45,7 @@ public class JenkinsCheckExecutorTest {
         executeWithClass("some-other-class");
 
         verifyZeroInteractions(pipelineExecutor);
-        verify(jobExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class));
+        verify(jobExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class), any(BuildInfo.class));
     }
 
     private void executeWithClass(String buildClass) {

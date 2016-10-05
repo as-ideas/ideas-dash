@@ -27,15 +27,29 @@ public class JenkinsClient {
     @Autowired
     private Gson gson;
 
+    /**
+     * Adds "/api/json" to given url before delegating to {@link #query(String, JenkinsServerConfiguration, Class)}
+     */
     public <T> T queryApi(String url, JenkinsServerConfiguration serverConfig, Class<T> responseType) {
         return query(url + "/api/json", serverConfig, responseType);
     }
 
+    /**
+     * Adds "/wfapi/describe" to given url before delegating to {@link #query(String, JenkinsServerConfiguration, Class)}
+     */
     public <T> T queryWorkflowApi(String url, JenkinsServerConfiguration serverConfig, Class<T> responseType) {
         return query(url + "/wfapi/describe", serverConfig, responseType);
     }
 
-    private <T> T query(String fullUrl, JenkinsServerConfiguration serverConfig, Class<T> responseType) {
+    /**
+     * Queries jenkins url
+     *
+     * @param fullUrl      full url to the endpoint (eg http://host/job/foo/api/json)
+     * @param serverConfig server configuration object (user, token, ...)
+     * @param responseType DTO for the query (will deserialize json to this type)
+     * @return deserialized object of type T
+     */
+    public <T> T query(String fullUrl, JenkinsServerConfiguration serverConfig, Class<T> responseType) {
 
         LOG.debug("Querying jenkins URL {}", fullUrl);
 

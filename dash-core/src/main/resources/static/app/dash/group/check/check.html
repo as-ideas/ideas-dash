@@ -11,20 +11,30 @@
     </div>
 </div>
 
-<div class="panel-content-right" ng-if="check.iconSrc">
-    <img src="{{check.iconSrc}}" width="30" height="30"/>
+<div class="panel-content-right">
+    <img ng-if="check.iconSrc"
+         src="{{check.iconSrc}}"
+         width="20"
+         height="20"/>
 </div>
 
-<div ng-show="check.checkResultIdentifier" class="comments">
-    <blockquote class="comment" ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
-        {{ comment.comment }}
-    </blockquote>
+<div class="check-metainfo">
 
-    <div class="comments-form form-inline">
-        <input type="text" ng-model="newcomment" placeholder="new comment" class="form-control">
-        <button class="btn btn-default"
-                ng-click="addComment(newcomment, check.checkResultIdentifier)">
-            <span class="glyphicon glyphicon-plus"></span>
-        </button>
+    <div ng-show="check.description" class="description">
+        <i>{{check.description}}</i>
+    </div>
+
+    <div ng-show="check.checkResultIdentifier">
+        <blockquote class="comment"
+                    ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
+            {{ comment.comment }}
+        </blockquote>
+        <div class="comments-form form-inline">
+            <input type="text" ng-model="newcomment" placeholder="new comment" class="form-control">
+            <button class="btn btn-default"
+                    ng-click="addComment(newcomment, check.checkResultIdentifier)">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </div>
     </div>
 </div>
