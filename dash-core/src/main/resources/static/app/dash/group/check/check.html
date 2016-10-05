@@ -24,16 +24,17 @@
         <i>{{check.description}}</i>
     </div>
 
-    <blockquote ng-show="check.checkResultIdentifier" class="comment"
-                ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
-        {{ comment.comment }}
-    </blockquote>
-
-    <div ng-show="check.checkResultIdentifier" class="comments-form form-inline">
-        <input type="text" ng-model="newcomment" placeholder="new comment" class="form-control">
-        <button class="btn btn-default"
-                ng-click="addComment(newcomment, check.checkResultIdentifier)">
-            <span class="glyphicon glyphicon-plus"></span>
-        </button>
+    <div ng-show="check.checkResultIdentifier">
+        <blockquote class="comment"
+                    ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
+            {{ comment.comment }}
+        </blockquote>
+        <div class="comments-form form-inline">
+            <input type="text" ng-model="newcomment" placeholder="new comment" class="form-control">
+            <button class="btn btn-default"
+                    ng-click="addComment(newcomment, check.checkResultIdentifier)">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </div>
     </div>
 </div>
