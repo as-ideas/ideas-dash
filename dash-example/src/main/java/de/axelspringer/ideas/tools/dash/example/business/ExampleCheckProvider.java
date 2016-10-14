@@ -1,8 +1,10 @@
-package de.axelspringer.ideas.tools.dash.example;
+package de.axelspringer.ideas.tools.dash.example.business;
 
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckProvider;
 import de.axelspringer.ideas.tools.dash.business.failure.FailingCheck;
+import de.axelspringer.ideas.tools.dash.example.config.ExampleGroups;
+import de.axelspringer.ideas.tools.dash.example.config.ExampleTeam;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,8 @@ public class ExampleCheckProvider implements CheckProvider {
         List<Check> checks = ExampleGroups.exampleGroups().stream()
                 .map(group -> new ExampleCheck("Jira issues of " + group.getJiraName(), group, Collections.singletonList(ExampleTeam.BE)))
                 .collect(Collectors.toList());
+        // We want some empty group
+        checks.remove(1);
 
         checks.add(new FailingCheck("test1", "message"));
         checks.add(new ExampleCheck("test2", ExampleGroups.FIRST, Collections.singletonList(ExampleTeam.FE)).withLink("link ONE"));

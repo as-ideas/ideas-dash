@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.example;
+package de.axelspringer.ideas.tools.dash.example.business;
 
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;

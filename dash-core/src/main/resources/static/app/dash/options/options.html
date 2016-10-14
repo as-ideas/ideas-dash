@@ -1,10 +1,13 @@
 <div ng-click="config.showOptions=!config.showOptions">{{ config.showOptions ? 'hide options' : 'show options' }}</div>
 <div ng-show="config.showOptions">
     <label class="team-label">
-        <input type="checkbox" ng-model="config.showEmptyGroups""/> show empty groups
+        <input type="checkbox" ng-model="config.showEmptyGroups"/> show empty groups
     </label>
     <label class="team-label">
-        <input type="checkbox" ng-model="config.hue.enabled""/> hue
+        <input type="checkbox" ng-model="config.aggregateAll"/> aggregate all green checks
+    </label>
+    <label class="team-label">
+        <input type="checkbox" ng-model="config.hue.enabled"/> hue
         <div ng-show="config.hue.enabled">
             ip <input type="text" size="12" ng-model="config.hue.ip">
             key <input type="text" size="12" ng-model="config.hue.key">

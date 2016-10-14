@@ -156,7 +156,7 @@ angular.module('dashapp')
 
                 var group = groups[i];
 
-                if (config[group.name] && config[group.name].aggregate) {
+                if (config.aggregateAll || (config[group.name] && config[group.name].aggregate)) {
                     group = aggregateGreen(group);
                 }
 

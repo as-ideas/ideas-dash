@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.tools.dash.example;
+package de.axelspringer.ideas.tools.dash.example.config;
 
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.business.customization.TeamProvider;
