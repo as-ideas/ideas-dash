@@ -69,8 +69,4 @@ public class JenkinsCheck extends Check {
     public boolean isFetchBuildInfo() {
         return fetchBuildInfo;
     }
-
-    public void setFetchBuildInfo(boolean fetchBuildInfo) {
-        this.fetchBuildInfo = fetchBuildInfo;
-    }
 }
