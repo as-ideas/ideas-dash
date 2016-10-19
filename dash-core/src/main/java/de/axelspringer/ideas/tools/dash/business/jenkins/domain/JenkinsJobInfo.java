@@ -49,7 +49,7 @@ public class JenkinsJobInfo {
     }
 
     public Boolean isBuildable() {
-        return buildable;
+        return buildable != null && buildable;
     }
 
     public Boolean isPipeline() {

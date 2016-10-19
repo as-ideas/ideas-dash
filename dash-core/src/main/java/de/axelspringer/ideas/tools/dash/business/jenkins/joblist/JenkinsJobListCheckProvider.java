@@ -130,7 +130,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
             teams.addAll(teamMapper.apply(job));
         }
 
-        return new JenkinsCheck(jobName, serverConfig, group, teams).withJobNameMapper(jenkinsJobNameMapper);
+        return new JenkinsCheck(jobName, job.getUrl(), serverConfig, group, teams).withJobNameMapper(jenkinsJobNameMapper);
     }
 
     private List<JenkinsJob> jobs() {
