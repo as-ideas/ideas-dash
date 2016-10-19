@@ -17,6 +17,8 @@ public class JenkinsCheck extends Check {
 
     private final String jobUrl;
 
+    private boolean fetchBuildInfo = false;
+
     public JenkinsCheck(String name, String url, String userName, String apiToken, Group group, List<Team> teams, JenkinsJobNameMapper jenkinsJobNameMapper) {
         super(name, group, teams);
         this.jobUrl = url;
@@ -52,6 +54,11 @@ public class JenkinsCheck extends Check {
         return this;
     }
 
+    public JenkinsCheck withFetchBuildInfo(boolean fetchBuildInfo) {
+        this.fetchBuildInfo = fetchBuildInfo;
+        return this;
+    }
+
     public JenkinsServerConfiguration getServerConfiguration() {
         return serverConfiguration;
     }
@@ -63,5 +70,9 @@ public class JenkinsCheck extends Check {
     @Override
     public String getIconSrc() {
         return ICON_SRC;
+    }
+
+    public boolean isFetchBuildInfo() {
+        return fetchBuildInfo;
     }
 }
