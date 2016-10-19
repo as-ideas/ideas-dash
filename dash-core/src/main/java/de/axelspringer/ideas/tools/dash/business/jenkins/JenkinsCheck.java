@@ -31,6 +31,12 @@ public class JenkinsCheck extends Check {
         this.jenkinsJobNameMapper = jenkinsJobNameMapper;
     }
 
+    public JenkinsCheck(String jobName, String url, JenkinsServerConfiguration serverConfig, Group group, List<Team> teams) {
+        super(jobName, group, teams);
+        this.serverConfiguration = serverConfig;
+        this.jobUrl = url;
+    }
+
     public JenkinsCheck(String jobName, JenkinsServerConfiguration serverConfig, Group group, List<Team> teams) {
         super(jobName, group, teams);
         this.serverConfiguration = serverConfig;
