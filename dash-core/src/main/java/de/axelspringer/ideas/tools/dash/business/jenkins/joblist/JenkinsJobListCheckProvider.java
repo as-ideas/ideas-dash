@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +42,11 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     private String jobPrefix;
 
     /**
+     * If set, is called for every job to check if this job should be included.
+     */
+    private Predicate<JenkinsJob> jobMatcher;
+
+    /**
      * jobs with names containing a string represented in this list will be excluded
      */
     private List<String> blacklist = new ArrayList<>();
@@ -48,6 +55,11 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
      * contains a mapping for jobNameSegment to team mapping
      */
     private Map<String, List<Team>> jobNameTeamMapping = new HashMap<>();
+
+    /**
+     * Is called for every job to identify the team the job should belong to
+     */
+    private Function<JenkinsJob, List<Team>> teamMapper;
 
     /**
      * Optional jenkins job name mapper
@@ -80,6 +92,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     public List<Check> provideChecks() {
 
         return jobs().stream()
+                .filter(this::jobMatches)
                 .filter(this::matchesPrefix)
                 .filter(this::isEnabled)
                 .filter(this::isNotBlacklisted)
@@ -113,6 +126,10 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
             }
         });
 
+        if (teamMapper != null) {
+            teams.addAll(teamMapper.apply(job));
+        }
+
         return new JenkinsCheck(jobName, serverConfig, group, teams).withJobNameMapper(jenkinsJobNameMapper);
     }
 
@@ -133,6 +150,10 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
         return StringUtils.isBlank(jobPrefix) || job.getName().startsWith(jobPrefix);
     }
 
+    private boolean jobMatches(JenkinsJob jenkinsJob) {
+        return this.jobMatcher == null || jobMatcher.test(jenkinsJob);
+    }
+
     private boolean isEnabled(JenkinsJob job) {
 
         return !DISABLED_COLOR.equals(job.getColor());
@@ -144,6 +165,16 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
      */
     public JenkinsJobListCheckProvider withJobPrefix(String jobPrefix) {
         this.jobPrefix = jobPrefix;
+        return this;
+    }
+
+    public JenkinsJobListCheckProvider withJobMatcher(Predicate<JenkinsJob> predicate) {
+        this.jobMatcher = predicate;
+        return this;
+    }
+
+    public JenkinsJobListCheckProvider withTeamMapper(Function<JenkinsJob, List<Team>> mapper) {
+        this.teamMapper = mapper;
         return this;
     }
 
