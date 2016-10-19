@@ -50,7 +50,7 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
                             .withTeams(check.getTeams()));
         }
 
-        final BuildInfo buildInfo = buildInfo(check.getJobUrl(), serverConfiguration);
+        final BuildInfo buildInfo = check.isFetchBuildInfo() ? buildInfo(check.getJobUrl(), serverConfiguration) : new BuildInfo();
 
         if (jobInfo.isPipeline()) {
             return pipelineExecutor.executeCheck(jobInfo, check, buildInfo);
