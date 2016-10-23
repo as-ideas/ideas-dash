@@ -59,3 +59,10 @@ For windows you could use something like http://www.dhcpserver.de/ (dont forget 
     </repository>
 </repositories>
 ```
+
+# Example
+
+![Example Screenshot](doc/example-dash-screenshot.png)
+
+* To run the example just run ``ideas-dash/dash-example/src/main/java/de/axelspringer/ideas/tools/dash/example/ExampleDash.java``
+* [You can find the example running here](http://asideas.de/ideas-dash-example/)

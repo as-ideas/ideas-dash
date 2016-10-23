@@ -57,6 +57,7 @@ public class StashApiClient {
 
             for (JsonNode pullRequestJsonNode : pullRequestsJsonNode.get("values")) {
                 final StashPullRequest stashPullRequest = new StashPullRequest(pullRequestJsonNode.get("id").asText(), stashRepo);
+                stashPullRequest.addCreatedDate(pullRequestJsonNode.get("createdDate").asLong());
 
                 for (JsonNode jsonNode : pullRequestJsonNode.get("reviewers")) {
                     final JsonNode userNode = jsonNode.get("user");

@@ -9,6 +9,7 @@ public class StashPullRequest {
     private final String id;
     private final StashRepo stashRepo;
     private final List<StashUser> reviewers;
+    private Long ageInDays;
 
     public StashPullRequest(String id, StashRepo stashRepo) {
         this.id = id;
@@ -31,5 +32,15 @@ public class StashPullRequest {
 
     public StashRepo repo() {
         return stashRepo;
+    }
+
+    public Long getAgeInDays() {
+        return ageInDays;
+    }
+
+    public void addCreatedDate(Long createdDateAsTimestampInMs) {
+        if(createdDateAsTimestampInMs != null) {
+            this.ageInDays = (System.currentTimeMillis() - createdDateAsTimestampInMs) / 1000 / 60 / 60 / 24;
+        }
     }
 }
