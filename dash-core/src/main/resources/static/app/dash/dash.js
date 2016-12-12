@@ -25,7 +25,28 @@ angular.module('dashapp')
                     if ($scope.config.selectedTeams[team] == undefined) {
                         $scope.config.selectedTeams[team] = true;
                     }
+                    if (teamsFromUrl) {
+                        if (teamsFromUrl.indexOf(team) > -1) {
+                            console.info(teamsFromUrl[team]);
+                            $scope.config.selectedTeams[team] = true;
+                        } else {
+                            $scope.config.selectedTeams[team] = false;
+                        }
+                    }
                 });
+
+                // Teams via URL Parameter
+                var teamsFromUrl = getParametersByName('teams');
+                if (teamsFromUrl) {
+                    angular.forEach($scope.teams, function (team) {
+                        if (teamsFromUrl.indexOf(team) > -1) {
+                            console.info(teamsFromUrl[team]);
+                            $scope.config.selectedTeams[team] = true;
+                        } else {
+                            $scope.config.selectedTeams[team] = false;
+                        }
+                    });
+                }
             });
 
             // last update time. caused monitor to die if problems occur.
@@ -126,6 +147,17 @@ angular.module('dashapp')
                 } else {
                     PhilipsHue.update($scope.config.hue, PhilipsHue.BLUE);
                 }
+            }
+
+            function getParametersByName(name) {
+                var url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results || !results[2]) {
+                    return undefined;
+                }
+                return decodeURIComponent(results[2].replace(/\+/g, " ")).split(",");
             }
         }
     });
