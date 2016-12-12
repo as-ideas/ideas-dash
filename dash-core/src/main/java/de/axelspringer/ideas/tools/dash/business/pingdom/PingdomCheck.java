@@ -4,6 +4,8 @@ import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class PingdomCheck extends Check {
@@ -15,7 +17,11 @@ public class PingdomCheck extends Check {
     private Pattern pattern;
 
     public PingdomCheck(String name, Group group, Team team, PingdomConfig githubConfig, String regexForMatchingNames) {
-        super(name, group, null);
+        this(name, group, Collections.singletonList(team), githubConfig, regexForMatchingNames);
+    }
+
+    public PingdomCheck(String name, Group group, List<Team> teams, PingdomConfig githubConfig, String regexForMatchingNames) {
+        super(name, group, teams);
         this.githubConfig = githubConfig;
         this.regexForMatchingNames = regexForMatchingNames;
     }

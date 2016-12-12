@@ -30,15 +30,15 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
     @Override
     public List<CheckResult> executeCheck(DataDogCheck check) {
 
-
         final ResponseEntity<DataDogMonitor[]> monitorResponse = loadFromDataDog(check.getApiKey(), check.getAppKey());
         final DataDogDowntimes downtimes = new DataDogDowntimes(restTemplate, check.getApiKey(), check.getAppKey());
 
         if (monitorResponse.getStatusCode() != HttpStatus.OK) {
-            return Collections.singletonList(new CheckResult(State.RED, "DataDog", "got http " + monitorResponse.getStatusCode(), 1, 1, check.getGroup()).withTeams(check.getTeams()));
+            return Collections.singletonList(new CheckResult(State.RED, "DataDog", "got http " + monitorResponse.getStatusCode(), 1, 1, check.getGroup()).
+                    withTeams(Collections.singletonList(check.getTeamMapping())));
         }
 
-        return Arrays.asList(monitorResponse.getBody()).stream()
+        return Arrays.stream(monitorResponse.getBody())
                 .filter(candidate -> isNameMatching(check, candidate))
                 .filter(candidate -> !check.isBlacklisted(candidate.getName()))
                 .map(monitor -> convertMonitorToCheckResult(monitor, check, downtimes))
@@ -49,7 +49,6 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         final String url = "https://app.datadoghq.com/api/v1/monitor?api_key=" + apiKey + "&application_key=" + appKey;
         return restTemplate.getForEntity(url, DataDogMonitor[].class);
     }
-
 
     private boolean isNameMatching(DataDogCheck check, DataDogMonitor candidate) {
         return StringUtils.isEmpty(check.getNameFilter()) || candidate.getName().toLowerCase().contains(check.getNameFilter().toLowerCase());
