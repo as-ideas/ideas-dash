@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +119,7 @@ public class DataDogCheckExecutorTest {
         mockDatadogApiCallAndReturn(HttpStatus.BAD_GATEWAY);
 
         // execute check
-        final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(mock(DataDogCheck.class));
+        final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(new DataDogCheck("myCheck", null, null, null, "[yana]").withTeamMapping(TestTeam.INSTANCE));
 
         assertEquals(1, checkResults.size());
 
@@ -127,6 +128,8 @@ public class DataDogCheckExecutorTest {
         assertEquals(State.RED, checkResult.getState());
         assertEquals("DataDog", checkResult.getName());
         assertEquals("got http 502", checkResult.getInfo());
+        assertEquals(1, checkResult.getTeams().size());
+        assertEquals(TestTeam.INSTANCE.getTeamName(), checkResult.getTeams().get(0));
     }
 
     @Test
@@ -192,9 +195,9 @@ public class DataDogCheckExecutorTest {
 
         assertNull(dataDogCheckExecutor.decideTeams("[foo]some_monitor", teamMappings(), null));
         assertNull(dataDogCheckExecutor.decideTeams("some_monitor", teamMappings(), null));
-        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][cm]some_monitor", teamMappings(), null));
-        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][foo][cm]some_monitor", teamMappings(), null));
-        assertEquals(Arrays.asList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[cm]some_monitor", teamMappings(), null));
+        assertEquals(Collections.singletonList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][cm]some_monitor", teamMappings(), null));
+        assertEquals(Collections.singletonList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[yana][foo][cm]some_monitor", teamMappings(), null));
+        assertEquals(Collections.singletonList(TestTeam.INSTANCE), dataDogCheckExecutor.decideTeams("[cm]some_monitor", teamMappings(), null));
     }
 
     @Test
