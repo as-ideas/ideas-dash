@@ -5,32 +5,32 @@
   <version>1.0-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20161023.162845</timestamp>
+      <timestamp>20161212.164514</timestamp>
       <buildNumber>2</buildNumber>
     </snapshot>
-    <lastUpdated>20161023162845</lastUpdated>
+    <lastUpdated>20161212164514</lastUpdated>
     <snapshotVersions>
       <snapshotVersion>
         <extension>jar</extension>
-        <value>1.0-20161023.162830-1</value>
-        <updated>20161023162845</updated>
+        <value>1.0-20161212.164505-1</value>
+        <updated>20161212164514</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>1.0-20161023.162830-1</value>
-        <updated>20161023162845</updated>
+        <value>1.0-20161212.164505-1</value>
+        <updated>20161212164514</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>sources</classifier>
         <extension>jar</extension>
-        <value>1.0-20161023.162830-1</value>
-        <updated>20161023162845</updated>
+        <value>1.0-20161212.164505-1</value>
+        <updated>20161212164514</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>javadoc</classifier>
         <extension>jar</extension>
-        <value>1.0-20161023.162830-1</value>
-        <updated>20161023162845</updated>
+        <value>1.0-20161212.164505-1</value>
+        <updated>20161212164514</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
