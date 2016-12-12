@@ -27,7 +27,9 @@ public class StashCheckExecutor implements CheckExecutor<StashCheck> {
                 reviewerNamesAsString(reviewers);
 
                 State state = reviewers.size() == 0 ? State.RED : State.YELLOW;
-                final CheckResult checkResult = new CheckResult(state, "Merge Request " + stashRepo.name(), "[" + reviewerNamesAsString(reviewers) + "], " + stashPullRequest.getAgeInDays() + "d", 1, 1, check.getGroup());
+                String checkResultInfo = stashPullRequest.getAgeInDays() + "d " + "[" + reviewerNamesAsString(reviewers) + "]";
+
+                final CheckResult checkResult = new CheckResult(state, "Merge Request " + stashRepo.name(), checkResultInfo, 1, 1, check.getGroup());
                 checkResult.withLink(check.stashConfig().stashServerUrl() + "/projects/PCP/repos/" + stashPullRequest.repo().name() + "/pull-requests/" + stashPullRequest.id());
                 checkResult.withTeams(check.getTeams());
                 checkResults.add(checkResult);
