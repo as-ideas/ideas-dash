@@ -56,7 +56,8 @@ public class PingdomCheckExecutor implements CheckExecutor<PingdomCheck> {
         }
 
         return new CheckResult(state, pingdomAnswer.status + ": " + pingdomAnswer.name, pingdomAnswer.hostname, 1, 1, check.getGroup())
-                .withLink("https://my.pingdom.com/newchecks/checks#check=" + pingdomAnswer.id);
+                .withLink("https://my.pingdom.com/newchecks/checks#check=" + pingdomAnswer.id)
+                .withTeams(check.getTeams());
     }
 
     private boolean isNameMatching(PingdomAnswer candidate, PingdomCheck check) {

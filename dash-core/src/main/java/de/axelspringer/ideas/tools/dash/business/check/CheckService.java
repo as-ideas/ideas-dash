@@ -53,13 +53,13 @@ public class CheckService {
         } catch (Exception e) {
             LOG.error("There are unhandled errors when performing check '{}' on stage '{}' for teams '{}'", check.getName(), check.getGroup(), check.getTeams());
             LOG.error(e.getMessage(), e);
-            return Collections.singletonList(new CheckResult(State.RED, "unhandled check error: " + e.getMessage(), check.getName(), 0, 0, check.getGroup()));
+            return Collections.singletonList(new CheckResult(State.RED, "unhandled check error: " + e.getMessage(), check.getName(), 0, 0, check.getGroup()).withTeams(check.getTeams()));
         }
     }
 
     private List<CheckResult> decorateCheckResults(Check check, List<CheckResult> results) {
         if (iconsEnabled) {
-            results.stream().forEach(checkResult -> {
+            results.forEach(checkResult -> {
                 if (StringUtils.isEmpty(checkResult.getIconSrc())) {
                     checkResult.withIconSrc(check.getIconSrc());
                 }
