@@ -7,6 +7,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.TeamProvider;
 import de.axelspringer.ideas.tools.dash.presentation.UiConfig;
 import de.axelspringer.ideas.tools.dash.presentation.UiInfo;
 import de.axelspringer.ideas.tools.dash.presentation.UiInfoService;
+import de.axelspringer.ideas.tools.dash.presentation.UiStateSummary;
 import de.axelspringer.ideas.tools.dash.presentation.UiTeams;
 import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 public class DashController {
 
     @Autowired
-    private UiInfoService UiInfoService;
+    private UiInfoService uiInfoService;
 
     @Autowired(required = false)
     private TeamProvider teamProvider;
@@ -45,7 +46,7 @@ public class DashController {
 
     @RequestMapping(value = "/infos", method = RequestMethod.GET)
     public UiInfo infos() throws IOException, AuthenticationException, ExecutionException, InterruptedException, URISyntaxException {
-        return UiInfoService.infos();
+        return uiInfoService.infos();
     }
 
     @RequestMapping(value = "/teams", method = RequestMethod.GET)
@@ -55,6 +56,11 @@ public class DashController {
         }
         List<String> teams = teamProvider.getTeams().stream().map(Team::getTeamName).collect(Collectors.toList());
         return new UiTeams(teams);
+    }
+
+    @RequestMapping(value = "/info-summary", method = RequestMethod.GET)
+    public UiStateSummary infoSummary(){
+        return UiStateSummary.from(uiInfoService.infos());
     }
 
     @RequestMapping(value = "/comments", method = RequestMethod.GET)
