@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BinaryOperator;
 
 
 /**
@@ -42,13 +42,10 @@ public class UiStateSummary {
     }
 
     public static UiStateSummary from(UiInfo infos) {
-        final AtomicReference<State> res = new AtomicReference<>(State.GREEN);
-        infos.getGroups().forEach( uiGroup -> {
-            final State stateToCompare = uiGroup.getState() == State.GREY ? State.YELLOW : uiGroup.getState();
-            if(stateToCompare.compareTo(res.get()) > 0){
-                res.set(stateToCompare);
-            }
-        });
-        return new UiStateSummary(res.get());
+        final State res = infos.getGroups().stream()
+            .map(UIGroup::getState).distinct()
+            .map(state -> state == State.GREY ? State.YELLOW : state)
+            .reduce(State.GREEN, BinaryOperator.maxBy(Enum::compareTo));
+        return new UiStateSummary(res);
     }
 }
