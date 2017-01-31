@@ -42,7 +42,7 @@ public class UiStateSummary {
     }
 
     public static UiStateSummary from(UiInfo infos) {
-        AtomicReference<State> res = new AtomicReference<>(State.GREEN);
+        final AtomicReference<State> res = new AtomicReference<>(State.GREEN);
         infos.getGroups().forEach( uiGroup -> {
             final State stateToCompare = uiGroup.getState() == State.GREY ? State.YELLOW : uiGroup.getState();
             if(stateToCompare.compareTo(res.get()) > 0){
