@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DefaultIssueStateMapper implements IssueStateMapper {
+public class DefaultJiraIssueStateMapper implements JiraIssueStateMapper {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 

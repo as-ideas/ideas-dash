@@ -12,25 +12,23 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Ensures that the DefaultIssueStateMapper is used if no other one is configured
+ * Ensures that the DefaultJiraIssueStateMapper is used if no other one is configured
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = IssueStateMapperDefaultMapperTest.IssueStateMapperDefaultMapperTestConfig.class)
-public class IssueStateMapperDefaultMapperTest {
+@ContextConfiguration(classes = JiraIssueStateMapperDefaultMapperTest.IssueStateMapperDefaultMapperTestConfig.class)
+public class JiraIssueStateMapperDefaultMapperTest {
 
     @Autowired
-    private IssueStateMapper issueStateMapper;
+    private JiraIssueStateMapper jiraIssueStateMapper;
 
     @Test
     public void testCorrectMapperInjected() {
 
-        assertTrue(issueStateMapper instanceof DefaultIssueStateMapper);
+        assertTrue(jiraIssueStateMapper instanceof DefaultJiraIssueStateMapper);
     }
 
     @Configuration
     @Import(JiraConfig.class)
     static class IssueStateMapperDefaultMapperTestConfig {
     }
-
-    // TODO: you should add some more tests for the behaviour. but you also can do this using mockito/dont need the spring runner
 }

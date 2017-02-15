@@ -1,93 +1,104 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
 import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
-import de.axelspringer.ideas.tools.dash.business.customization.Group;
-import de.axelspringer.ideas.tools.dash.business.customization.Team;
-import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
-import de.axelspringer.ideas.tools.dash.business.jira.rest.SearchResult;
+import de.axelspringer.ideas.tools.dash.business.jira.issuecheckresultdecorator.DefaultJiraIssueCheckResultDecorator;
+import de.axelspringer.ideas.tools.dash.business.jira.issuestatemapper.DefaultJiraIssueStateMapper;
+import de.axelspringer.ideas.tools.dash.business.jira.rest.*;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
 public class JiraCheckExecutorTest {
 
-    public static final String GIVEN_NAME = "name";
-    public static final Team GIVEN_TEAM = new Team() {
-        @Override
-        public String getTeamName() {
-            return "given team";
-        }
+    private JiraClient jiraClient = mock(JiraClient.class);
 
-        @Override
-        public String getJiraTeamName() {
-            return "GIVT";
-        }
-    };
-    public static final String GIVEN_URL = "url";
-    public static final String GIVEN_USER = "user";
-    public static final String GIVEN_PASSWORT = "pw";
-    public static final String GIVEN_JQL = "jql";
-    public static final Group GIVEN_GROUP = mock(Group.class);
-
-    @Mock
-    private JiraClient jiraClient;
-
-    @Spy
-    @InjectMocks
-    private JiraCheckExecutor jiraCheckExecutor;
+    private JiraCheckExecutor jiraCheckExecutor = new JiraCheckExecutor(jiraClient, new DefaultJiraIssueStateMapper(), new DefaultJiraIssueCheckResultDecorator());
 
     @Test
-    public void executeChecks_WithNoIssuesFound() throws Exception {
-        doReturn(new SearchResult().getIssues()).when(jiraClient).queryJiraForIssues(anyString(), anyString(), anyString(), anyString());
+    public void testNoIssuesFound() throws Exception {
 
-        List<CheckResult> checkResults = jiraCheckExecutor.executeCheck(new JiraCheck(GIVEN_NAME, Collections.singletonList(GIVEN_TEAM), GIVEN_URL, GIVEN_USER, GIVEN_PASSWORT, GIVEN_JQL, GIVEN_GROUP));
+        doReturn(null).when(jiraClient).queryJiraForIssues(anyString(), anyString(), anyString(), anyString());
+
+        List<CheckResult> checkResults = jiraCheckExecutor.executeCheck(jiraCheck("FOO"));
 
         assertThat(checkResults.size(), is(1));
         CheckResult singleResult = checkResults.get(0);
         assertThat(singleResult.getState(), is(State.GREEN));
-        assertThat(singleResult.getGroup(), is(GIVEN_GROUP));
+        assertNull(singleResult.getGroup());
         assertThat(singleResult.getInfo(), is(equalTo("no issues")));
-        assertThat(singleResult.getLink(), is(GIVEN_URL));
-        assertThat(singleResult.getName(), is(GIVEN_NAME));
-        assertThat(singleResult.getTeams().get(0), is(GIVEN_TEAM.getTeamName()));
         assertThat(singleResult.getFailCount(), is(0));
         assertThat(singleResult.getTestCount(), is(1));
     }
 
     @Test
-    public void executeChecks_IssuesFound() throws Exception {
-        givenTwoIssuesAreFound();
-        givenDoNothingForFoundIssues();
+    public void testTwoIssuesFound() throws Exception {
 
-        List<CheckResult> checkResults = jiraCheckExecutor.executeCheck(new JiraCheck(GIVEN_NAME, Collections.singletonList(GIVEN_TEAM), GIVEN_URL, GIVEN_USER, GIVEN_PASSWORT, GIVEN_JQL, GIVEN_GROUP));
+        final JiraCheck jiraCheck = jiraCheck("FOO");
+
+        final List<Issue> jiraIssues = new ArrayList<>();
+        jiraIssues.add(jiraIssue("TEST-123", "John Doe"));
+        jiraIssues.add(jiraIssue("TEST-007", "James Bond"));
+        doReturn(jiraIssues).when(jiraClient).queryJiraForIssues(anyString(), anyString(), anyString(), anyString());
+
+        final List<CheckResult> checkResults = jiraCheckExecutor.executeCheck(jiraCheck);
 
         assertThat(checkResults.size(), is(2));
     }
 
-    private void givenTwoIssuesAreFound() {
-        SearchResult toBeReturned = new SearchResult();
-        toBeReturned.setIssues(Arrays.asList(new Issue(), new Issue()));
-        doReturn(toBeReturned.getIssues()).when(jiraClient).queryJiraForIssues(anyString(), anyString(), anyString(), anyString());
+    @Test
+    public void testCheckResultDecoration() {
+
+        final String name = "FOO";
+        final String assigneeName = "John Doe";
+        final String issueKey = "TEST-123";
+
+        // configure jira-mock
+        final Issue jiraIssue = jiraIssue(issueKey, assigneeName);
+        doReturn(Collections.singletonList(jiraIssue)).when(jiraClient).queryJiraForIssues(anyString(), anyString(), anyString(), anyString());
+
+        // initialize jira check
+        final JiraCheck jiraCheck = jiraCheck(name);
+
+        // execute/assert
+        final List<CheckResult> checkResults = jiraCheckExecutor.executeCheck(jiraCheck);
+
+        assertEquals(1, checkResults.size());
+        final CheckResult result = checkResults.get(0);
+        assertEquals(name + " (" + assigneeName + ")", result.getName());
+        assertEquals(issueKey, result.getInfo());
     }
 
-    private void givenDoNothingForFoundIssues() {
-        doReturn(null).when(jiraCheckExecutor).createCheckResultForIssue(any(JiraCheck.class), any(Issue.class));
+    final JiraCheck jiraCheck(String name) {
+        return new JiraCheck(name, null, "http:foo", "foouser", "fooopass", "foojql", null);
+    }
+
+    final Issue jiraIssue(String issueKey, String assigneeName) {
+        final Issue jiraIssue = new Issue();
+        jiraIssue.setKey(issueKey);
+        final Fields fields = new Fields();
+        final Assignee assignee = new Assignee();
+        assignee.setName(assigneeName);
+        final IssueType issueType = new IssueType();
+        issueType.setName("foo");
+        final IssueStatus status = new IssueStatus();
+        status.setName("bar");
+        fields.setStatus(status);
+        fields.setIssuetype(issueType);
+        fields.setAssignee(assignee);
+        jiraIssue.setFields(fields);
+
+        return jiraIssue;
     }
 }
