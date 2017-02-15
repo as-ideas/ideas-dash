@@ -3,7 +3,8 @@ package de.axelspringer.ideas.tools.dash.business.jira;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
-import de.axelspringer.ideas.tools.dash.business.jira.issuestatemapper.IssueStateMapper;
+import de.axelspringer.ideas.tools.dash.business.jira.issuecheckresultdecorator.JiraIssueCheckResultDecorator;
+import de.axelspringer.ideas.tools.dash.business.jira.issuestatemapper.JiraIssueStateMapper;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
 import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.slf4j.Logger;
@@ -20,11 +21,18 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private JiraClient jiraClient;
+    private final JiraClient jiraClient;
+
+    private final JiraIssueStateMapper jiraIssueStateMapper;
+
+    private final JiraIssueCheckResultDecorator checkResultDecorator;
 
     @Autowired
-    private IssueStateMapper issueStateMapper;
+    public JiraCheckExecutor(JiraClient jiraClient, JiraIssueStateMapper jiraIssueStateMapper, JiraIssueCheckResultDecorator checkResultDecorator) {
+        this.jiraClient = jiraClient;
+        this.jiraIssueStateMapper = jiraIssueStateMapper;
+        this.checkResultDecorator = checkResultDecorator;
+    }
 
     @Override
     public List<CheckResult> executeCheck(JiraCheck jiraCheck) {
@@ -51,16 +59,17 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
         final JiraProjectConfiguration jiraProjectConfiguration = jiraCheck.getJiraProjectConfiguration();
 
-        final State state = issueStateMapper.mapToState(issue);
-        final CheckResult checkResult = new CheckResult(state, jiraCheck.getName(), issue.getKey(), 1, state == State.GREEN ? 0 : 1, jiraCheck.getGroup())
+        final State state = jiraIssueStateMapper.mapToState(issue);
+        final String name = checkResultDecorator.name(jiraCheck, issue);
+        final String info = checkResultDecorator.info(issue);
+
+        final CheckResult checkResult = new CheckResult(state, name, info, 1, state == State.GREEN ? 0 : 1, jiraCheck.getGroup())
                 .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeams(jiraCheck.getTeams());
 
         if (jiraProjectConfiguration.isIssueInProgress(issue)) {
             checkResult.markRunning();
         }
 
-        final String assignee = issue.getFields().getAssignee() == null ? "nobody" : issue.getFields().getAssignee().getName();
-        checkResult.withName(jiraCheck.getName() + " (" + assignee + ")");
         return checkResult;
     }
 

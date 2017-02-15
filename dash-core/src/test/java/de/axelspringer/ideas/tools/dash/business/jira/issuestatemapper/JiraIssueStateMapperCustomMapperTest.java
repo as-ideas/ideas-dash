@@ -15,22 +15,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Ensures that the DefaultIssueStateMapper is not used if another one is configured
+ * Ensures that the DefaultJiraIssueStateMapper is not used if another one is configured
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = IssueStateMapperCustomMapperTest.IssueStateMapperCustomMapperTestConfig.class)
-public class IssueStateMapperCustomMapperTest {
+@ContextConfiguration(classes = JiraIssueStateMapperCustomMapperTest.IssueStateMapperCustomMapperTestConfig.class)
+public class JiraIssueStateMapperCustomMapperTest {
 
     @Autowired
-    private IssueStateMapper issueStateMapper;
+    private JiraIssueStateMapper jiraIssueStateMapper;
 
     @Test
     public void testCorrectMapperInjected() {
 
-        assertTrue(issueStateMapper instanceof CustomIssueStateMapper);
+        assertTrue(jiraIssueStateMapper instanceof CustomJiraIssueStateMapper);
     }
 
-    static class CustomIssueStateMapper implements IssueStateMapper {
+    static class CustomJiraIssueStateMapper implements JiraIssueStateMapper {
 
         @Override
         public State mapToState(Issue issue) {
@@ -43,8 +43,8 @@ public class IssueStateMapperCustomMapperTest {
     static class IssueStateMapperCustomMapperTestConfig {
 
         @Bean
-        public IssueStateMapper issueStateMapper() {
-            return new CustomIssueStateMapper();
+        public JiraIssueStateMapper issueStateMapper() {
+            return new CustomJiraIssueStateMapper();
         }
     }
 }
