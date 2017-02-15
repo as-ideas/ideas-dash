@@ -32,6 +32,7 @@ public class Fields {
 
     private String created;
 
+    private String summary;
 
     public Fields() {
     }
@@ -98,6 +99,14 @@ public class Fields {
 
     public void setStatus(IssueStatus status) {
         this.status = status;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     @Override
