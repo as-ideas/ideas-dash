@@ -1,10 +1,10 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 public class JenkinsElement {
 
-    @JsonProperty("_class")
+    @SerializedName("_class")
     private String elementType;
 
     private String name;
