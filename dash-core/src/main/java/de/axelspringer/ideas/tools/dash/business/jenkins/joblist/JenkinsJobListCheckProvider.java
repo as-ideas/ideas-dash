@@ -8,7 +8,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsCheck;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJob;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsElement;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Helper that will load a jenkins job list and
@@ -27,7 +29,14 @@ import java.util.stream.Collectors;
 public class JenkinsJobListCheckProvider implements CheckProvider {
 
     private static final String DISABLED_COLOR = "disabled";
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsJobListCheckProvider.class);
+
+    private static final String FOLDER_PLUGIN_WORKFLOW_JOB =
+        "org.jenkinsci.plugins.workflow.job.WorkflowJob";
+
+    private static final String JENKINS_FREESTYLE_PROJECT = "hudson.model.FreeStyleProject";
+
+    private static final Logger log =
+        org.slf4j.LoggerFactory.getLogger(JenkinsJobListCheckProvider.class);
 
     private final JenkinsServerConfiguration serverConfig;
 
@@ -44,7 +53,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     /**
      * If set, is called for every job to check if this job should be included.
      */
-    private Predicate<JenkinsJob> jobMatcher;
+    private Predicate<JenkinsElement> jobMatcher;
 
     /**
      * jobs with names containing a string represented in this list will be excluded
@@ -59,7 +68,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     /**
      * Is called for every job to identify the team the job should belong to
      */
-    private Function<JenkinsJob, List<Team>> teamMapper;
+    private Function<JenkinsElement, List<Team>> teamMapper;
 
     /**
      * Optional jenkins job name mapper
@@ -70,7 +79,8 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     private JenkinsClient jenkinsClient;
 
     /**
-     * Deprecated, use {@link #JenkinsJobListCheckProvider(JenkinsServerConfiguration, Group)} instead.
+     * Deprecated, use {@link #JenkinsJobListCheckProvider(JenkinsServerConfiguration, Group)}
+     * instead.
      *
      * @param host     {@link #serverConfig}
      * @param user     {@link #serverConfig}
@@ -83,7 +93,8 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
         this.group = group;
     }
 
-    public JenkinsJobListCheckProvider(JenkinsServerConfiguration serverConfiguration, Group group) {
+    public JenkinsJobListCheckProvider(JenkinsServerConfiguration serverConfiguration,
+        Group group) {
         this.serverConfig = serverConfiguration;
         this.group = group;
     }
@@ -91,16 +102,16 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     @Override
     public List<Check> provideChecks() {
 
-        return jobs().stream()
-                .filter(this::jobMatches)
-                .filter(this::matchesPrefix)
-                .filter(this::isEnabled)
-                .filter(this::isNotBlacklisted)
-                .map(this::check)
-                .collect(Collectors.toList());
+        return jobs(serverConfig.getUrl() + "/api/json").stream()
+            .filter(this::jobMatches)
+            .filter(this::matchesPrefix)
+            .filter(this::isEnabled)
+            .filter(this::isNotBlacklisted)
+            .map(this::check)
+            .collect(Collectors.toList());
     }
 
-    private boolean isNotBlacklisted(JenkinsJob jenkinsJob) {
+    private boolean isNotBlacklisted(JenkinsElement jenkinsJob) {
 
         for (String blacklistEntry : blacklist) {
             if (jenkinsJob.getName().toLowerCase().contains(blacklistEntry.toLowerCase())) {
@@ -114,9 +125,12 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
         this.jenkinsJobNameMapper = jenkinsJobNameMapper;
     }
 
-    private Check check(JenkinsJob job) {
+    private Check check(JenkinsElement job) {
 
-        final String jobName = StringUtils.isBlank(jobPrefix) || !job.getName().startsWith(jobPrefix) ? job.getName() : job.getName().substring(jobPrefix.length());
+        final String jobName =
+            StringUtils.isBlank(jobPrefix) || !job.getName().startsWith(jobPrefix) ?
+                job.getName() :
+                job.getName().substring(jobPrefix.length());
 
         final List<Team> teams = new ArrayList<>();
 
@@ -130,31 +144,40 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
             teams.addAll(teamMapper.apply(job));
         }
 
-        return new JenkinsCheck(jobName, job.getUrl(), serverConfig, group, teams).withJobNameMapper(jenkinsJobNameMapper);
+        return new JenkinsCheck(jobName, job.getUrl(), serverConfig, group, teams)
+            .withJobNameMapper(jenkinsJobNameMapper);
     }
 
-    private List<JenkinsJob> jobs() {
+    private List<JenkinsElement> jobs(String url) {
+        List<JenkinsElement> elements =
+            jenkinsClient.queryApi(url, serverConfig, JenkinsJobListWrapper.class).getJobs();
 
-        final String url = serverConfig.getUrl() + "/api/json";
-        try {
-            return jenkinsClient.queryApi(url, serverConfig, JenkinsJobListWrapper.class).getJobs();
-        } catch (Exception e) {
-            // does this need further processing? fix it if it fails :D
-            log.error("could not load job list from jenkins. URL=" + url);
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        return Optional.ofNullable(elements)
+            .orElse(new ArrayList<>())
+            .stream()
+            .flatMap(
+                element -> isJob(element) ? Stream.of(element) : jobs(element.getUrl()).stream()
+            )
+            .collect(Collectors.toList());
     }
 
-    private boolean matchesPrefix(JenkinsJob job) {
+    private boolean isJob(JenkinsElement element) {
+        String elementType = element.getElementType();
+        return elementType != null &&
+            (elementType.equals(FOLDER_PLUGIN_WORKFLOW_JOB) ||
+                elementType.equals(JENKINS_FREESTYLE_PROJECT));
+    }
+
+    private boolean matchesPrefix(JenkinsElement job) {
 
         return StringUtils.isBlank(jobPrefix) || job.getName().startsWith(jobPrefix);
     }
 
-    private boolean jobMatches(JenkinsJob jenkinsJob) {
+    private boolean jobMatches(JenkinsElement jenkinsJob) {
         return this.jobMatcher == null || jobMatcher.test(jenkinsJob);
     }
 
-    private boolean isEnabled(JenkinsJob job) {
+    private boolean isEnabled(JenkinsElement job) {
 
         return !DISABLED_COLOR.equals(job.getColor());
     }
@@ -168,12 +191,12 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
         return this;
     }
 
-    public JenkinsJobListCheckProvider withJobMatcher(Predicate<JenkinsJob> predicate) {
+    public JenkinsJobListCheckProvider withJobMatcher(Predicate<JenkinsElement> predicate) {
         this.jobMatcher = predicate;
         return this;
     }
 
-    public JenkinsJobListCheckProvider withTeamMapper(Function<JenkinsJob, List<Team>> mapper) {
+    public JenkinsJobListCheckProvider withTeamMapper(Function<JenkinsElement, List<Team>> mapper) {
         this.teamMapper = mapper;
         return this;
     }
@@ -183,7 +206,8 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
      * @param teams                 teams that jobs prefixed with given prefix will be mapped to
      * @return this {@link JenkinsJobListCheckProvider} instance
      */
-    public JenkinsJobListCheckProvider withJobNameTeamMapping(String jobIdentificationName, List<Team> teams) {
+    public JenkinsJobListCheckProvider withJobNameTeamMapping(String jobIdentificationName,
+        List<Team> teams) {
         jobNameTeamMapping.put(jobIdentificationName, teams);
         return this;
     }
