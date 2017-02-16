@@ -30,10 +30,13 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
 
     private static final String DISABLED_COLOR = "disabled";
 
-    private static final String FOLDER_PLUGIN_WORKFLOW_JOB =
+    private static final String WORKFLOW_JOB =
         "org.jenkinsci.plugins.workflow.job.WorkflowJob";
 
-    private static final String JENKINS_FREESTYLE_PROJECT = "hudson.model.FreeStyleProject";
+    private static final String WORKFLOW_MULTI_BRANCH_PROJECT =
+        "org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject";
+
+    private static final String FREESTYLE_PROJECT = "hudson.model.FreeStyleProject";
 
     private static final Logger log =
         org.slf4j.LoggerFactory.getLogger(JenkinsJobListCheckProvider.class);
@@ -164,8 +167,9 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
     private boolean isJob(JenkinsElement element) {
         String elementType = element.getElementType();
         return elementType != null &&
-            (elementType.equals(FOLDER_PLUGIN_WORKFLOW_JOB) ||
-                elementType.equals(JENKINS_FREESTYLE_PROJECT));
+            (elementType.equals(WORKFLOW_JOB) ||
+                elementType.equals(FREESTYLE_PROJECT) ||
+                elementType.equals(WORKFLOW_MULTI_BRANCH_PROJECT));
     }
 
     private boolean matchesPrefix(JenkinsElement job) {
