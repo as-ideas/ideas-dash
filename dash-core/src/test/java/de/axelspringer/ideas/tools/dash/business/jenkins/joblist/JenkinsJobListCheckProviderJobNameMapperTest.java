@@ -10,7 +10,7 @@ public class JenkinsJobListCheckProviderJobNameMapperTest {
 
     @Test
     public void checkResultNameWithUrlUsage() throws Exception {
-        assertEquals("foo/job/bar", checkResultName(job(), null, true));
+        assertEquals("foo/bar", checkResultName(job(), null, true));
     }
 
     @Test
