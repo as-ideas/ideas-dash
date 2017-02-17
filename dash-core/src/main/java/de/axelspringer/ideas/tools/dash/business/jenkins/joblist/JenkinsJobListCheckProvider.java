@@ -136,7 +136,8 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
         }
 
         return new JenkinsCheck(jobName, job.getUrl(), serverConfig, group, teams)
-                .withJobNameMapper(jenkinsJobNameMapper);
+                .withJobNameMapper(jenkinsJobNameMapper)
+                .withExplodePipelines(false);
     }
 
     private List<JenkinsElement> jobs(String url) {
