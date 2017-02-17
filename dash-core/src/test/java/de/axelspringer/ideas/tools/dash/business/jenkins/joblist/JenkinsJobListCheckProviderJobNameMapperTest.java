@@ -21,7 +21,7 @@ public class JenkinsJobListCheckProviderJobNameMapperTest {
     private JenkinsElement job() {
         final JenkinsElement element = new JenkinsElement();
         element.setName("FooName");
-        element.setUrl("http://FooUrl/job/foo/job/bar");
+        element.setUrl("http://FooUrl/job/foo/job/bar/");
         return element;
     }
 }
