@@ -52,7 +52,7 @@ public class JenkinsCheckExecutor implements CheckExecutor<JenkinsCheck> {
 
         final BuildInfo buildInfo = check.isFetchBuildInfo() ? buildInfo(check.getJobUrl(), serverConfiguration) : new BuildInfo();
 
-        if (jobInfo.isPipeline()) {
+        if (jobInfo.isPipeline() && check.isExplodePipelines()) {
             return pipelineExecutor.executeCheck(jobInfo, check, buildInfo);
         }
         return jobExecutor.executeCheck(jobInfo, check, buildInfo);

@@ -19,6 +19,11 @@ public class JenkinsCheck extends Check {
 
     private boolean fetchBuildInfo = false;
 
+    /**
+     * determines if a pipeline should be represented by one checkresult or several (one per stage in pipeline)
+     */
+    private boolean explodePipelines = true;
+
     public JenkinsCheck(String name, String url, String userName, String apiToken, Group group, List<Team> teams, JenkinsJobNameMapper jenkinsJobNameMapper) {
         super(name, group, teams);
         this.jobUrl = url;
@@ -56,6 +61,19 @@ public class JenkinsCheck extends Check {
 
     public JenkinsCheck withFetchBuildInfo(boolean fetchBuildInfo) {
         this.fetchBuildInfo = fetchBuildInfo;
+        return this;
+    }
+
+    public boolean isExplodePipelines() {
+        return explodePipelines;
+    }
+
+    /**
+     * @param explodePipelines {@link #explodePipelines}
+     * @return this {@link JenkinsCheck} instance
+     */
+    public JenkinsCheck withExplodePipelines(boolean explodePipelines) {
+        this.explodePipelines = explodePipelines;
         return this;
     }
 

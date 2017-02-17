@@ -33,26 +33,37 @@ public class JenkinsCheckExecutorTest {
     @Test
     public void testExecuteCheckAgainstPipelineJobExecutesPipelineExecutor() throws Exception {
 
-        executeWithClass(JenkinsJobInfo.PIPELINE_CLASS);
+        execute(JenkinsJobInfo.PIPELINE_CLASS, true);
 
         verifyZeroInteractions(jobExecutor);
         verify(pipelineExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class), any(BuildInfo.class));
     }
 
     @Test
-    public void testExecuteCheckAgainstRegularJobExecutesJobExecutor() throws Exception {
+    public void testExecuteCheckAgainstPipelineJobButNonExplodedPipelinesExecutesJobExecutor() throws Exception {
 
-        executeWithClass("some-other-class");
+        execute(JenkinsJobInfo.PIPELINE_CLASS, false);
 
         verifyZeroInteractions(pipelineExecutor);
         verify(jobExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class), any(BuildInfo.class));
     }
 
-    private void executeWithClass(String buildClass) {
+    @Test
+    public void testExecuteCheckAgainstRegularJobExecutesJobExecutor() throws Exception {
+
+        execute("some-other-class", true);
+
+        verifyZeroInteractions(pipelineExecutor);
+        verify(jobExecutor, times(1)).executeCheck(any(JenkinsJobInfo.class), any(JenkinsCheck.class), any(BuildInfo.class));
+    }
+
+    private void execute(String withBuildClass, boolean withExplodePipeline) {
         final JenkinsJobInfo jobInfo = new JenkinsJobInfo();
-        jobInfo.setBuildClass(buildClass);
+        jobInfo.setBuildClass(withBuildClass);
         when(jenkinsClient.queryApi(anyString(), any(JenkinsServerConfiguration.class), eq(JenkinsJobInfo.class)))
                 .thenReturn(jobInfo);
-        jenkinsCheckExecutor.executeCheck(mock(JenkinsCheck.class));
+        final JenkinsCheck check = mock(JenkinsCheck.class);
+        when(check.isExplodePipelines()).thenReturn(withExplodePipeline);
+        jenkinsCheckExecutor.executeCheck(check);
     }
 }
