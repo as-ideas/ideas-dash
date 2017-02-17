@@ -5,7 +5,7 @@ import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsClient;
 import de.axelspringer.ideas.tools.dash.business.jenkins.JenkinsServerConfiguration;
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJob;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsElement;
 import org.apache.http.auth.AuthenticationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +19,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 
 public class JenkinsJobListCheckProviderTest {
 
@@ -33,7 +38,7 @@ public class JenkinsJobListCheckProviderTest {
 
         jenkinsJobListCheckProvider = new JenkinsJobListCheckProvider(new JenkinsServerConfiguration("fooHost", "fooUser", "fooApiToken"), mock(Group.class));
 
-        final List<JenkinsJob> jobs = new ArrayList<>();
+        final List<JenkinsElement> jobs = new ArrayList<>();
         jobs.add(jenkinsJob("docker-compose", true));
         jobs.add(jenkinsJob("yana-contentmachine-build", true));
         jobs.add(jenkinsJob("yana-contentmachine-disabled", false));
@@ -47,8 +52,9 @@ public class JenkinsJobListCheckProviderTest {
         ReflectionTestUtils.setField(jenkinsJobListCheckProvider, "jenkinsClient", jenkinsClient);
     }
 
-    private JenkinsJob jenkinsJob(String name, boolean enabled) {
-        final JenkinsJob jenkinsJob = new JenkinsJob();
+    private JenkinsElement jenkinsJob(String name, boolean enabled) {
+        final JenkinsElement jenkinsJob = new JenkinsElement();
+        jenkinsJob.setElementType("org.jenkinsci.plugins.workflow.job.WorkflowJob");
         jenkinsJob.setName(name);
         jenkinsJob.setUrl("http://somejenkins/jobs/" + name);
         final String color = enabled ? "blue" : "disabled";
@@ -99,7 +105,7 @@ public class JenkinsJobListCheckProviderTest {
         assertFalse(check.getTeams().isEmpty());
         assertEquals(team, check.getTeams().get(0));
     }
-    
+
     @Test
     public void testWithJobNameMultipleTeamsMappingAndPrefix() {
 
@@ -116,7 +122,7 @@ public class JenkinsJobListCheckProviderTest {
         assertEquals(firstTeam, check.getTeams().get(0));
         assertEquals(secondTeam, check.getTeams().get(1));
     }
-    
+
     private Team createsFakeTeamWithGivenName(final String teamName) {
     	return new Team() {
             @Override

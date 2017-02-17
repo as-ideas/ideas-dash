@@ -1,19 +1,19 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins.joblist;
 
 
-import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJob;
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsElement;
 
 import java.util.List;
 
 public class JenkinsJobListWrapper {
 
-    private List<JenkinsJob> jobs;
+    private List<JenkinsElement> jobs;
 
-    public List<JenkinsJob> getJobs() {
+    public List<JenkinsElement> getJobs() {
         return jobs;
     }
 
-    public void setJobs(List<JenkinsJob> jobs) {
+    public void setJobs(List<JenkinsElement> jobs) {
         this.jobs = jobs;
     }
 }

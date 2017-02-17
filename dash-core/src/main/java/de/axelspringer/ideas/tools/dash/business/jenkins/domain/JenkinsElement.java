@@ -1,12 +1,25 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins.domain;
 
-public class JenkinsJob {
+import com.google.gson.annotations.SerializedName;
+
+public class JenkinsElement {
+
+    @SerializedName("_class")
+    private String elementType;
 
     private String name;
 
     private String url;
 
     private String color;
+
+    public String getElementType() {
+        return elementType;
+    }
+
+    public void setElementType(String elementType) {
+        this.elementType = elementType;
+    }
 
     public String getName() {
         return name;
