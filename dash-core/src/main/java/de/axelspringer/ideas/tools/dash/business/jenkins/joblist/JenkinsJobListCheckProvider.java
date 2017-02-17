@@ -66,6 +66,11 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
      */
     private JenkinsJobNameMapper jenkinsJobNameMapper;
 
+    /**
+     * If true, the job url (after .../job) will be used to display the job (important if your jobs are named by branch)
+     */
+    private boolean useUrlInsteadOfDisplayNameForCheckResultName = false;
+
     @Autowired
     private JenkinsClient jenkinsClient;
 
@@ -118,10 +123,7 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
 
     private Check check(JenkinsElement job) {
 
-        final String jobName =
-                StringUtils.isBlank(jobPrefix) || !job.getName().startsWith(jobPrefix) ?
-                        job.getName() :
-                        job.getName().substring(jobPrefix.length());
+        final String jobName = JenkinsJobListCheckProviderJobNameMapper.checkResultName(job, jobPrefix, useUrlInsteadOfDisplayNameForCheckResultName);
 
         final List<Team> teams = new ArrayList<>();
 
@@ -217,6 +219,15 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
      */
     public JenkinsJobListCheckProvider withBlacklistedName(String namePart) {
         blacklist.add(namePart);
+        return this;
+    }
+
+    /**
+     * @param useUrlInsteadOfDisplayNameForCheckResultName {@link #useUrlInsteadOfDisplayNameForCheckResultName}
+     * @return this {@link JenkinsJobListCheckProvider} instance
+     */
+    public JenkinsJobListCheckProvider withUseUrlInsteadOfDisplayNameForCheckResultName(boolean useUrlInsteadOfDisplayNameForCheckResultName) {
+        this.useUrlInsteadOfDisplayNameForCheckResultName = useUrlInsteadOfDisplayNameForCheckResultName;
         return this;
     }
 }
