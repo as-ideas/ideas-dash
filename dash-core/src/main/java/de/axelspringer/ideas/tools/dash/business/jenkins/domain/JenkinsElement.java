@@ -4,6 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class JenkinsElement {
 
+    public final static String ELEMENT_TYPE_ORGANIZATIONAL_FOLDER = "jenkins.branch.OrganizationFolder";
+    public final static String ELEMENT_TYPE_FOLDER = "com.cloudbees.hudson.plugins.folder.Folder";
+    public final static String ELEMENT_TYPE_WORKFLOW_JOB = "org.jenkinsci.plugins.workflow.job.WorkflowJob";
+    public static final String ELEMENT_TYPE_WORKFLOW_MULTI_BRANCH_PROJECT = "org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject";
+    public static final String ELEMENT_TYPE_FREESTYLE_PROJECT = "hudson.model.FreeStyleProject";
+
     @SerializedName("_class")
     private String elementType;
 
