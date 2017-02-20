@@ -50,4 +50,17 @@ public class JenkinsElement {
     public void setColor(String color) {
         this.color = color;
     }
+
+    private boolean isFolder() {
+
+        return ELEMENT_TYPE_ORGANIZATIONAL_FOLDER.equals(elementType)
+                || ELEMENT_TYPE_FOLDER.equals(elementType)
+                || ELEMENT_TYPE_WORKFLOW_MULTI_BRANCH_PROJECT.equals(elementType);
+    }
+
+    public boolean isJob() {
+
+        // for now dont explicitly list all job elements (as not all classes are registered) but assume everything that is not a folder is a job
+        return !isFolder();
+    }
 }
