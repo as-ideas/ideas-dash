@@ -151,23 +151,9 @@ public class JenkinsJobListCheckProvider implements CheckProvider {
                 .orElse(new ArrayList<>())
                 .stream()
                 .flatMap(
-                        element -> isJob(element) ? Stream.of(element) : jobs(element.getUrl()).stream()
+                        element -> element.isJob() ? Stream.of(element) : jobs(element.getUrl()).stream()
                 )
                 .collect(Collectors.toList());
-    }
-
-    private boolean isFolder(JenkinsElement element) {
-
-        final String elementType = element.getElementType();
-        return JenkinsElement.ELEMENT_TYPE_ORGANIZATIONAL_FOLDER.equals(elementType)
-                || JenkinsElement.ELEMENT_TYPE_FOLDER.equals(elementType)
-                || JenkinsElement.ELEMENT_TYPE_WORKFLOW_MULTI_BRANCH_PROJECT.equals(elementType);
-    }
-
-    private boolean isJob(JenkinsElement element) {
-
-        // for now dont explicitly list all job elements (as not all classes are registered) but assume everything that is not a folder is a job
-        return !isFolder(element);
     }
 
     private boolean matchesPrefix(JenkinsElement job) {
