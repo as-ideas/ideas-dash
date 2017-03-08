@@ -10,15 +10,8 @@ public class StashCheck extends Check {
 
     private static final String IMG_SRC = "assets/stash-logo.png";
 
-    private final StashConfig stashConfig;
-
-    public StashCheck(String name, Group group, List<Team> teams, StashConfig stashConfig) {
+    public StashCheck(String name, Group group, List<Team> teams) {
         super(name, group, teams);
-        this.stashConfig = stashConfig;
-    }
-
-    public StashConfig stashConfig() {
-        return stashConfig;
     }
 
     @Override

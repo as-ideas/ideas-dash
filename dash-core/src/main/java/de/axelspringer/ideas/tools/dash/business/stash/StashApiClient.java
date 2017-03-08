@@ -2,10 +2,8 @@ package de.axelspringer.ideas.tools.dash.business.stash;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.axelspringer.ideas.tools.dash.business.jira.JiraCheckExecutor;
 import de.axelspringer.ideas.tools.dash.util.RestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +16,8 @@ import java.util.List;
 @Service
 public class StashApiClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JiraCheckExecutor.class);
-
-    public static final String REST_API_REPOS_URL = "/rest/api/1.0/projects/PCP/repos?limit=100";
-    public static final String REST_API_PULL_REQUESTS_PATTERN = "/rest/api/1.0/projects/PCP/repos/%s/pull-requests?state=OPEN";
+    @Autowired
+    private StashConfig stashConfig;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -29,51 +25,42 @@ public class StashApiClient {
     @Autowired
     private RestClient restClient;
 
-    public List<StashRepo> readStashRepos(StashConfig stashConfig) {
-        List<StashRepo> result = new ArrayList<>();
+    @SneakyThrows
+    public List<StashRepo> fetchStashRepos() {
+        final List<StashRepo> result = new ArrayList<>();
 
-        try {
-            final String reposResultAsString = getString(stashConfig, REST_API_REPOS_URL);
-
-            final JsonNode reposJsonNode = objectMapper.readTree(reposResultAsString);
-            for (JsonNode repo : reposJsonNode.get("values")) {
-                final String repoName = repo.get("name").asText();
-                result.add(new StashRepo(repoName));
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
+        final String responseString = httpRequest(stashConfig.getRepoUrl());
+        final JsonNode reposJsonNode = objectMapper.readTree(responseString);
+        for (JsonNode repo : reposJsonNode.get("values")) {
+            final String repoName = repo.get("name").asText();
+            result.add(new StashRepo(repoName));
         }
+
         return result;
     }
 
-    public List<StashPullRequest> readStashPullRequests(StashConfig stashConfig, StashRepo stashRepo) {
-        List<StashPullRequest> result = new ArrayList<>();
+    @SneakyThrows
+    public List<StashPullRequest> fetchPullRequestsOfRepo(StashRepo stashRepo) {
+        final List<StashPullRequest> result = new ArrayList<>();
 
-        try {
-            final String pullRequestResultAsString = getString(stashConfig, String.format(REST_API_PULL_REQUESTS_PATTERN, stashRepo.name()));
+        final String responseString = httpRequest(stashConfig.pullRequestUrl(stashRepo.getName()));
+        final JsonNode pullRequestsJsonNode = objectMapper.readTree(responseString);
 
-            final JsonNode pullRequestsJsonNode = objectMapper.readTree(pullRequestResultAsString);
+        for (JsonNode pullRequestJsonNode : pullRequestsJsonNode.get("values")) {
+            final StashPullRequest stashPullRequest = new StashPullRequest(pullRequestJsonNode.get("id").asText(), stashRepo);
+            stashPullRequest.addCreatedDate(pullRequestJsonNode.get("createdDate").asLong());
 
-            for (JsonNode pullRequestJsonNode : pullRequestsJsonNode.get("values")) {
-                final StashPullRequest stashPullRequest = new StashPullRequest(pullRequestJsonNode.get("id").asText(), stashRepo);
-                stashPullRequest.addCreatedDate(pullRequestJsonNode.get("createdDate").asLong());
-
-                for (JsonNode jsonNode : pullRequestJsonNode.get("reviewers")) {
-                    final JsonNode userNode = jsonNode.get("user");
-                    stashPullRequest.addReviewer(new StashUser(userNode.get("name").asText(), userNode.get("displayName").asText()));
-                }
-                result.add(stashPullRequest);
-
+            for (JsonNode jsonNode : pullRequestJsonNode.get("reviewers")) {
+                final JsonNode userNode = jsonNode.get("user");
+                stashPullRequest.addReviewer(new StashUser(userNode.get("name").asText(), userNode.get("displayName").asText()));
             }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
+            result.add(stashPullRequest);
         }
+
         return result;
     }
 
-    String getString(StashConfig stashConfig, String urlPath) {
-        return restClient.create().withCredentials(stashConfig.stashUserName(), stashConfig.stashUserPassword()).get(stashConfig.stashServerUrl() + urlPath);
+    String httpRequest(String url) {
+        return restClient.create().withCredentials(stashConfig.getUsername(), stashConfig.getPassword()).get(url);
     }
 }
