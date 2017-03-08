@@ -18,7 +18,7 @@ public class StashCheckExecutor implements CheckExecutor<StashCheck> {
     private StashApiClient stashApiClient;
 
     @Autowired
-    private StateIndicator stateIndicator;
+    private StateIndicator<StashPullRequest> stateIndicator;
 
     @Autowired
     private StashConfig stashConfig;
