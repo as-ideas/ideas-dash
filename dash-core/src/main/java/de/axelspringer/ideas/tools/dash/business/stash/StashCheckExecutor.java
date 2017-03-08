@@ -3,13 +3,13 @@ package de.axelspringer.ideas.tools.dash.business.stash;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
 import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
-import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @Service
 public class StashCheckExecutor implements CheckExecutor<StashCheck> {
@@ -17,34 +17,26 @@ public class StashCheckExecutor implements CheckExecutor<StashCheck> {
     @Autowired
     private StashApiClient stashApiClient;
 
+    @Autowired
+    private StateIndicator<StashPullRequest> stateIndicator;
+
+    @Autowired
+    private StashConfig stashConfig;
+
     @Override
     public List<CheckResult> executeCheck(StashCheck check) {
-        List<CheckResult> checkResults = new ArrayList<>();
 
-        for (StashRepo stashRepo : stashApiClient.readStashRepos(check.stashConfig())) {
-            for (StashPullRequest stashPullRequest : stashApiClient.readStashPullRequests(check.stashConfig(), stashRepo)) {
-                final List<StashUser> reviewers = stashPullRequest.reviewers();
-                reviewerNamesAsString(reviewers);
-
-                State state = reviewers.size() == 0 ? State.RED : State.YELLOW;
-                String checkResultInfo = stashPullRequest.getAgeInDays() + "d " + "[" + reviewerNamesAsString(reviewers) + "]";
-
-                final CheckResult checkResult = new CheckResult(state, "Merge Request " + stashRepo.name(), checkResultInfo, 1, 1, check.getGroup());
-                checkResult.withLink(check.stashConfig().stashServerUrl() + "/projects/PCP/repos/" + stashPullRequest.repo().name() + "/pull-requests/" + stashPullRequest.id());
-                checkResult.withTeams(check.getTeams());
-                checkResults.add(checkResult);
-            }
+        if (!stashConfig.isEnabled()) {
+            return Collections.emptyList();
         }
 
-        return checkResults;
-    }
+        return stashApiClient.fetchStashRepos().stream().map(repo -> stashApiClient.fetchPullRequestsOfRepo(repo)).flatMap(Collection::stream).map(pullRequest -> {
+            final StateIndicator.IndicateResult indicateResult = stateIndicator.check(pullRequest);
+            return new CheckResult(indicateResult.getState(), "Merge Request " + pullRequest.repo().getName(), indicateResult.getInfo(), 1, 1, check.getGroup())
+                    .withTeams(check.getTeams())
+                    .withLink(stashConfig.pullRequestAccessUrl(pullRequest.repo().getName(), pullRequest.id()));
 
-    private String reviewerNamesAsString(List<StashUser> reviewers) {
-        StringJoiner reviewerNames = new StringJoiner(",");
-        for (StashUser reviewer : reviewers) {
-            reviewerNames.add(reviewer.name());
-        }
-        return reviewerNames.toString();
+        }).collect(Collectors.toList());
     }
 
     @Override

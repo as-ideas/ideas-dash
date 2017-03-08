@@ -1,26 +1,35 @@
 package de.axelspringer.ideas.tools.dash.business.stash;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Component
 public class StashConfig {
 
-    private final String stashServerUrl;
-    private final String stashUserName;
-    private final String stashUserPassword;
+    @Getter
+    @Value("${dash.stash.repo-url:false}")
+    private boolean enabled;
+    @Getter
+    @Value("${dash.stash.repo-url:}")
+    private String repoUrl;
+    @Getter
+    @Value("${dash.stash.username:}")
+    private String username;
+    @Getter
+    @Value("${dash.stash.password:}")
+    private String password;
 
-    public StashConfig(String stashServerUrl, String stashUserName, String stashUserPassword) {
-        this.stashServerUrl = stashServerUrl;
-        this.stashUserName = stashUserName;
-        this.stashUserPassword = stashUserPassword;
+    public String pullRequestUrl(String repoName) {
+        return repoUrl + StringUtils.prependIfMissing(repoName, "/") + "/pull-requests?state=OPEN";
     }
 
-    public String stashServerUrl() {
-        return stashServerUrl;
-    }
-
-    public String stashUserName() {
-        return stashUserName;
-    }
-
-    public String stashUserPassword() {
-        return stashUserPassword;
+    public String pullRequestAccessUrl(String repoName, String id) {
+        return repoUrl + StringUtils.prependIfMissing(repoName, "/") + "/pull-requests/" + id;
     }
 }
