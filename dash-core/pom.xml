@@ -199,6 +199,12 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>1.11.109</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>

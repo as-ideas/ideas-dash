@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
@@ -39,7 +40,7 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
 
         final List<Issue> issues = jiraClient.queryJiraForIssues(jiraCheck.getUrl(), jiraCheck.getJql(), jiraCheck.getUserName(), jiraCheck.getPassword());
 
-        if (issues == null || issues.size() < 1) {
+        if (Optional.ofNullable(issues).map(List::isEmpty).orElse(true)) {
             final CheckResult checkResult = new CheckResult(State.GREEN, jiraCheck.getName(), "no issues", 1, 0, jiraCheck.getGroup())
                     .withLink(jiraCheck.getUrl()).withTeams(jiraCheck.getTeams());
             return Collections.singletonList(checkResult);
