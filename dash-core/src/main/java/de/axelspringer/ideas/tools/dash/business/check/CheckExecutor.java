@@ -4,7 +4,6 @@ import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 
 import java.util.List;
 
-
 public interface CheckExecutor<T extends Check> {
 
     /**
