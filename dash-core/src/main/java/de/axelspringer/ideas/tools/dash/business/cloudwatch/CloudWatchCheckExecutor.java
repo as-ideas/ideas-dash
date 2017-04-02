@@ -1,6 +1,5 @@
 package de.axelspringer.ideas.tools.dash.business.cloudwatch;
 
-import com.amazonaws.services.cloudwatch.model.DescribeAlarmsResult;
 import com.amazonaws.services.cloudwatch.model.MetricAlarm;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
@@ -21,12 +20,12 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
     @Autowired
     private CloudWatchStateMapper stateMapper;
 
+    @Autowired
+    private CloudWatchClient cloudWatchClient;
+
     @Override
     public List<CheckResult> executeCheck(final CloudWatchCheck check) {
-        final DescribeAlarmsResult alarms = check
-                .getAmazonCloudwatchClient()
-                .describeAlarms(check.getAlarmDescription());
-        return alarms
+        return cloudWatchClient.describeAlarms(check.getAwsAccessKeyId(), check.getAwsSecretKey())
                 .getMetricAlarms()
                 .parallelStream().map(v -> factorCheckResult(v, check))
                 .collect(Collectors.toList());

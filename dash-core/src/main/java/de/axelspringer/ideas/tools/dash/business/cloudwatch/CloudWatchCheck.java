@@ -1,8 +1,5 @@
 package de.axelspringer.ideas.tools.dash.business.cloudwatch;
 
-import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
-import com.amazonaws.services.cloudwatch.model.DescribeAlarmsRequest;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
@@ -14,21 +11,25 @@ import java.util.List;
  */
 public class CloudWatchCheck extends Check {
 
-    private final AmazonCloudWatch amazonCloudwatchClient;
-    private final DescribeAlarmsRequest alarmDescription;
+    private final String awsAccessKeyId;
+    private final String awsSecretKey;
 
-    public CloudWatchCheck(final String name, final Group group, final List<Team> teams,
-                           final AmazonCloudWatchClientBuilder builder, final DescribeAlarmsRequest alarmDescription) {
+    public CloudWatchCheck(
+            String name,
+            Group group,
+            List<Team> teams,
+            String awsAccessKeyId,
+            String awsSecretKey) {
         super(name, group, teams);
-        this.amazonCloudwatchClient = builder.build();
-        this.alarmDescription = alarmDescription;
+        this.awsAccessKeyId = awsAccessKeyId;
+        this.awsSecretKey = awsSecretKey;
     }
 
-    public AmazonCloudWatch getAmazonCloudwatchClient() {
-        return amazonCloudwatchClient;
+    public String getAwsAccessKeyId() {
+        return awsAccessKeyId;
     }
 
-    public DescribeAlarmsRequest getAlarmDescription() {
-        return alarmDescription;
+    public String getAwsSecretKey() {
+        return awsSecretKey;
     }
 }
