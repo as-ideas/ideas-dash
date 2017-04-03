@@ -25,6 +25,8 @@ DataDog can be queried for monitors. Just provide DataDogChecks via a CheckProvi
 Art is supported as well in theory. This was not used in a while and may prove unstable.
 -- Statushub
 Statushub is supported as well. Markup will be parsed for css-classes (incident)
+-- Cloudwatch
+Cloudwatch is supported as well. Just initialize a CloudWatchCheck providing your aws-id, secret and aws region (instantiate different checks for different regions).
 
 - Philips Hue overall-state indicator
 You can connect philips hue to the dash to indicate the overall state more "physically".

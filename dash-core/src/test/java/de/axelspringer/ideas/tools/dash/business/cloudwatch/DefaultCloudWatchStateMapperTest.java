@@ -11,23 +11,22 @@ import java.util.Collection;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by Tanemahuta on 27.03.17.
- */
 @RunWith(Parameterized.class)
-public class CloudWatchCheckTest {
+public class DefaultCloudWatchStateMapperTest {
+
+    private DefaultCloudWatchStateMapper stateMapper = new DefaultCloudWatchStateMapper();
+
     private final String sourceValue;
     private final State expectedState;
 
-    public CloudWatchCheckTest(final String sourceValue, final State expectedState) {
+    public DefaultCloudWatchStateMapperTest(final String sourceValue, final State expectedState) {
         this.sourceValue = sourceValue;
         this.expectedState = expectedState;
     }
 
     @Test
     public void mapState() throws Exception {
-        // expect:
-        assertThat(CloudWatchCheck.mapState(sourceValue), equalTo(expectedState));
+        assertThat(stateMapper.mapState(sourceValue), equalTo(expectedState));
     }
 
     @Parameterized.Parameters(name = "{0} => {1}")
@@ -40,5 +39,4 @@ public class CloudWatchCheckTest {
                 new Object[]{"ALARM", State.RED}
         );
     }
-
 }
