@@ -21,11 +21,11 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
     private CloudWatchStateMapper stateMapper;
 
     @Autowired
-    private CloudWatchClient cloudWatchClient;
+    private CloudWatchService cloudWatchService;
 
     @Override
     public List<CheckResult> executeCheck(final CloudWatchCheck check) {
-        return cloudWatchClient.describeAlarms(check.getAwsAccessKeyId(), check.getAwsSecretKey())
+        return cloudWatchService.describeAlarms(check.getAwsAccessKeyId(), check.getAwsSecretKey())
                 .getMetricAlarms()
                 .parallelStream().map(v -> factorCheckResult(v, check))
                 .collect(Collectors.toList());

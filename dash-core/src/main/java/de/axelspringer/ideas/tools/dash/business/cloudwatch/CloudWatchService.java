@@ -10,7 +10,7 @@ import com.amazonaws.services.cloudwatch.model.DescribeAlarmsResult;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CloudWatchClient {
+public class CloudWatchService {
 
     public DescribeAlarmsResult describeAlarms(String awsAccessKeyId, String awsSecretKey) {
 
