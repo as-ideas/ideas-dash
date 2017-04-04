@@ -13,14 +13,24 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
+import static de.axelspringer.ideas.tools.dash.presentation.State.RED;
+
 
 @Service
 public class JenkinsJobExecutor {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsJobExecutor.class);
 
+    private final JenkinsClient jenkinsClient;
+
+    private final JenkinsJobToStateMapper stateMapper;
+
     @Autowired
-    private JenkinsClient jenkinsClient;
+    public JenkinsJobExecutor(JenkinsClient jenkinsClient, JenkinsJobToStateMapper stateMapper) {
+        this.jenkinsClient = jenkinsClient;
+        this.stateMapper = stateMapper;
+    }
+
 
     public List<CheckResult> executeCheck(JenkinsJobInfo jobInfo, JenkinsCheck jenkinsCheck, BuildInfo buildInfo) {
 
@@ -46,7 +56,7 @@ public class JenkinsJobExecutor {
 
         } catch (Exception e) {
             log.error("error fetching jenkins result: {}", jobName, e);
-            return Collections.singletonList(new CheckResult(State.RED, shortName(jenkinsCheck), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(jenkinsCheck.getJobUrl()).withTeams(jenkinsCheck.getTeams()));
+            return Collections.singletonList(new CheckResult(RED, shortName(jenkinsCheck), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(jenkinsCheck.getJobUrl()).withTeams(jenkinsCheck.getTeams()));
         }
 
         int failedTestCount = 0;
@@ -63,7 +73,8 @@ public class JenkinsJobExecutor {
 
         final String checkInfo = failedTestCount > 0 ? failedTestCount + "/" + totalTestCount : "" + totalTestCount;
 
-        State state = identifyStatus(lastCompletedBuildInfo, failedTestCount);
+        final State state = stateMapper.identifyStatus(lastCompletedBuildInfo, failedTestCount, jobInfo);
+
         CheckResult checkResult = new CheckResult(state, shortName(jenkinsCheck), checkInfo, totalTestCount, failedTestCount, jenkinsCheck.getGroup()).withLink(jenkinsCheck.getJobUrl()).withTeams(jenkinsCheck.getTeams());
         if (lastBuildInfo != null && lastBuildInfo.isBuilding()) {
             checkResult = checkResult.markRunning();
@@ -71,34 +82,6 @@ public class JenkinsJobExecutor {
         return Collections.singletonList(checkResult);
     }
 
-    private State identifyStatus(JenkinsBuildInfo jenkinsBuildInfo, int failedTestCount) {
-
-        if (failedTestCount > 0) {
-            return State.YELLOW;
-        }
-
-        if (jenkinsBuildInfo == null) {
-            // never executed = fine
-            return State.GREEN;
-        }
-
-        if (jenkinsBuildInfo.getResult() == null) {
-            return State.RED;
-        }
-
-        switch (jenkinsBuildInfo.getResult()) {
-            case ABORTED:
-                return State.GREY;
-            case UNSTABLE:
-                // if there were only test failures, we never get here. therefore treat unstable as failed
-            case FAILURE:
-                return State.YELLOW;
-            case SUCCESS:
-                return State.GREEN;
-            default:
-                return State.GREY;
-        }
-    }
 
     String shortName(JenkinsCheck check) {
         if (check.getJenkinsJobNameMapper() != null) {

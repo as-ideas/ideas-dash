@@ -13,7 +13,6 @@ import org.apache.http.auth.AuthenticationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -32,8 +31,7 @@ public class JenkinsJobExecutorTest {
     @Mock
     private JenkinsClient jenkinsClient;
 
-    @InjectMocks
-    private JenkinsJobExecutor jenkinsJobExecutor;
+    private JenkinsJobExecutor jenkinsJobExecutor = new JenkinsJobExecutor(jenkinsClient, new JenkinsJobToStateMapper());
 
     @Before
     public void initMocks() throws Exception {
@@ -63,7 +61,7 @@ public class JenkinsJobExecutorTest {
     @Test
     public void testBuildWithoutLastBuildResultResultsInGreenState() throws IOException, AuthenticationException {
 
-        final List<CheckResult> checkResults = jenkinsJobExecutor.executeCheck(jenkinsJobInfo(), jenkinsCheck(),mock(BuildInfo.class));
+        final List<CheckResult> checkResults = jenkinsJobExecutor.executeCheck(jenkinsJobInfo(), jenkinsCheck(), mock(BuildInfo.class));
 
         assertEquals(1, checkResults.size());
         final CheckResult checkResult = checkResults.get(0);
