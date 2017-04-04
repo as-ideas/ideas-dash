@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-import static de.axelspringer.ideas.tools.dash.presentation.State.GREEN;
 import static de.axelspringer.ideas.tools.dash.presentation.State.RED;
 
 
@@ -69,11 +68,7 @@ public class JenkinsJobExecutor {
 
         final String checkInfo = failedTestCount > 0 ? failedTestCount + "/" + totalTestCount : "" + totalTestCount;
 
-        final State state =
-                // never executed -> no problems :D
-                lastCompletedBuildInfo == null ? GREEN :
-                        // let the statemapper do its magic
-                        stateMapper.identifyStatus(lastCompletedBuildInfo.getResult(), failedTestCount, jobInfo);
+        final State state = stateMapper.identifyStatus(lastCompletedBuildInfo, failedTestCount, jobInfo);
 
         CheckResult checkResult = new CheckResult(state, shortName(jenkinsCheck), checkInfo, totalTestCount, failedTestCount, jenkinsCheck.getGroup()).withLink(jenkinsCheck.getJobUrl()).withTeams(jenkinsCheck.getTeams());
         if (lastBuildInfo != null && lastBuildInfo.isBuilding()) {

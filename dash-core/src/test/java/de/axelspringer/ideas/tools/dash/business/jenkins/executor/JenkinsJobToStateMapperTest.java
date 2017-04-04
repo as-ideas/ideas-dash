@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins.executor;
 
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildInfo;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.Property;
 import de.axelspringer.ideas.tools.dash.presentation.State;
@@ -40,13 +41,19 @@ public class JenkinsJobToStateMapperTest {
     @Test
     public void identifyStatusFailedTestCountRegularSeverity() throws Exception {
 
-        assertEquals(State.YELLOW, mapper.identifyStatus(null, 1, jobInfo(false, true)));
+        assertEquals(State.YELLOW, mapper.identifyStatus(buildInfo(), 1, jobInfo(false, true)));
     }
 
     @Test
     public void identifyStatusFailedTestCountDecreasedSeverity() throws Exception {
 
-        assertEquals(State.GREY, mapper.identifyStatus(null, 1, jobInfo(true, false)));
+        assertEquals(State.GREY, mapper.identifyStatus(buildInfo(), 1, jobInfo(true, false)));
+    }
+
+    @Test
+    public void identifyStatusGreenIfBuildInfoIsNull() throws Exception {
+
+        assertEquals(State.GREEN, mapper.identifyStatus(null, 1, jobInfo(true, false)));
     }
 
     private JenkinsJobInfo jobInfo(boolean multibranch, boolean master) {
@@ -55,5 +62,9 @@ public class JenkinsJobToStateMapperTest {
         jobInfo.setName(master ? "master" : "featureABC");
         jobInfo.setProperties(Collections.singletonList(new Property(multibranch ? Property.MULTIBRANCH_CLASS : "SomeOtherClass")));
         return jobInfo;
+    }
+
+    private JenkinsBuildInfo buildInfo() {
+        return new JenkinsBuildInfo();
     }
 }

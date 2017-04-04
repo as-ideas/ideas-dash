@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jenkins.executor;
 
+import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsBuildInfo;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsJobInfo;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.JenkinsResult;
 import de.axelspringer.ideas.tools.dash.business.jenkins.domain.Property;
@@ -14,7 +15,11 @@ public class JenkinsJobToStateMapper {
     /**
      * Helps mapping jenkins job information to a {@link State}
      */
-    public State identifyStatus(JenkinsResult jenkinsResult, int failedTestCount, JenkinsJobInfo jobInfo) {
+    public State identifyStatus(JenkinsBuildInfo buildInfo, int failedTestCount, JenkinsJobInfo jobInfo) {
+
+        if (buildInfo == null) {
+            return GREEN;
+        }
 
         final boolean decreaseSeverity = decreaseSeverity(jobInfo);
 
@@ -22,11 +27,12 @@ public class JenkinsJobToStateMapper {
             return decreaseSeverity ? GREY : YELLOW;
         }
 
-        if (jenkinsResult == null) {
+        JenkinsResult result = buildInfo.getResult();
+        if (result == null) {
             return decreaseSeverity ? YELLOW : RED;
         }
 
-        switch (jenkinsResult) {
+        switch (result) {
             case ABORTED:
                 return GREY;
             case UNSTABLE:
