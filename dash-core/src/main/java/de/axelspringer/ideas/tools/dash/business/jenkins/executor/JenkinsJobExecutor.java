@@ -21,11 +21,16 @@ public class JenkinsJobExecutor {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(JenkinsJobExecutor.class);
 
-    @Autowired
-    private JenkinsClient jenkinsClient;
+    private final JenkinsClient jenkinsClient;
+
+    private final JenkinsJobToStateMapper stateMapper;
 
     @Autowired
-    private JenkinsJobToStateMapper stateMapper;
+    public JenkinsJobExecutor(JenkinsClient jenkinsClient, JenkinsJobToStateMapper stateMapper) {
+        this.jenkinsClient = jenkinsClient;
+        this.stateMapper = stateMapper;
+    }
+
 
     public List<CheckResult> executeCheck(JenkinsJobInfo jobInfo, JenkinsCheck jenkinsCheck, BuildInfo buildInfo) {
 
