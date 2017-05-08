@@ -29,7 +29,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataDogCheckExecutorTest {
@@ -95,21 +96,6 @@ public class DataDogCheckExecutorTest {
         assertEquals(State.RED, checkResults.get(0).getState());
         assertEquals("Monitor not OK@DataDog", checkResults.get(0).getName());
         assertEquals("No Data (query: null)", checkResults.get(0).getInfo());
-    }
-
-    @Test
-    public void executeCheck_WithNameFiler() throws Exception {
-
-        // simulate successful backend call
-        mockDatadogApiCallAndReturn(dataDogMonitor("[YANA]Monitor OK", DataDogMonitor.STATE_OK), dataDogMonitor("Monitor in Error", "some_error_state"));
-
-        // execute check with name filter (should work case-insensitive)
-        final List<CheckResult> checkResults = dataDogCheckExecutor.executeCheck(new DataDogCheck("myCheck", null, null, null, "[yana]"));
-
-        assertEquals(1, checkResults.size());
-
-        assertEquals("[YANA]Monitor OK@DataDog", checkResults.get(0).getName());
-        assertEquals("OK (query: null)", checkResults.get(0).getInfo());
     }
 
     @Test
@@ -264,10 +250,10 @@ public class DataDogCheckExecutorTest {
     }
 
     private void mockDatadogApiCallAndReturn(DataDogMonitor... monitors) {
-        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(monitors, HttpStatus.OK));
+        when(restTemplate.getForEntity(any(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(monitors, HttpStatus.OK));
     }
 
     private void mockDatadogApiCallAndReturn(HttpStatus httpStatus) {
-        when(restTemplate.getForEntity(anyString(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(httpStatus));
+        when(restTemplate.getForEntity(any(), eq(DataDogMonitor[].class))).thenReturn(new ResponseEntity<>(httpStatus));
     }
 }

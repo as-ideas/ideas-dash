@@ -6,6 +6,9 @@ import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.presentation.State;
+import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +28,11 @@ import java.util.stream.Collectors;
 @Service
 public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DataDogCheckExecutor.class);
+
+    private final String DATADOG_API_URL = "https://app.datadoghq.com/api/v1";
+    private final String DATADOG_MONITORS_ENDPOINT_URL = DATADOG_API_URL + "/monitor";
+
     @Autowired
     @Qualifier("exceptionSwallowingRestTemplate")
     private RestTemplate restTemplate;
@@ -30,7 +40,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
     @Override
     public List<CheckResult> executeCheck(DataDogCheck check) {
 
-        final ResponseEntity<DataDogMonitor[]> monitorResponse = loadFromDataDog(check.getApiKey(), check.getAppKey());
+        final ResponseEntity<DataDogMonitor[]> monitorResponse = loadFromDataDog(check.getApiKey(), check.getAppKey(), check.getNameFilter());
         final DataDogDowntimes downtimes = new DataDogDowntimes(restTemplate, check.getApiKey(), check.getAppKey());
 
         if (monitorResponse.getStatusCode() != HttpStatus.OK) {
@@ -39,19 +49,33 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         }
 
         return Arrays.stream(monitorResponse.getBody())
-                .filter(candidate -> isNameMatching(check, candidate))
                 .filter(candidate -> !check.isBlacklisted(candidate.getName()))
                 .map(monitor -> convertMonitorToCheckResult(monitor, check, downtimes))
                 .collect(Collectors.toList());
     }
 
-    private ResponseEntity<DataDogMonitor[]> loadFromDataDog(String apiKey, String appKey) {
-        final String url = "https://app.datadoghq.com/api/v1/monitor?api_key=" + apiKey + "&application_key=" + appKey;
-        return restTemplate.getForEntity(url, DataDogMonitor[].class);
+    private ResponseEntity<DataDogMonitor[]> loadFromDataDog(String apiKey, String appKey, String nameFilter) {
+        try {
+            URI url = getDatadogApiUrl(apiKey, appKey, nameFilter);
+            return restTemplate.getForEntity(url, DataDogMonitor[].class);
+        } catch (URISyntaxException e) {
+            LOG.error("Could not build DataDog API Url [args: name={}]", nameFilter, e);
+            throw new RuntimeException(e);
+        }
+
     }
 
-    private boolean isNameMatching(DataDogCheck check, DataDogMonitor candidate) {
-        return StringUtils.isEmpty(check.getNameFilter()) || candidate.getName().toLowerCase().contains(check.getNameFilter().toLowerCase());
+    private URI getDatadogApiUrl(String apiKey, String appKey, String nameFilter) throws URISyntaxException {
+        URIBuilder uriBuilder = new URIBuilder(DATADOG_MONITORS_ENDPOINT_URL);
+        uriBuilder.setParameter("api_key", apiKey);
+        uriBuilder.setParameter("application_key", appKey);
+        uriBuilder.setParameter("with_downtimes", "true");
+
+        if (StringUtils.isEmpty(nameFilter)) {
+            uriBuilder.setParameter("name", nameFilter);
+        }
+
+        return uriBuilder.build();
     }
 
     CheckResult convertMonitorToCheckResult(DataDogMonitor monitor, DataDogCheck check, DataDogDowntimes downtimes) {
