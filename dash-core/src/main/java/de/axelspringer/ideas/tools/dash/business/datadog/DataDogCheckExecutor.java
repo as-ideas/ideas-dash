@@ -41,7 +41,6 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
     public List<CheckResult> executeCheck(DataDogCheck check) {
 
         final ResponseEntity<DataDogMonitor[]> monitorResponse = loadFromDataDog(check.getApiKey(), check.getAppKey(), check.getNameFilter());
-        final DataDogDowntimes downtimes = new DataDogDowntimes(restTemplate, check.getApiKey(), check.getAppKey());
 
         if (monitorResponse.getStatusCode() != HttpStatus.OK) {
             return Collections.singletonList(new CheckResult(State.RED, "DataDog", "got http " + monitorResponse.getStatusCode(), 1, 1, check.getGroup()).
@@ -50,7 +49,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
         return Arrays.stream(monitorResponse.getBody())
                 .filter(candidate -> !check.isBlacklisted(candidate.getName()))
-                .map(monitor -> convertMonitorToCheckResult(monitor, check, downtimes))
+                .map(monitor -> convertMonitorToCheckResult(monitor, check))
                 .collect(Collectors.toList());
     }
 
@@ -78,7 +77,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         return uriBuilder.build();
     }
 
-    CheckResult convertMonitorToCheckResult(DataDogMonitor monitor, DataDogCheck check, DataDogDowntimes downtimes) {
+    CheckResult convertMonitorToCheckResult(DataDogMonitor monitor, DataDogCheck check) {
 
         Group group = check.getGroup();
 
@@ -88,12 +87,12 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
         if (monitor.isOverallStateOk()) {
             state = State.GREEN;
-        } else if (monitor.isSilencedMonitor()) {
+        } else if (monitor.hasActiveDowntime()) {
+			state = State.GREEN;
+			infoMessage = "MAINTENANCE!";
+		} else if (monitor.isSilencedMonitor()) {
             state = State.GREEN;
             infoMessage = "NOT ACTIVE (silenced)!";
-        } else if (downtimes.hasDowntime(monitor)) {
-            state = State.GREEN;
-            infoMessage = "MAINTENANCE!";
         }
 
         final CheckResult checkResult = new CheckResult(state, monitor.getName() + "@DataDog", infoMessage, 1, State.GREEN == state ? 0 : 1, group);

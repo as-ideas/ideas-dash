@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
@@ -121,7 +120,7 @@ public class DataDogCheckExecutorTest {
     @Test
     public void convertMonitorToCheckResult() {
 
-        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", DataDogMonitor.STATE_OK), dataDogCheck(), downtimes());
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", DataDogMonitor.STATE_OK), dataDogCheck());
         assertEquals(State.GREEN, checkResult.getState());
         assertEquals(1, checkResult.getTestCount());
         assertEquals(0, checkResult.getFailCount());
@@ -135,7 +134,7 @@ public class DataDogCheckExecutorTest {
     @Test
     public void convertMonitorToCheckResult_Alert() {
 
-        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", "alert"), dataDogCheck(), downtimes());
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", "alert"), dataDogCheck());
         assertEquals(State.RED, checkResult.getState());
         assertEquals(1, checkResult.getTestCount());
         assertEquals(1, checkResult.getFailCount());
@@ -149,7 +148,7 @@ public class DataDogCheckExecutorTest {
     @Test
     public void convertMonitorToCheckResult_Silenced() {
 
-        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", "alert"), dataDogCheck(), downtimes());
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", "alert"), dataDogCheck());
         assertEquals(State.RED, checkResult.getState());
         assertEquals(1, checkResult.getTestCount());
         assertEquals(1, checkResult.getFailCount());
@@ -162,10 +161,10 @@ public class DataDogCheckExecutorTest {
 
     @Test
     public void convertMonitorToCheckResult_Downtime() {
-        final DataDogDowntimes downtimes = downtimes();
-        doReturn(true).when(downtimes).hasDowntime(any(DataDogMonitor.class));
 
-        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor("name", "alert"), dataDogCheck(), downtimes);
+        DataDogMonitor dataDogMonitor = addActiveDowntime(dataDogMonitor("name", "alert"));
+
+        final CheckResult checkResult = dataDogCheckExecutor.convertMonitorToCheckResult(dataDogMonitor, dataDogCheck());
         assertEquals(State.GREEN, checkResult.getState());
         assertEquals(1, checkResult.getTestCount());
         assertEquals(0, checkResult.getFailCount());
@@ -213,18 +212,25 @@ public class DataDogCheckExecutorTest {
         assertEquals(State.YELLOW, checkResults.get(0).getState());
     }
 
-    private DataDogDowntimes downtimes() {
-        return Mockito.mock(DataDogDowntimes.class);
-    }
-
     private DataDogCheck dataDogCheck() {
         return new DataDogCheck("name", null, "apiKey", "appKey", null);
     }
 
-    private DataDogMonitor dataDogMonitor(String name, String stateOk) {
+    private DataDogMonitor dataDogMonitor(String name, String overallState) {
         DataDogMonitor monitor = new DataDogMonitor();
         Whitebox.setInternalState(monitor, "name", name);
-        Whitebox.setInternalState(monitor, "overallState", stateOk);
+        Whitebox.setInternalState(monitor, "overallState", overallState);
+
+        return monitor;
+    }
+
+    private DataDogMonitor addActiveDowntime(DataDogMonitor monitor) {
+        DataDogMonitorOptions options = new DataDogMonitorOptions();
+
+        DataDogDowntime dataDogDowntime = new DataDogDowntime();
+        dataDogDowntime.active = true;
+
+        Whitebox.setInternalState(monitor, "matchingDowntimes", new DataDogDowntime[]{ dataDogDowntime });
         return monitor;
     }
 
