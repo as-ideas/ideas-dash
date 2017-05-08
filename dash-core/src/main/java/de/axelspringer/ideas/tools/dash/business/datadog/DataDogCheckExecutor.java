@@ -71,7 +71,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
         uriBuilder.setParameter("application_key", appKey);
         uriBuilder.setParameter("with_downtimes", "true");
 
-        if (StringUtils.isEmpty(nameFilter)) {
+        if (!StringUtils.isEmpty(nameFilter)) {
             uriBuilder.setParameter("name", nameFilter);
         }
 
