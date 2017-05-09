@@ -55,7 +55,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
     private ResponseEntity<DataDogMonitor[]> loadFromDataDog(String apiKey, String appKey, String nameFilter) {
         try {
-            URI url = getDatadogApiUrl(apiKey, appKey, nameFilter);
+            URI url = buildDatadogApiUrl(apiKey, appKey, nameFilter);
             return restTemplate.getForEntity(url, DataDogMonitor[].class);
         } catch (URISyntaxException e) {
             LOG.error("Could not build DataDog API Url [args: name={}]", nameFilter, e);
@@ -64,7 +64,7 @@ public class DataDogCheckExecutor implements CheckExecutor<DataDogCheck> {
 
     }
 
-    private URI getDatadogApiUrl(String apiKey, String appKey, String nameFilter) throws URISyntaxException {
+    private URI buildDatadogApiUrl(String apiKey, String appKey, String nameFilter) throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(DATADOG_MONITORS_ENDPOINT_URL);
         uriBuilder.setParameter("api_key", apiKey);
         uriBuilder.setParameter("application_key", appKey);
