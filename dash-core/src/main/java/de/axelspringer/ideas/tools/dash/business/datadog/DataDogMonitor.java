@@ -108,6 +108,6 @@ public class DataDogMonitor {
 	}
 
 	private static boolean isActiveDowntime(DataDogDowntime dataDogDowntime) {
-    	return dataDogDowntime.active;
+        return dataDogDowntime.active;
 	}
 }
