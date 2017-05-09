@@ -103,11 +103,11 @@ public class DataDogMonitor {
         return tags;
     }
 
-	public boolean hasActiveDowntime() {
-		return matchingDowntimes == null ? false : Arrays.stream(matchingDowntimes).anyMatch(DataDogMonitor::isActiveDowntime);
-	}
+    public boolean hasActiveDowntime() {
+        return matchingDowntimes == null ? false : Arrays.stream(matchingDowntimes).anyMatch(DataDogMonitor::isActiveDowntime);
+    }
 
-	private static boolean isActiveDowntime(DataDogDowntime dataDogDowntime) {
+    private static boolean isActiveDowntime(DataDogDowntime dataDogDowntime) {
         return dataDogDowntime.active;
-	}
+    }
 }
