@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.tools.dash.business.datadog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +25,8 @@ public class DataDogMonitor {
     private String type;
     private Long id;
     private DataDogMonitorOptions options;
+    @JsonProperty("matching_downtimes")
+    private DataDogDowntime[] matchingDowntimes;
 
     // These are additional Infos
     private List<String> tags;
@@ -100,5 +103,11 @@ public class DataDogMonitor {
         return tags;
     }
 
+    public boolean hasActiveDowntime() {
+        return matchingDowntimes == null ? false : Arrays.stream(matchingDowntimes).anyMatch(DataDogMonitor::isActiveDowntime);
+    }
 
+    private static boolean isActiveDowntime(DataDogDowntime dataDogDowntime) {
+        return dataDogDowntime.active;
+    }
 }

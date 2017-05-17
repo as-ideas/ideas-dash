@@ -9,6 +9,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.5.2.RELEASE</version>
+        <relativePath></relativePath>
     </parent>
 
     <groupId>de.axelspringer.ideas.tools.dash</groupId>
@@ -58,6 +59,19 @@
                         <configuration>
                             <skip>false</skip>
                         </configuration>
+                    </plugin>
+                    <!-- sources -->
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
