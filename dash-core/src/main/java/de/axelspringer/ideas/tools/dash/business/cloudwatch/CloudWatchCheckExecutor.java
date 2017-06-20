@@ -26,8 +26,6 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
     @Override
     public List<CheckResult> executeCheck(final CloudWatchCheck check) {
         return cloudWatchService.describeAlarms(
-                check.getAwsAccessKeyId(),
-                check.getAwsSecretKey(),
                 check.getAwsRegion())
                 .getMetricAlarms()
                 .parallelStream().map(v -> factorCheckResult(v, check))
