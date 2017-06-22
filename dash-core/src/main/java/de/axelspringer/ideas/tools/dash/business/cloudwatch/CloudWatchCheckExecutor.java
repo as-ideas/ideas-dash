@@ -1,5 +1,10 @@
 package de.axelspringer.ideas.tools.dash.business.cloudwatch;
 
+import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
+import com.amazonaws.services.cloudwatch.model.DescribeAlarmsRequest;
+import com.amazonaws.services.cloudwatch.model.DescribeAlarmsResult;
 import com.amazonaws.services.cloudwatch.model.MetricAlarm;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckExecutor;
@@ -8,6 +13,7 @@ import de.axelspringer.ideas.tools.dash.presentation.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,16 +26,22 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
     @Autowired
     private CloudWatchStateMapper stateMapper;
 
-    @Autowired
-    private CloudWatchService cloudWatchService;
-
     @Override
     public List<CheckResult> executeCheck(final CloudWatchCheck check) {
-        return cloudWatchService.describeAlarms(
-                check.getAwsRegion())
-                .getMetricAlarms()
-                .parallelStream().map(v -> factorCheckResult(v, check))
-                .collect(Collectors.toList());
+
+
+        List<CheckResult> checks = new ArrayList<>();
+        DescribeAlarmsRequest describeAlarmsRequest = new DescribeAlarmsRequest();
+
+        do {
+            DescribeAlarmsResult describeAlarmsResult = check.getCloudWatch().describeAlarms(describeAlarmsRequest);
+            checks.addAll(describeAlarmsResult.getMetricAlarms()
+                    .parallelStream().map(v -> factorCheckResult(v, check))
+                    .collect(Collectors.toList()));
+            describeAlarmsRequest.setNextToken(describeAlarmsResult.getNextToken());
+        } while (describeAlarmsRequest.getNextToken() != null);
+
+        return checks;
     }
 
     private CheckResult factorCheckResult(final MetricAlarm metricAlarm, final CloudWatchCheck check) {

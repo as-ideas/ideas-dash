@@ -1,8 +1,12 @@
 package de.axelspringer.ideas.tools.dash.business.cloudwatch;
 
+import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
 import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -11,7 +15,7 @@ import java.util.List;
  */
 public class CloudWatchCheck extends Check {
 
-    private final String awsRegion;
+    private final AmazonCloudWatch cloudWatch;
 
     public CloudWatchCheck(
             String name,
@@ -19,11 +23,13 @@ public class CloudWatchCheck extends Check {
             List<Team> teams,
             String awsRegion) {
         super(name, group, teams);
-        this.awsRegion = awsRegion;
+        this.cloudWatch = AmazonCloudWatchClientBuilder
+                .standard()
+                .withRegion(awsRegion)
+                .build();;
     }
 
-    public String getAwsRegion() {
-        return awsRegion;
+    public AmazonCloudWatch getCloudWatch() {
+        return this.cloudWatch;
     }
-
 }
