@@ -26,21 +26,15 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
     @Autowired
     private CloudWatchStateMapper stateMapper;
 
-    private AmazonCloudWatch cloudWatch;
-
     @Override
     public List<CheckResult> executeCheck(final CloudWatchCheck check) {
 
-        this.cloudWatch = AmazonCloudWatchClientBuilder
-                .standard()
-                .withRegion(check.getAwsRegion())
-                .build();
 
         List<CheckResult> checks = new ArrayList<>();
         DescribeAlarmsRequest describeAlarmsRequest = new DescribeAlarmsRequest();
 
         do {
-            DescribeAlarmsResult describeAlarmsResult = cloudWatch.describeAlarms(describeAlarmsRequest);
+            DescribeAlarmsResult describeAlarmsResult = check.getCloudWatch().describeAlarms(describeAlarmsRequest);
             checks.addAll(describeAlarmsResult.getMetricAlarms()
                     .parallelStream().map(v -> factorCheckResult(v, check))
                     .collect(Collectors.toList()));
