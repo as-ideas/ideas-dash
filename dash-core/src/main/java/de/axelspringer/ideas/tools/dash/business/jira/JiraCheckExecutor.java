@@ -38,7 +38,14 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
     @Override
     public List<CheckResult> executeCheck(JiraCheck jiraCheck) {
 
-        final List<Issue> issues = jiraClient.queryJiraForIssues(jiraCheck.getUrl(), jiraCheck.getJql(), jiraCheck.getUserName(), jiraCheck.getPassword());
+        List<Issue> issues;
+        try {
+            issues = jiraClient.queryJiraForIssues(jiraCheck.getUrl(), jiraCheck.getJql(), jiraCheck.getUserName(), jiraCheck.getPassword());
+        } catch (Exception e) {
+            final CheckResult checkResult = new CheckResult(State.GREY, jiraCheck.getName(), "ERROR loading JIRA issues", 1, 0, jiraCheck.getGroup())
+                    .withTeams(jiraCheck.getTeams());
+            return Collections.singletonList(checkResult);
+        }
 
         if (Optional.ofNullable(issues).map(List::isEmpty).orElse(true)) {
             final CheckResult checkResult = new CheckResult(State.GREEN, jiraCheck.getName(), "no issues", 1, 0, jiraCheck.getGroup())
