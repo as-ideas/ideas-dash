@@ -1,8 +1,5 @@
 package de.axelspringer.ideas.tools.dash.business.cloudwatch;
 
-import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
 import com.amazonaws.services.cloudwatch.model.DescribeAlarmsRequest;
 import com.amazonaws.services.cloudwatch.model.DescribeAlarmsResult;
 import com.amazonaws.services.cloudwatch.model.MetricAlarm;
@@ -48,7 +45,8 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
         final State state = stateMapper.mapState(metricAlarm.getStateValue());
         final String name = metricAlarm.getAlarmName();
         final String info = metricAlarm.getAlarmDescription();
-        return new CheckResult(
+
+        CheckResult checkResult = new CheckResult(
                 state,
                 name,
                 info,
@@ -56,6 +54,8 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
                 state == State.GREEN ? 0 : 1,
                 check.getGroup()
         );
+
+        return checkResult.withCheckResultIdentifier(check.getRegion() + "_" + name);
     }
 
     @Override
