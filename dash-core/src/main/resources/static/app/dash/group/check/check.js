@@ -15,6 +15,12 @@ angular.module('dashapp')
                 commentObject.checkResultIdentifier = checkResultIdentifier;
                 Comments.comment(commentObject);
             };
+
+            $scope.deleteComment = function (commentIdentifier) {
+                commentObject = {};
+                commentObject.commentIdentifier = commentIdentifier;
+                Comments.remove(commentObject);
+            };
         };
 
         return directive;
@@ -25,7 +31,7 @@ angular.module('dashapp')
             return function (comments, checkResultIdentifier) {
                 var filteredComments = [];
                 angular.forEach(comments, function (comment) {
-                    if (checkResultIdentifier == comment['checkResultIdentifier']) {
+                    if (checkResultIdentifier == comment['checkResultIdentifier'] && !comment.deleted) {
                         filteredComments.push(comment);
                     }
                 });

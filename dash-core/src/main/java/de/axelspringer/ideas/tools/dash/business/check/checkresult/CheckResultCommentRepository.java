@@ -20,7 +20,7 @@ public class CheckResultCommentRepository {
     private final Map<String, CheckResultComment> comments = new ConcurrentHashMap<>();
 
     public void addComments(List<CheckResultComment> comments) {
-        comments.forEach(this::addComment);
+        comments.forEach(this::saveComment);
     }
 
     public List<CheckResultComment> comments() {
@@ -29,9 +29,18 @@ public class CheckResultCommentRepository {
         return Collections.unmodifiableList(commentsAsList);
     }
 
-    private CheckResultCommentRepository addComment(CheckResultComment comment) {
+    private CheckResultCommentRepository saveComment(CheckResultComment comment) {
+
+        boolean deletedOnClient = comment.getDeleted();
+        boolean deletedOnServer = comments.containsKey(comment.getCommentIdentifier()) ? comments.get(comment.getCommentIdentifier()).getDeleted() : false;
+        boolean deleted = deletedOnClient || deletedOnServer;
+
+        comment.setDeleted(deleted);
+
         comments.put(comment.getCommentIdentifier(), comment);
+
         performMaintenance();
+
         return this;
     }
 

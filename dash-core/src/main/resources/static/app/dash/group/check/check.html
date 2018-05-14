@@ -28,6 +28,10 @@
         <blockquote class="comment"
                     ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
             {{ comment.comment }}
+            <button class="btn btn-danger"
+                    ng-click="deleteComment(comment.commentIdentifier)">
+                <span class="glyphicon glyphicon-minus"></span>
+            </button>
         </blockquote>
         <div class="comments-form form-inline">
             <input type="text" ng-model="newcomment" placeholder="new comment" class="form-control">
