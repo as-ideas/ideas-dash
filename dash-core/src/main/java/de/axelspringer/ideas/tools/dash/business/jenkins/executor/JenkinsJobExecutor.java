@@ -56,7 +56,11 @@ public class JenkinsJobExecutor {
 
         } catch (Exception e) {
             log.error("error fetching jenkins result: {}", jobName, e);
-            return Collections.singletonList(new CheckResult(RED, shortName(jenkinsCheck), "N/A", 0, 0, jenkinsCheck.getGroup()).withLink(jenkinsCheck.getJobUrl()).withTeams(jenkinsCheck.getTeams()));
+            return Collections.singletonList(
+                    new CheckResult(RED, shortName(jenkinsCheck), "N/A", 0, 0, jenkinsCheck.getGroup())
+                            .withLink(jenkinsCheck.getJobUrl())
+                            .withTeams(jenkinsCheck.getTeams())
+                            .withCheckResultIdentifier(jenkinsCheck.getJobUrl() + "_" + jenkinsCheck.getName()));
         }
 
         int failedTestCount = 0;
@@ -79,7 +83,9 @@ public class JenkinsJobExecutor {
         if (lastBuildInfo != null && lastBuildInfo.isBuilding()) {
             checkResult = checkResult.markRunning();
         }
-        return Collections.singletonList(checkResult);
+        return Collections.singletonList(
+                checkResult.withCheckResultIdentifier(jenkinsCheck.getJobUrl() + "_" + jenkinsCheck.getName())
+        );
     }
 
 
