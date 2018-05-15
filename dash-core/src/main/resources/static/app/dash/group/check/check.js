@@ -10,14 +10,14 @@ angular.module('dashapp')
         directive.controller = function ($scope, Comments) {
 
             $scope.addComment = function (comment, checkResultIdentifier) {
-                commentObject = {};
+                var commentObject = {};
                 commentObject.comment = comment;
                 commentObject.checkResultIdentifier = checkResultIdentifier;
                 Comments.comment(commentObject);
             };
 
             $scope.deleteComment = function (commentIdentifier) {
-                commentObject = {};
+                var commentObject = {};
                 commentObject.commentIdentifier = commentIdentifier;
                 Comments.remove(commentObject);
             };
