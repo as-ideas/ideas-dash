@@ -10,10 +10,16 @@ angular.module('dashapp')
         directive.controller = function ($scope, Comments) {
 
             $scope.addComment = function (comment, checkResultIdentifier) {
-                commentObject = {};
+                var commentObject = {};
                 commentObject.comment = comment;
                 commentObject.checkResultIdentifier = checkResultIdentifier;
                 Comments.comment(commentObject);
+            };
+
+            $scope.deleteComment = function (commentIdentifier) {
+                var commentObject = {};
+                commentObject.commentIdentifier = commentIdentifier;
+                Comments.remove(commentObject);
             };
         };
 
@@ -25,7 +31,7 @@ angular.module('dashapp')
             return function (comments, checkResultIdentifier) {
                 var filteredComments = [];
                 angular.forEach(comments, function (comment) {
-                    if (checkResultIdentifier == comment['checkResultIdentifier']) {
+                    if (checkResultIdentifier == comment['checkResultIdentifier'] && !comment.deleted) {
                         filteredComments.push(comment);
                     }
                 });

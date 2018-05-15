@@ -15,6 +15,8 @@ public class CheckResultComment {
 
     private String comment;
 
+    private Boolean deleted = false;
+
     public CheckResultComment() {
     }
 
@@ -23,11 +25,12 @@ public class CheckResultComment {
         this.comment = comment;
     }
 
-    public CheckResultComment(String commentIdentifier, long creationTime, String checkResultIdentifier, String comment) {
+    public CheckResultComment(String commentIdentifier, long creationTime, String checkResultIdentifier, String comment, Boolean deleted) {
         this.commentIdentifier = commentIdentifier;
         this.creationTime = creationTime;
         this.checkResultIdentifier = checkResultIdentifier;
         this.comment = comment;
+        this.deleted = deleted;
     }
 
     public long getCreationTime() {
@@ -44,5 +47,29 @@ public class CheckResultComment {
 
     public String getCheckResultIdentifier() {
         return checkResultIdentifier;
+    }
+
+    public void setCommentIdentifier(String commentIdentifier) {
+        this.commentIdentifier = commentIdentifier;
+    }
+
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public void setCheckResultIdentifier(String checkResultIdentifier) {
+        this.checkResultIdentifier = checkResultIdentifier;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

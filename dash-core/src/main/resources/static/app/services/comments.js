@@ -7,6 +7,14 @@ angular.module('dashapp')
             // backend-communication
             var commentResource = $resource('rest/comments');
 
+        var loadComments = function () {
+            // load from server
+            commentResource.query().$promise.then(function (serverComments) {
+                // save to storage
+                Persistence.save('comments', serverComments);
+            });
+        };
+
             var syncComments = function () {
 
                 // load comments from local storage/persistence
@@ -14,11 +22,7 @@ angular.module('dashapp')
 
                 // post them to the server
                 commentResource.save(savedComments).$promise.then(function () {
-                    // load from server
-                    commentResource.query().$promise.then(function (serverComments) {
-                        // save to storage
-                        Persistence.save('comments', serverComments);
-                    });
+                    loadComments();
                 });
             };
 
@@ -32,8 +36,14 @@ angular.module('dashapp')
 
             commentService.comment = function (comment) {
                 commentResource.save([comment]);
-                syncComments();
+                loadComments();
             };
+
+        commentService.remove = function (comment) {
+            comment.deleted = true;
+            commentResource.save([comment]);
+            loadComments();
+        };
 
             return commentService;
         }
