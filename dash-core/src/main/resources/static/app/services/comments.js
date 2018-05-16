@@ -2,49 +2,51 @@
  * Service for interaction with philips hue lights
  */
 angular.module('dashapp')
-    .factory('Comments', function ($resource, Persistence) {
+    .factory('Comments', function ($resource, $interval, Persistence) {
 
-            // backend-communication
-            var commentResource = $resource('rest/comments');
+        var commentsContainer = { comments: [] }
 
-        var loadComments = function () {
-            // load from server
-            commentResource.query().$promise.then(function (serverComments) {
-                // save to storage
+        // backend-communication
+        var commentResource = $resource('rest/comments', {}, {
+            save: {
+                method: "POST",
+                isArray: true
+            }
+        });
+
+        var syncComments = function () {
+            // load comments from local storage/persistence
+            var savedComments = Persistence.load('comments', []);
+            commentsContainer.comments = savedComments
+
+            // post them to the server
+            commentResource.save(savedComments).$promise.then(function (serverComments) {
                 Persistence.save('comments', serverComments);
+                commentsContainer.comments = serverComments
             });
         };
 
-            var syncComments = function () {
+        // public API
+        var commentService = {};
 
-                // load comments from local storage/persistence
-                var savedComments = Persistence.load('comments', []);
+        commentService.startSync = function () {
+            $interval(syncComments, 5 * 1000)
+            syncComments()
 
-                // post them to the server
-                commentResource.save(savedComments).$promise.then(function () {
-                    loadComments();
-                });
-            };
+            return commentsContainer
+        };
 
-            // public API
-            var commentService = {};
-
-            commentService.comments = function () {
-                syncComments();
-                return Persistence.load('comments', []);
-            };
-
-            commentService.comment = function (comment) {
-                commentResource.save([comment]);
-                loadComments();
-            };
+        commentService.comment = function (comment) {
+            commentsContainer.comments.splice(-1, 0, comment)
+            syncComments()
+        };
 
         commentService.remove = function (comment) {
             comment.deleted = true;
             commentResource.save([comment]);
-            loadComments();
+            syncComments()
         };
 
-            return commentService;
-        }
-    );
+        return commentService;
+    }
+);

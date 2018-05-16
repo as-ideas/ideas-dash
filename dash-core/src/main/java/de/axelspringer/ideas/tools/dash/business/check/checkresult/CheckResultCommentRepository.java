@@ -16,9 +16,11 @@ public class CheckResultCommentRepository {
 
     private final Map<String, CheckResultComment> comments = new ConcurrentHashMap<>();
 
-    public void addComments(List<CheckResultComment> comments) {
+    public List<CheckResultComment> addComments(List<CheckResultComment> comments) {
 
         comments.forEach(this::saveComment);
+
+        return comments();
     }
 
     public List<CheckResultComment> comments() {

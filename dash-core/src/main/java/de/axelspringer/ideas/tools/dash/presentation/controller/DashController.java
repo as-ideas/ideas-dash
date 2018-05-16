@@ -4,11 +4,7 @@ import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResultCo
 import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResultCommentRepository;
 import de.axelspringer.ideas.tools.dash.business.customization.Team;
 import de.axelspringer.ideas.tools.dash.business.customization.TeamProvider;
-import de.axelspringer.ideas.tools.dash.presentation.UiConfig;
-import de.axelspringer.ideas.tools.dash.presentation.UiInfo;
-import de.axelspringer.ideas.tools.dash.presentation.UiInfoService;
-import de.axelspringer.ideas.tools.dash.presentation.UiStateSummary;
-import de.axelspringer.ideas.tools.dash.presentation.UiTeams;
+import de.axelspringer.ideas.tools.dash.presentation.*;
 import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,7 +65,7 @@ public class DashController {
     }
 
     @RequestMapping(value = "/comments", method = RequestMethod.POST)
-    public void storeComment(@RequestBody ArrayList<CheckResultComment> comments) {
-        commentRepository.addComments(comments);
+    public List<CheckResultComment> storeComment(@RequestBody ArrayList<CheckResultComment> comments) {
+        return commentRepository.addComments(comments);
     }
 }
