@@ -96,9 +96,17 @@
 }
 
 .check .comment {
-    padding: 0;
+    padding: 5px 5px 5px 10px;
     font-size: inherit;
     margin: 5px 0;
     text-align: left;
-    border-left: 5px solid #ababab;
+    border-left: 5px solid #dcdcdc;
+}
+
+.check .comment button {
+    display: none;
+}
+
+.check .comment:hover button {
+    display: inline;
 }
