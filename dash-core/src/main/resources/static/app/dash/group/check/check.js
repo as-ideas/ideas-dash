@@ -16,10 +16,8 @@ angular.module('dashapp')
                 Comments.comment(commentObject);
             };
 
-            $scope.deleteComment = function (commentIdentifier) {
-                var commentObject = {};
-                commentObject.commentIdentifier = commentIdentifier;
-                Comments.remove(commentObject);
+            $scope.deleteComment = function (comment) {
+                Comments.remove(comment);
             };
         };
 

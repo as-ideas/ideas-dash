@@ -26,11 +26,10 @@
 
     <div ng-show="check.checkResultIdentifier">
         <blockquote class="comment"
-                    ng-repeat="comment in comments | byCheckResultIdentifier:check.checkResultIdentifier">
+                    ng-repeat="comment in commentsContainer.comments | byCheckResultIdentifier:check.checkResultIdentifier">
             {{ comment.comment }}
-            <button class="btn btn-danger"
-                    ng-click="deleteComment(comment.commentIdentifier)">
-                <span class="glyphicon glyphicon-minus"></span>
+            <button class="close" ng-click="deleteComment(comment)">
+                <span aria-hidden="true">&times;</span>
             </button>
         </blockquote>
         <div class="comments-form form-inline">

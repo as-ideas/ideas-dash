@@ -109,17 +109,7 @@ angular.module('dashapp')
             // load groups initially
             loadInfos();
 
-
-            var loadComments = function () {
-                $scope.comments = Comments.comments();
-            };
-
-            // load comments every 5 seconds
-            $interval(loadComments, 5 * 1000);
-
-            // and initially
-            loadComments();
-
+            $scope.commentsContainer = Comments.startSync()
 
             $scope.checkClass = StateUtils.classForState;
 
