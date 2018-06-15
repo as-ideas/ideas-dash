@@ -28,6 +28,15 @@ public class CheckResultCommentRepository {
         return Collections.unmodifiableList(commentsAsList);
     }
 
+    public void clearCommentsForCheck(String checkIdentifier) {
+
+       comments.entrySet().stream()
+                .filter(entry -> Objects.equals(checkIdentifier, entry.getValue().getCheckResultIdentifier()))
+                .forEach(entry -> {
+                    entry.getValue().setDeleted(true);
+                });
+    }
+
     private CheckResultCommentRepository saveComment(CheckResultComment comment) {
 
         // deleted = true if deleted on server OR on client

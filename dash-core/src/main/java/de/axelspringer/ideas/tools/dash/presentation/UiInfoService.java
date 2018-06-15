@@ -4,6 +4,7 @@ import de.axelspringer.ideas.tools.dash.business.check.Check;
 import de.axelspringer.ideas.tools.dash.business.check.CheckProvider;
 import de.axelspringer.ideas.tools.dash.business.check.CheckService;
 import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResult;
+import de.axelspringer.ideas.tools.dash.business.check.checkresult.CheckResultCommentRepository;
 import de.axelspringer.ideas.tools.dash.business.customization.Group;
 import de.axelspringer.ideas.tools.dash.business.failure.FailingCheck;
 import org.slf4j.Logger;
@@ -28,6 +29,9 @@ public class UiInfoService {
     @Autowired
     private CheckService checkService;
 
+    @Autowired
+    private CheckResultCommentRepository comments;
+
     public UiInfo infos() {
         return uiInfo;
     }
@@ -43,6 +47,18 @@ public class UiInfoService {
 
         // build uigroup-object and set field
         this.uiInfo = buildUiGroups(checkResultsMappedToGroup);
+
+        removeCommentsForGreenChecks();
+    }
+
+    private void removeCommentsForGreenChecks() {
+        this.uiInfo.getGroups().forEach(group -> {
+            group.getChecks().forEach(check -> {
+                if (check.getState() == State.GREEN) {
+                    comments.clearCommentsForCheck(check.getCheckResultIdentifier());
+                }
+            });
+        });
     }
 
     private UiInfo buildUiGroups(Map<Group, List<CheckResult>> checkResultsMappedToGroup) {
