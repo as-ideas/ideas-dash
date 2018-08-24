@@ -21,6 +21,7 @@ public class Fields {
      * Team
      */
     private CustomField customfield_10144;
+    private CustomField customfield_11400;
 
     private Assignee assignee;
 
@@ -67,6 +68,14 @@ public class Fields {
 
     public void setCustomfield_10144(CustomField customfield_10144) {
         this.customfield_10144 = customfield_10144;
+    }
+
+    public CustomField getCustomfield_11400() {
+        return customfield_11400;
+    }
+
+    public void setCustomfield_11400(CustomField customfield_11400) {
+        this.customfield_11400 = customfield_11400;
     }
 
     public Assignee getAssignee() {
