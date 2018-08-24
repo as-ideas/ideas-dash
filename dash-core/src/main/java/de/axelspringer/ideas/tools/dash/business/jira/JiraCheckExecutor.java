@@ -12,10 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
@@ -53,14 +54,9 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
             return Collections.singletonList(checkResult);
         }
 
-        List<CheckResult> checkResults = new ArrayList<>();
-
-        for (Issue issue : issues) {
-            CheckResult checkResult = createCheckResultForIssue(jiraCheck, issue);
-            checkResults.add(checkResult);
-        }
-
-        return checkResults;
+        return issues.stream()
+                .map(issue -> createCheckResultForIssue(jiraCheck, issue))
+                .collect(toList());
     }
 
     CheckResult createCheckResultForIssue(JiraCheck jiraCheck, Issue issue) {
