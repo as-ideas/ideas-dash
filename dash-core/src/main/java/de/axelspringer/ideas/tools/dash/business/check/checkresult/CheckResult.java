@@ -76,7 +76,7 @@ public class CheckResult {
         return this;
     }
 
-    public CheckResult withTeams(List<Team> teams) {
+    public CheckResult withTeams(List<? extends Team> teams) {
 
         if (teams != null) {
             teams.forEach(team -> {

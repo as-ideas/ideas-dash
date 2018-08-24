@@ -68,14 +68,15 @@ public class JiraCheckExecutor implements CheckExecutor<JiraCheck> {
         final String info = checkResultDecorator.info(issue);
 
         final CheckResult checkResult = new CheckResult(state, name, info, 1, state == State.GREEN ? 0 : 1, jiraCheck.getGroup())
-                .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey()).withTeams(jiraCheck.getTeams())
+                .withLink(jiraCheck.getUrl() + "/browse/" + issue.getKey())
+                .withTeams(jiraCheck.getTeams())
                 .withCheckResultIdentifier(jiraCheck.getUrl() + "_" + issue.getKey());
 
         if (jiraProjectConfiguration.isIssueInProgress(issue)) {
             checkResult.markRunning();
         }
 
-        return checkResult;
+        return checkResultDecorator.decorate(checkResult, jiraCheck, issue);
     }
 
     @Override
