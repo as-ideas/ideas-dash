@@ -88,6 +88,11 @@ public class CheckResult {
         return this;
     }
 
+    public CheckResult withTeamNames(List<String> teamNames) {
+        this.teams.addAll(teamNames);
+        return this;
+    }
+
     public CheckResult withName(String name) {
         this.name = name;
         return this;
@@ -115,6 +120,10 @@ public class CheckResult {
 
     public State getState() {
         return this.state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public String getName() {
