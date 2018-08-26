@@ -23,6 +23,9 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
     @Autowired
     private CloudWatchStateMapper stateMapper;
 
+    @Autowired
+    private CloudWatchTeamMapper teamMapper;
+
     @Override
     public List<CheckResult> executeCheck(final CloudWatchCheck check) {
 
@@ -46,16 +49,15 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
         final String name = metricAlarm.getAlarmName();
         final String info = metricAlarm.getAlarmDescription();
 
-        CheckResult checkResult = new CheckResult(
+        return new CheckResult(
                 state,
                 name,
                 info,
                 1,
                 state == State.GREEN ? 0 : 1,
-                check.getGroup()
-        );
-
-        return checkResult.withCheckResultIdentifier(check.getRegion() + "_" + name);
+                check.getGroup())
+                .withCheckResultIdentifier(check.getRegion() + "_" + name)
+                .withTeamNames(teamMapper.map(metricAlarm));
     }
 
     @Override
