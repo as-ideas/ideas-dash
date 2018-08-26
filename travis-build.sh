@@ -11,4 +11,4 @@ else
 fi
 
 echo "mvn ${goal}"
-mvn ${goal} --settings settings.xml
+mvn ${goal} --debug --settings settings.xml
