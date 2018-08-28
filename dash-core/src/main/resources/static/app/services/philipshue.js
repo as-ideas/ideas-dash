@@ -14,13 +14,13 @@ angular.module('dashapp')
             hueService.update = function (hueConfig, data) {
 
                 // check params
-                if (!hueConfig.ip || !hueConfig.key || !hueConfig.light || !data) {
+                if (!hueConfig.url || !hueConfig.key || !hueConfig.light || !data) {
                     console.error("invalid parameters, cannot update hue");
                     return;
                 }
 
                 hueConfig.light.split(',').forEach(light => {
-                    var hueResource = $resource("http://" + hueConfig['ip'] + "/api/" + hueConfig['key'] + "/lights/" + light + "/state", null, {
+                    var hueResource = $resource(hueConfig['url'] + "/api/" + hueConfig['key'] + "/lights/" + light + "/state", null, {
                         'update': {
                             method: 'PUT',
                             isArray: true

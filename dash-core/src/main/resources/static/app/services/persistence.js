@@ -1,3 +1,4 @@
+(function() {
 /**
  * Service that helps interacting with browser local storage
  */
@@ -10,6 +11,7 @@ angular.module('dashapp')
                 throw "go get a proper browser that supports local storage!";
             }
             var data = storage['data'] ? JSON.parse(storage['data']) : {};
+            data = migrateConfig(data)
 
             var persist = function () {
                 storage['data'] = JSON.stringify(data);
@@ -45,18 +47,29 @@ angular.module('dashapp')
                 persist();
             };
 
-        persistenceService.load = function (key, defaultValue) {
-            if (!data[key]) {
-                return defaultValue;
-            }
-            return data[key];
-        };
+            persistenceService.load = function (key, defaultValue) {
+                if (!data[key]) {
+                    return defaultValue;
+                }
+                return data[key];
+            };
 
-        persistenceService.save = function (key, value) {
-            data[key] = value;
-            persist();
-        };
+            persistenceService.save = function (key, value) {
+                data[key] = value;
+                persist();
+            };
 
             return persistenceService;
         }
     );
+
+function migrateConfig(config) {
+    var hue = config.hue || {};
+    if (hue.ip) {
+        hue.url = 'http://' + hue.ip;
+        delete hue.ip;
+    }
+    return config;
+}
+
+})();
