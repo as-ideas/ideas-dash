@@ -20,14 +20,28 @@ angular.module('dashapp')
                 }
 
                 hueConfig.light.split(',').forEach(light => {
-                    var hueResource = $resource(hueConfig['url'] + "/api/" + hueConfig['key'] + "/lights/" + light + "/state", null, {
+                    var url = hueConfig['url'] + "/api/" + hueConfig['key'] + "/lights/" + light + "/state";
+
+                    var hueResource = $resource(url, null, {
                         'update': {
                             method: 'PUT',
-                            isArray: true
+                            isArray: true,
+                            headers: {
+                                Authorization: extractBasicAuthHeaderFromUrl(url)
+                            }
                         }
                     });
                     hueResource.update(data);
                 })
+            };
+
+            var extractBasicAuthHeaderFromUrl = function(url) {
+                var match = /^(.+?\/\/)(?<username>.+?):(?<password>.+?)@(.+)$/.exec(url);
+                if (match) {
+                    var credentials = match.groups;
+                    return 'Basic ' + btoa(credentials.username + ':' + credentials.password);
+                }
+                return undefined;
             };
 
             return hueService;
