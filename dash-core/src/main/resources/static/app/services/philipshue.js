@@ -14,20 +14,34 @@ angular.module('dashapp')
             hueService.update = function (hueConfig, data) {
 
                 // check params
-                if (!hueConfig.ip || !hueConfig.key || !hueConfig.light || !data) {
+                if (!hueConfig.url || !hueConfig.key || !hueConfig.light || !data) {
                     console.error("invalid parameters, cannot update hue");
                     return;
                 }
 
                 hueConfig.light.split(',').forEach(light => {
-                    var hueResource = $resource("http://" + hueConfig['ip'] + "/api/" + hueConfig['key'] + "/lights/" + light + "/state", null, {
+                    var url = hueConfig['url'] + "/api/" + hueConfig['key'] + "/lights/" + light + "/state";
+
+                    var hueResource = $resource(url, null, {
                         'update': {
                             method: 'PUT',
-                            isArray: true
+                            isArray: true,
+                            headers: {
+                                Authorization: extractBasicAuthHeaderFromUrl(url)
+                            }
                         }
                     });
                     hueResource.update(data);
                 })
+            };
+
+            var extractBasicAuthHeaderFromUrl = function(url) {
+                var match = /^(.+?\/\/)(?<username>.+?):(?<password>.+?)@(.+)$/.exec(url);
+                if (match) {
+                    var credentials = match.groups;
+                    return 'Basic ' + btoa(credentials.username + ':' + credentials.password);
+                }
+                return undefined;
             };
 
             return hueService;
