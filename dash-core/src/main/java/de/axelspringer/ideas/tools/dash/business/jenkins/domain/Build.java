@@ -4,6 +4,8 @@ public class Build {
 
     private String url;
 
+    private long timestamp;
+
     public Build() {
 
     }
@@ -18,5 +20,13 @@ public class Build {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

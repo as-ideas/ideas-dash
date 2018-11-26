@@ -21,15 +21,13 @@ public class JenkinsJobToStateMapper {
             return GREEN;
         }
 
-        final boolean decreaseSeverity = decreaseSeverity(jobInfo);
-
         if (failedTestCount > 0) {
-            return decreaseSeverity ? GREY : YELLOW;
+            return isMaster(jobInfo) ? YELLOW : isActive(jobInfo) ? GREEN : GREY;
         }
 
         JenkinsResult result = buildInfo.getResult();
         if (result == null) {
-            return decreaseSeverity ? YELLOW : RED;
+            return isMaster(jobInfo) ? RED : isActive(jobInfo) ? GREY : YELLOW;
         }
 
         switch (result) {
@@ -38,7 +36,7 @@ public class JenkinsJobToStateMapper {
             case UNSTABLE:
                 // if there were only test failures, we never get here. therefore treat unstable as failed
             case FAILURE:
-                return decreaseSeverity ? GREY : YELLOW;
+                return isMaster(jobInfo) ? YELLOW : isActive(jobInfo) ? GREEN : GREY;
             case SUCCESS:
                 return State.GREEN;
             default:
@@ -46,18 +44,20 @@ public class JenkinsJobToStateMapper {
         }
     }
 
-    /**
-     * On Multibranch-Projects we need to treat non-master-branches differently (less strict). This method tries to solve this.
-     */
-    boolean decreaseSeverity(JenkinsJobInfo jobInfo) {
+    private boolean isActive(JenkinsJobInfo jobInfo) {
+        long oneWeekInSeconds = 7 * 24 * 3600;
+        long currentTime = System.currentTimeMillis() / 1000;
+        return jobInfo.getLastBuild().getTimestamp() > currentTime - oneWeekInSeconds;
+    }
 
-        final boolean isMultiBranch =
-                jobInfo.getProperties()
-                        .stream()
-                        .anyMatch(property -> Property.MULTIBRANCH_CLASS.equals(property.getPropertyClass()));
-
-        final boolean isMaster = "master".equalsIgnoreCase(jobInfo.getName());
-
-        return isMultiBranch && !isMaster;
+    private boolean isMaster(JenkinsJobInfo jobInfo) {
+        boolean isMultiBranch = jobInfo.getProperties()
+                .stream()
+                .anyMatch(property -> Property.MULTIBRANCH_CLASS.equals(property.getPropertyClass()));
+        if (!isMultiBranch) {
+            // non multi-branch jobs always are the 'master'
+            return true;
+        }
+        return "master".equalsIgnoreCase(jobInfo.getName());
     }
 }
