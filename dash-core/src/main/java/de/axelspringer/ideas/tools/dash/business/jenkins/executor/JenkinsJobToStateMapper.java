@@ -45,9 +45,8 @@ public class JenkinsJobToStateMapper {
     }
 
     private boolean isActive(JenkinsJobInfo jobInfo) {
-        long oneWeekInSeconds = 7 * 24 * 3600;
-        long currentTime = System.currentTimeMillis() / 1000;
-        return jobInfo.getLastBuild().getTimestamp() > currentTime - oneWeekInSeconds;
+        long oneWeekAgo = System.currentTimeMillis() - (7 * 24 * 3600 * 1000);
+        return jobInfo.getLastBuild().getTimestamp() > oneWeekAgo;
     }
 
     private boolean isMaster(JenkinsJobInfo jobInfo) {

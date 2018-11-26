@@ -52,8 +52,8 @@ public class JenkinsJobToStateMapperTest {
 
     private Build build(boolean twoWeeksOld) {
         final Build build = new Build();
-        final Long timestamp = twoWeeksOld ? System.currentTimeMillis() / 1000 - (2 * 7 * 24 * 3600) : System.currentTimeMillis() / 1000;
-        build.setTimestamp(timestamp);
+        long twoWeeksAgo = System.currentTimeMillis() - (14 * 24 * 3600 * 1000);
+        build.setTimestamp(twoWeeksOld ? twoWeeksAgo : System.currentTimeMillis());
         return build;
     }
 
