@@ -12,6 +12,8 @@ public class JenkinsBuildInfo {
     private List<JenkinsBuildAction> actions;
     private boolean building;
 
+    private long timestamp;
+
     public JenkinsBuildInfo() {
     }
 
@@ -37,6 +39,14 @@ public class JenkinsBuildInfo {
 
     public void setBuilding(boolean building) {
         this.building = building;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override

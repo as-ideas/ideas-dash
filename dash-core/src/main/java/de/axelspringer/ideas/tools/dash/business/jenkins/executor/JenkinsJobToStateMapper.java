@@ -22,21 +22,21 @@ public class JenkinsJobToStateMapper {
         }
 
         if (failedTestCount > 0) {
-            return isMaster(jobInfo) ? YELLOW : isActive(jobInfo) ? GREEN : GREY;
+            return isMaster(jobInfo) ? YELLOW : isActive(buildInfo) ? GREEN : GREY;
         }
 
         JenkinsResult result = buildInfo.getResult();
         if (result == null) {
-            return isMaster(jobInfo) ? RED : isActive(jobInfo) ? GREY : YELLOW;
+            return isMaster(jobInfo) ? RED : isActive(buildInfo) ? GREY : YELLOW;
         }
 
         switch (result) {
             case ABORTED:
-                return GREY;
+                return isMaster(jobInfo) ? GREY : isActive(buildInfo) ? GREEN : GREY;
             case UNSTABLE:
                 // if there were only test failures, we never get here. therefore treat unstable as failed
             case FAILURE:
-                return isMaster(jobInfo) ? YELLOW : isActive(jobInfo) ? GREEN : GREY;
+                return isMaster(jobInfo) ? YELLOW : isActive(buildInfo) ? GREEN : GREY;
             case SUCCESS:
                 return State.GREEN;
             default:
@@ -44,9 +44,9 @@ public class JenkinsJobToStateMapper {
         }
     }
 
-    private boolean isActive(JenkinsJobInfo jobInfo) {
+    private boolean isActive(JenkinsBuildInfo buildInfo) {
         long oneWeekAgo = System.currentTimeMillis() - (7 * 24 * 3600 * 1000);
-        return jobInfo.getLastBuild().getTimestamp() > oneWeekAgo;
+        return buildInfo.getTimestamp() > oneWeekAgo;
     }
 
     private boolean isMaster(JenkinsJobInfo jobInfo) {
