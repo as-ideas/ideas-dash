@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.tools.dash.business.jira.rest;
 
+import com.google.gson.JsonElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -9,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class Fields {
@@ -19,8 +21,14 @@ public class Fields {
 
     /**
      * Team
+     * @deprecated Use {@link #all} instead
      */
     private CustomField customfield_10144;
+
+    /**
+     * Team
+     * @deprecated Use {@link #all} instead
+     */
     private CustomField customfield_11400;
 
     private Assignee assignee;
@@ -34,6 +42,13 @@ public class Fields {
     private String created;
 
     private String summary;
+
+    /**
+     * This is not an actual field returned from jira, but a collection of all the fields.
+     *
+     * Useful for accessing custom fields like "customfield_10500" for which there is no mapping here
+     */
+    private Map<String, JsonElement> all;
 
     public Fields() {
     }
@@ -116,6 +131,14 @@ public class Fields {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public Map<String, JsonElement> getAll() {
+        return all;
+    }
+
+    public void setAll(Map<String, JsonElement> all) {
+        this.all = all;
     }
 
     @Override
