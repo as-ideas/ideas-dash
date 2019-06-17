@@ -1,6 +1,9 @@
 package de.axelspringer.ideas.tools.dash.business.jira;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Issue;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.Project;
 import de.axelspringer.ideas.tools.dash.business.jira.rest.SearchResult;
@@ -11,10 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @Service
 public class JiraClient {
@@ -29,6 +31,9 @@ public class JiraClient {
 
     @Autowired
     private Gson gson;
+
+    @Autowired
+    private JsonParser jsonParser;
 
     public List<Issue> queryJiraForIssues(String jiraUrl, String jql, String username, String password) {
 
@@ -80,6 +85,8 @@ public class JiraClient {
             throw new Exception("deserialized to null. [Query=" + jql + "]");
         }
 
+        enrichIssuesWithCustomFields(searchResult, resultAsString);
+
         return searchResult.getIssues();
     }
 
@@ -93,5 +100,23 @@ public class JiraClient {
 
 
         return Arrays.asList(gson.fromJson(resultAsString, Project[].class));
+    }
+
+    private void enrichIssuesWithCustomFields(SearchResult searchResult, String resultAsString) {
+        JsonArray issues = jsonParser.parse(resultAsString)
+                .getAsJsonObject()
+                .getAsJsonArray("issues");
+
+        for (int i = 0; i < searchResult.getIssues().size(); i++) {
+            Set<Entry<String, JsonElement>> fields = issues.get(i)
+                    .getAsJsonObject()
+                    .getAsJsonObject("fields")
+                    .entrySet();
+
+            Map<String, JsonElement> map = fields.stream()
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+
+            searchResult.getIssues().get(i).getFields().setAll(map);
+        }
     }
 }
