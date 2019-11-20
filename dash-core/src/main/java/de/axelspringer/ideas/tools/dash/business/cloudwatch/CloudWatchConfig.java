@@ -14,4 +14,10 @@ public class CloudWatchConfig {
     public CloudWatchStateMapper defaultCloudWatchStateMapper() {
         return new DefaultCloudWatchStateMapper();
     }
+
+    @ConditionalOnMissingBean
+    @Bean
+    public CloudWatchResultDecorator defaultCloudWatchResultDecorator() {
+        return new DefaultCloudWatchResultDecorator();
+    }
 }
