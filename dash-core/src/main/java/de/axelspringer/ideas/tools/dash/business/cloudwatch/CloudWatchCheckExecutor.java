@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -26,17 +27,20 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
     @Autowired
     private CloudWatchTeamMapper teamMapper;
 
+    @Autowired
+    private CloudWatchResultDecorator checkResultDecorator;
+
     @Override
     public List<CheckResult> executeCheck(final CloudWatchCheck check) {
-
-
         List<CheckResult> checks = new ArrayList<>();
         DescribeAlarmsRequest describeAlarmsRequest = new DescribeAlarmsRequest();
 
         do {
             DescribeAlarmsResult describeAlarmsResult = check.getCloudWatch().describeAlarms(describeAlarmsRequest);
             checks.addAll(describeAlarmsResult.getMetricAlarms()
-                    .parallelStream().map(v -> factorCheckResult(v, check))
+                    .stream()
+                    .map(v -> createCheckResult(v, check))
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList()));
             describeAlarmsRequest.setNextToken(describeAlarmsResult.getNextToken());
         } while (describeAlarmsRequest.getNextToken() != null);
@@ -44,12 +48,12 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
         return checks;
     }
 
-    private CheckResult factorCheckResult(final MetricAlarm metricAlarm, final CloudWatchCheck check) {
+    private CheckResult createCheckResult(final MetricAlarm metricAlarm, final CloudWatchCheck check) {
         final State state = stateMapper.mapState(metricAlarm.getStateValue());
         final String name = metricAlarm.getAlarmName();
         final String info = metricAlarm.getAlarmDescription();
 
-        return new CheckResult(
+        CheckResult checkResult = new CheckResult(
                 state,
                 name,
                 info,
@@ -58,6 +62,8 @@ public class CloudWatchCheckExecutor implements CheckExecutor<CloudWatchCheck> {
                 check.getGroup())
                 .withCheckResultIdentifier(check.getRegion() + "_" + name)
                 .withTeamNames(teamMapper.map(metricAlarm));
+
+        return checkResultDecorator.decorate(checkResult, check, metricAlarm);
     }
 
     @Override
